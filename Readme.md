@@ -78,18 +78,6 @@ Windows Repair Tool Pro هي أداة مجانية مخصصة لصيانة وإ�
 
 ---
 
-# 📷 صور من الأداة
-
-يمكنك إضافة صور للأداة هنا.
-
-مثال:
-
-```md
-![Screenshot](images/screenshot1.png)
-```
-
----
-
 # 👨‍💻 المطور
 
 الاسم: Hesham Taha
