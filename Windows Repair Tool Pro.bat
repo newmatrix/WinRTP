@@ -50,7 +50,6 @@ cls
 
 echo %CYAN%====================================================%RESET%
 echo %GREEN%              Windows Repair Tool Pro%RESET%
-echo %GREEN%           		Hesham Taha%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 
