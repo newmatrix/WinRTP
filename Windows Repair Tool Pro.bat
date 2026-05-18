@@ -102,7 +102,7 @@ echo [SFC] %date% %time%
 sfc /scannow
 
 echo.
-echo %GREEN%[✔] SFC Scan Completed.%RESET%
+echo %GREEN%[✓] SFC Scan Completed.%RESET%
 echo.
 pause
 goto menu
@@ -122,7 +122,7 @@ echo [DISM] %date% %time%
 DISM /Online /Cleanup-Image /RestoreHealth
 
 echo.
-echo %GREEN%[✔] DISM Completed.%RESET%
+echo %GREEN%[✓] DISM Completed.%RESET%
 echo.
 pause
 goto menu
@@ -155,14 +155,14 @@ echo [CHKDSK] %date% %time%
 echo y | chkdsk C: /f /r
 
 echo.
-echo %GREEN%[✔] Disk Check scheduled successfully.%RESET%
+echo %GREEN%[✓] Disk Check scheduled successfully.%RESET%
 echo.
 pause
 goto menu
 
 :cancelchkdsk
 echo.
-echo %RED%[X] CHKDSK scheduling canceled.%RESET%
+echo %RED%[✕] CHKDSK scheduling canceled.%RESET%
 echo.
 pause
 goto menu
@@ -182,9 +182,10 @@ echo [TEMP CLEAN] %date% %time%
 del /q /f /s C:\Windows\Prefetch\*
 del /q /f /s C:\Windows\Temp\*
 del /q /f /s "%temp%\*"
+cleanmgr /sagerun:1
 
 echo.
-echo %GREEN%[✔] Temporary files cleaned successfully.%RESET%
+echo %GREEN%[✓] Temporary files cleaned successfully.%RESET%
 echo.
 pause
 goto menu
@@ -225,7 +226,7 @@ echo %YELLOW%[6/6] Clearing ARP Cache...%RESET%
 arp -d *
 
 echo.
-echo %GREEN%[✔] Internet Optimization Completed.%RESET%
+echo %GREEN%[✓] Internet Optimization Completed.%RESET%
 echo.
 echo %YELLOW%[!] Restart your PC for best results.%RESET%
 echo.
@@ -245,15 +246,27 @@ echo.
 
 echo [FULL REPAIR] %date% %time%
 
-echo %YELLOW%[1/4] Running SFC Scan...%RESET%
+echo %YELLOW%[1/5] Running SFC Scan...%RESET%
 sfc /scannow
 
 echo.
-echo %YELLOW%[2/4] Running DISM RestoreHealth...%RESET%
+echo %YELLOW%[2/5] Running DISM RestoreHealth...%RESET%
 DISM /Online /Cleanup-Image /RestoreHealth
 
 echo.
-echo %YELLOW%[3/4] Optimize Internet...%RESET%
+echo %YELLOW%[3/5] Scheduling CHKDSK...%RESET%
+echo y | chkdsk C: /f /r
+
+echo.
+echo %YELLOW%[4/5] Cleaning Temporary Files...%RESET%
+
+del /q /f /s C:\Windows\Prefetch\*
+del /q /f /s C:\Windows\Temp\*
+del /q /f /s "%temp%\*"
+cleanmgr /sagerun:1
+
+echo.
+echo %YELLOW%[5/5] Optimize Internet...%RESET%
 echo %YELLOW%[1/6] Flushing DNS Cache...%RESET%
 ipconfig /flushdns
 
@@ -278,19 +291,7 @@ echo %YELLOW%[6/6] Clearing ARP Cache...%RESET%
 arp -d *
 
 echo.
-echo %YELLOW%[3/4] Cleaning Temporary Files...%RESET%
-
-del /q /f /s %temp%\*
-del /q /f /s C:\Windows\Temp\*
-del /q /f /s C:\Users\hmatr\AppData\Local\Temp
-del /q /f /s C:\Windows\Prefetch\*
-
-echo.
-echo %YELLOW%[4/4] Scheduling CHKDSK...%RESET%
-echo y | chkdsk C: /f /r
-
-echo.
-echo %GREEN%[✔] Full Repair Completed Successfully.%RESET%
+echo %GREEN%[✓] Full Repair Completed Successfully.%RESET%
 echo.
 pause
 goto menu
@@ -311,7 +312,7 @@ set /p shutdown_time=%YELLOW%Enter time in minutes before shutdown: %RESET%
 :: Check if empty
 if "%shutdown_time%"=="" (
     echo.
-    echo %RED%[X] Please enter a valid number!%RESET%
+    echo %RED%[✕] Please enter a valid number!%RESET%
     timeout /t 2 >nul
     goto shutdown
 )
@@ -320,7 +321,7 @@ if "%shutdown_time%"=="" (
 set /a seconds=%shutdown_time%*60
 
 echo.
-echo %GREEN%[✔] Your PC will shutdown after %shutdown_time% minute(s).%RESET%
+echo %GREEN%[✓] Your PC will shutdown after %shutdown_time% minute(s).%RESET%
 echo.
 
 shutdown /s /t %seconds%
@@ -342,7 +343,7 @@ echo.
 shutdown /a
 
 echo.
-echo %GREEN%[✔] Scheduled shutdown canceled successfully.%RESET%
+echo %GREEN%[✓] Scheduled shutdown canceled successfully.%RESET%
 echo.
 
 pause
@@ -396,7 +397,7 @@ echo %YELLOW%[7/7] Running Windows Update Scan...%RESET%
 UsoClient StartScan
 
 echo.
-echo %GREEN%[✔] Windows Update Repair Completed Successfully.%RESET%
+echo %GREEN%[✓] Windows Update Repair Completed Successfully.%RESET%
 echo.
 echo %YELLOW%[!] Restart your PC and check for updates again.%RESET%
 echo.
