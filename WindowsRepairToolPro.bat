@@ -4,7 +4,7 @@
 :: Auto Update System
 :: =========================================
 
-set CURRENT_VERSION=1.1
+set CURRENT_VERSION=1.0
 
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
@@ -100,6 +100,7 @@ echo %WHITE%[2]%RESET% Disk Tools
 echo %WHITE%[3]%RESET% Advanced Tools
 echo %WHITE%[4]%RESET% Repair OS
 echo %WHITE%[5]%RESET% Security
+echo %WHITE%[6]%RESET% CHK Update
 echo %WHITE%[6]%RESET% About
 echo %RED%[0]%RESET% Exit
 echo.
@@ -111,7 +112,8 @@ if "%choice%"=="2" goto menu_disk
 if "%choice%"=="3" goto menu_advanced
 if "%choice%"=="4" goto menu_repair
 if "%choice%"=="5" goto menu_security
-if "%choice%"=="6" goto about
+if "%choice%"=="6" goto UPDATE
+if "%choice%"=="7" goto about
 if "%choice%"=="0" exit
 goto menu
 
@@ -481,6 +483,69 @@ echo %YELLOW%Resetting Firewall...%RESET%
 netsh advfirewall reset
 pause
 goto menu_security
+
+:UPDATE
+cls
+echo =========================================
+echo           CHECKING FOR UPDATES
+echo =========================================
+echo.
+
+set CURRENT_VERSION=1.2
+
+set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
+set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
+
+set TEMP_VERSION=%temp%\Version.txt
+set NEW_FILE=%temp%\WindowsRepairToolPro_New.bat
+set UPDATER=%temp%\Updater.bat
+
+powershell -Command "(New-Object Net.WebClient).DownloadFile('%VERSION_URL%', '%TEMP_VERSION%')" >nul 2>&1
+
+if exist "%TEMP_VERSION%" (
+
+    set /p ONLINE_VERSION=<"%TEMP_VERSION%"
+
+    if "%ONLINE_VERSION%"=="%CURRENT_VERSION%" (
+
+        echo You already have the latest version.
+        echo.
+        pause
+        goto MENU
+    )
+
+    echo New version found: %ONLINE_VERSION%
+    echo.
+    echo Downloading update...
+    echo.
+
+    powershell -Command "(New-Object Net.WebClient).DownloadFile('%TOOL_URL%', '%NEW_FILE%')" >nul 2>&1
+
+    if exist "%NEW_FILE%" (
+
+        (
+        echo @echo off
+        echo timeout /t 2 ^>nul
+        echo copy /y "%NEW_FILE%" "%~f0" ^>nul
+        echo start "" "%~f0"
+        echo del "%NEW_FILE%" ^>nul 2^>^&1
+        echo del "%%~f0" ^>nul 2^>^&1
+        ) > "%UPDATER%"
+
+        echo.
+        echo Update installed successfully!
+        echo Restarting tool...
+        timeout /t 2 >nul
+
+        start "" "%UPDATER%"
+
+        exit
+    )
+)
+
+echo Failed to check for updates.
+pause
+goto MENU
 
 :about
 cls
