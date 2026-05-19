@@ -4,13 +4,13 @@
 :: Auto Update System - Hesham Taha
 :: =========================================
 
-set CURRENT_VERSION=1.2
+set CURRENT_VERSION=1.0
 
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
-set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Windows%20Repair%20Tool%20Pro.bat
+set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
 
 set TEMP_VERSION=%temp%\Version.txt
-set NEW_TOOL=%temp%\Windows_Repair_Tool_Pro.bat
+set NEW_TOOL=%temp%\WindowsRepairToolPro.bat
 
 echo Checking for updates...
 
@@ -37,7 +37,6 @@ if exist "%TEMP_VERSION%" (
         if exist "%NEW_TOOL%" (
 
             echo Update completed successfully!
-            echo Launching new version...
             timeout /t 2 >nul
 
             start "" "%NEW_TOOL%"
