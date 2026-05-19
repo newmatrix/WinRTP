@@ -96,6 +96,11 @@ echo %GREEN%              Windows Repair Tool Pro%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%[1]%RESET% Optimize OS
+echo %WHITE%[2]%RESET% Disk Tools
+echo %WHITE%[3]%RESET% Advanced Tools
+echo %WHITE%[4]%RESET% Repair OS
+echo %WHITE%[5]%RESET% Security
+echo %WHITE%[6]%RESET% About
 echo %RED%[0]%RESET% Exit
 echo.
 echo %CYAN%----------------------------------------------------%RESET%
