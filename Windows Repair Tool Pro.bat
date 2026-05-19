@@ -55,16 +55,18 @@ echo.
 
 echo %WHITE%[1]%RESET% Run SFC Scan
 echo %WHITE%[2]%RESET% Run DISM RestoreHealth
-echo %WHITE%[3]%RESET% Schedule CHKDSK Scan
-echo %WHITE%[4]%RESET% Clean Temporary Files
-echo %WHITE%[5]%RESET% Optimize Internet ^& DNS
-echo %WHITE%[6]%RESET% Run ALL Repairs
-echo ============================
-echo %WHITE%[7]%RESET% Schedule Auto Shutdown
-echo %WHITE%[8]%RESET% Cancel Auto Shutdown
-echo ============================
-echo %WHITE%[9]%RESET% Repair Windows Update
-echo %WHITE%[10]%RESET% About
+echo %WHITE%[3]%RESET% Clean Temporary Files
+echo %WHITE%[4]%RESET% Optimize Internet ^& DNS
+echo %WHITE%[5]%RESET% Run ALL Repairs
+echo ----------------------------
+echo %WHITE%[6]%RESET% Schedule CHKDSK Scan
+echo %WHITE%[7]%RESET% Stop Schedule CHKDSK Scan
+echo ----------------------------
+echo %WHITE%[8]%RESET% Schedule Auto Shutdown
+echo %WHITE%[9]%RESET% Cancel Auto Shutdown
+echo ----------------------------
+echo %WHITE%[10]%RESET% Repair Windows Update
+echo %WHITE%[11]%RESET% About
 echo %RED%[0]%RESET% Exit
 
 echo.
@@ -72,14 +74,15 @@ set /p choice=%YELLOW%Enter your choice: %RESET%
 
 if "%choice%"=="1" goto sfc
 if "%choice%"=="2" goto dism
-if "%choice%"=="3" goto chkdsk
-if "%choice%"=="4" goto clean
-if "%choice%"=="5" goto internet
-if "%choice%"=="6" goto all
-if "%choice%"=="7" goto shutdown
-if "%choice%"=="8" goto cancelshutdown
-if "%choice%"=="9" goto winupdate
-if "%choice%"=="10" goto about
+if "%choice%"=="3" goto clean
+if "%choice%"=="4" goto internet
+if "%choice%"=="5" goto all
+if "%choice%"=="6" goto chkdsk
+if "%choice%"=="7" goto cancelchk
+if "%choice%"=="8" goto shutdown
+if "%choice%"=="9" goto cancelshutdown
+if "%choice%"=="10" goto winupdate
+if "%choice%"=="11" goto about
 if "%choice%"=="0" exit
 
 echo.
@@ -168,6 +171,60 @@ pause
 goto menu
 
 :: ====================================================
+:: CHECK & CANCEL CHKDSK
+:: ====================================================
+:cancelchk
+cls
+
+echo %CYAN%====================================================%RESET%
+echo %GREEN%CHKDSK Schedule Status%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+:: Check status
+chkntfs C: | find /I "scheduled" >nul
+
+if %errorlevel%==0 (
+
+    echo %YELLOW%[!] CHKDSK is currently scheduled on drive C:%RESET%
+    echo.
+
+    choice /c YN /m "Do you want to cancel it?"
+
+if errorlevel 2 (
+    echo.
+    echo %RED%[✕] Operation canceled by user.%RESET%
+    echo.
+    pause
+    goto menu
+)
+
+if errorlevel 1 goto removechk
+
+) else (
+
+    echo %GREEN%[✓] No scheduled CHKDSK found.%RESET%
+    echo.
+    pause
+    goto menu
+)
+
+:removechk
+
+echo.
+echo %YELLOW%Removing scheduled CHKDSK...%RESET%
+echo.
+
+chkntfs /x C:
+
+echo.
+echo %GREEN%[✓] Scheduled CHKDSK canceled successfully.%RESET%
+echo.
+
+pause
+goto menu
+
+:: ====================================================
 :: TEMP CLEAN
 :: ====================================================
 :clean
@@ -252,10 +309,6 @@ sfc /scannow
 echo.
 echo %YELLOW%[2/5] Running DISM RestoreHealth...%RESET%
 DISM /Online /Cleanup-Image /RestoreHealth
-
-echo.
-echo %YELLOW%[3/5] Scheduling CHKDSK...%RESET%
-echo y | chkdsk C: /f /r
 
 echo.
 echo %YELLOW%[4/5] Cleaning Temporary Files...%RESET%
