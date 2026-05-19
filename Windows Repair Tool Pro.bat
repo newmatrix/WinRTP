@@ -1,4 +1,55 @@
 @echo off
+
+:: =========================================
+:: Auto Update System - Hesham Taha
+:: =========================================
+
+set CURRENT_VERSION=1.1
+
+set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
+set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Windows%%20Repair%%20Tool%%20Pro.bat
+
+set TEMP_VERSION=%temp%\Version.txt
+set NEW_TOOL=%temp%\Windows_Repair_Tool_Pro.bat
+
+echo Checking for updates...
+
+powershell -Command "(New-Object Net.WebClient).DownloadFile('%VERSION_URL%', '%TEMP_VERSION%')"
+
+if exist "%TEMP_VERSION%" (
+
+    set /p ONLINE_VERSION=<"%TEMP_VERSION%"
+
+    if NOT "%ONLINE_VERSION%"=="%CURRENT_VERSION%" (
+
+        cls
+        echo =========================================
+        echo          NEW UPDATE FOUND!
+        echo =========================================
+        echo Current Version : %CURRENT_VERSION%
+        echo Latest Version  : %ONLINE_VERSION%
+        echo.
+        echo Downloading update...
+        echo.
+
+        powershell -Command "(New-Object Net.WebClient).DownloadFile('%TOOL_URL%', '%NEW_TOOL%')"
+
+        if exist "%NEW_TOOL%" (
+
+            echo Update completed successfully!
+            echo Launching new version...
+            timeout /t 2 >nul
+
+            start "" "%NEW_TOOL%"
+
+            exit
+        )
+    )
+)
+
+echo Tool is up to date.
+timeout /t 1 >nul
+
 title Windows Repair Tool Pro - Hesham Taha
 
 :: ====================================================
