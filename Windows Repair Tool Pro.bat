@@ -63,10 +63,15 @@ echo %WHITE%[6]%RESET% Schedule CHKDSK Scan
 echo %WHITE%[7]%RESET% Stop Schedule CHKDSK Scan
 echo ----------------------------
 echo %WHITE%[8]%RESET% Schedule Auto Shutdown
-echo %WHITE%[9]%RESET% Cancel Auto Shutdown
+echo %WHITE%[9]%RESET% Restart to BIOS/UEFI
+echo %WHITE%[10]%RESET% Cancel Auto Shutdown
 echo ----------------------------
-echo %WHITE%[10]%RESET% Repair Windows Update
-echo %WHITE%[11]%RESET% About
+echo %WHITE%[11]%RESET% Repair Windows Update
+echo %WHITE%[12]%RESET% Repair Microsoft Store
+echo %WHITE%[13]%RESET% Rebuild Windows Icons
+echo %WHITE%[14]%RESET% Fix Taskbar and Explorer
+echo %WHITE%[15]%RESET% Defragment HDD Drive
+echo %WHITE%[16]%RESET% About
 echo %RED%[0]%RESET% Exit
 
 echo.
@@ -80,9 +85,14 @@ if "%choice%"=="5" goto all
 if "%choice%"=="6" goto chkdsk
 if "%choice%"=="7" goto cancelchk
 if "%choice%"=="8" goto shutdown
-if "%choice%"=="9" goto cancelshutdown
-if "%choice%"=="10" goto winupdate
-if "%choice%"=="11" goto about
+if "%choice%"=="9" goto bios
+if "%choice%"=="10" goto cancelshutdown
+if "%choice%"=="11" goto winupdate
+if "%choice%"=="12" goto store
+if "%choice%"=="13" goto icons
+if "%choice%"=="14" goto taskbar
+if "%choice%"=="15" goto defrag
+if "%choice%"=="16" goto about
 if "%choice%"=="0" exit
 
 echo.
@@ -127,100 +137,6 @@ DISM /Online /Cleanup-Image /RestoreHealth
 echo.
 echo %GREEN%[✓] DISM Completed.%RESET%
 echo.
-pause
-goto menu
-
-:: ====================================================
-:: CHKDSK
-:: ====================================================
-:chkdsk
-cls
-echo %CYAN%====================================================%RESET%
-echo %GREEN%CHKDSK Scan Scheduler%RESET%
-echo %CYAN%====================================================%RESET%
-echo.
-
-echo %YELLOW%Do you want to schedule CHKDSK scan on next restart?%RESET%
-echo.
-choice /c YN /m "Press Y to schedule or N to cancel"
-
-if errorlevel 2 goto cancelchkdsk
-if errorlevel 1 goto runchkdsk
-
-:runchkdsk
-cls
-echo.
-echo %GREEN%Scheduling CHKDSK Scan...%RESET%
-echo.
-
-echo [CHKDSK] %date% %time%
-
-echo y | chkdsk C: /f /r
-
-echo.
-echo %GREEN%[✓] Disk Check scheduled successfully.%RESET%
-echo.
-pause
-goto menu
-
-:cancelchkdsk
-echo.
-echo %RED%[✕] CHKDSK scheduling canceled.%RESET%
-echo.
-pause
-goto menu
-
-:: ====================================================
-:: CHECK & CANCEL CHKDSK
-:: ====================================================
-:cancelchk
-cls
-
-echo %CYAN%====================================================%RESET%
-echo %GREEN%CHKDSK Schedule Status%RESET%
-echo %CYAN%====================================================%RESET%
-echo.
-
-:: Check status
-chkntfs C: | find /I "scheduled" >nul
-
-if %errorlevel%==0 (
-
-    echo %YELLOW%[!] CHKDSK is currently scheduled on drive C:%RESET%
-    echo.
-
-    choice /c YN /m "Do you want to cancel it?"
-
-if errorlevel 2 (
-    echo.
-    echo %RED%[✕] Operation canceled by user.%RESET%
-    echo.
-    pause
-    goto menu
-)
-
-if errorlevel 1 goto removechk
-
-) else (
-
-    echo %GREEN%[✓] No scheduled CHKDSK found.%RESET%
-    echo.
-    pause
-    goto menu
-)
-
-:removechk
-
-echo.
-echo %YELLOW%Removing scheduled CHKDSK...%RESET%
-echo.
-
-chkntfs /x C:
-
-echo.
-echo %GREEN%[✓] Scheduled CHKDSK canceled successfully.%RESET%
-echo.
-
 pause
 goto menu
 
@@ -350,6 +266,101 @@ pause
 goto menu
 
 :: ====================================================
+:: CHKDSK
+:: ====================================================
+:chkdsk
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%CHKDSK Scan Scheduler%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %YELLOW%Do you want to schedule CHKDSK scan on next restart?%RESET%
+echo.
+choice /c YN /m "Press Y to schedule or N to cancel"
+
+if errorlevel 2 goto cancelchkdsk
+if errorlevel 1 goto runchkdsk
+
+:runchkdsk
+cls
+echo.
+echo %GREEN%Scheduling CHKDSK Scan...%RESET%
+echo.
+
+echo [CHKDSK] %date% %time%
+
+echo y | chkdsk C: /f /r
+
+echo.
+echo %GREEN%[✓] Disk Check scheduled successfully.%RESET%
+echo.
+pause
+goto menu
+
+:cancelchkdsk
+echo.
+echo %RED%[✕] CHKDSK scheduling canceled.%RESET%
+echo.
+pause
+goto menu
+
+:: ====================================================
+:: CHECK & CANCEL CHKDSK
+:: ====================================================
+:cancelchk
+cls
+
+echo %CYAN%====================================================%RESET%
+echo %GREEN%CHKDSK Schedule Status%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+:: Check status
+chkntfs C: | find /I "scheduled" >nul
+
+if %errorlevel%==0 (
+
+    echo %YELLOW%[!] CHKDSK is currently scheduled on drive C:%RESET%
+    echo.
+
+    choice /c YN /m "Do you want to cancel it?"
+
+if errorlevel 2 (
+    echo.
+    echo %RED%[✕] Operation canceled by user.%RESET%
+    echo.
+    pause
+    goto menu
+)
+
+if errorlevel 1 goto removechk
+
+) else (
+
+    echo %GREEN%[✓] No scheduled CHKDSK found.%RESET%
+    echo.
+    pause
+    goto menu
+)
+
+:removechk
+
+echo.
+echo %YELLOW%Removing scheduled CHKDSK...%RESET%
+echo.
+
+chkntfs /x C:
+
+echo.
+echo %GREEN%[✓] Scheduled CHKDSK canceled successfully.%RESET%
+echo.
+
+pause
+goto menu
+
+
+:: ====================================================
 :: SHUTDOWN TIMER
 :: ====================================================
 :shutdown
@@ -379,6 +390,36 @@ echo.
 
 shutdown /s /t %seconds%
 
+pause
+goto menu
+
+:: ====================================================
+:: RESTART TO BIOS
+:: ====================================================
+:bios
+cls
+
+echo %CYAN%====================================================%RESET%
+echo %GREEN%Restart to BIOS/UEFI%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %YELLOW%Your PC will restart directly into BIOS/UEFI settings.%RESET%
+echo.
+
+choice /c YN /m "Continue?"
+
+if errorlevel 2 (
+    echo.
+    echo %RED%[✕] Operation canceled by user.%RESET%
+    echo.
+    pause
+    goto menu
+)
+
+if errorlevel 1 (
+    shutdown /r /fw /t 300
+)
 pause
 goto menu
 
@@ -453,6 +494,156 @@ echo.
 echo %GREEN%[✓] Windows Update Repair Completed Successfully.%RESET%
 echo.
 echo %YELLOW%[!] Restart your PC and check for updates again.%RESET%
+echo.
+
+pause
+goto menu
+
+:: ====================================================
+:: MICROSOFT STORE REPAIR
+:: ====================================================
+:store
+cls
+
+echo %CYAN%====================================================%RESET%
+echo %GREEN%Repair Microsoft Store%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %YELLOW%[1/3] Clearing Microsoft Store Cache...%RESET%
+wsreset.exe
+
+echo.
+echo %YELLOW%[2/3] Re-registering Microsoft Store...%RESET%
+
+echo.
+echo %YELLOW%[3/3] Restarting Store Services...%RESET%
+
+net stop InstallService
+net start InstallService
+
+echo.
+echo %GREEN%[✓] Microsoft Store repaired successfully.%RESET%
+echo.
+echo %YELLOW%[!] Restart your PC if the issue persists.%RESET%
+echo.
+
+pause
+goto menu
+
+:: ====================================================
+:: REBUILD ICON CACHE
+:: ====================================================
+:icons
+cls
+
+echo %CYAN%====================================================%RESET%
+echo %GREEN%Rebuilding Windows Icon Cache%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %YELLOW%[1/4] Closing Explorer...%RESET%
+taskkill /f /im explorer.exe
+
+echo.
+echo %YELLOW%[2/4] Deleting Icon Cache...%RESET%
+
+del /a /q "%localappdata%\IconCache.db"
+del /a /f /q "%localappdata%\Microsoft\Windows\Explorer\iconcache*"
+
+echo.
+echo %YELLOW%[3/4] Restarting Explorer...%RESET%
+start explorer.exe
+
+echo.
+echo %YELLOW%[4/4] Refreshing Icons...%RESET%
+ie4uinit.exe -show
+
+echo.
+echo %GREEN%[✓] Windows icon cache rebuilt successfully.%RESET%
+echo.
+
+pause
+goto menu
+
+:: ====================================================
+:: FIX TASKBAR & EXPLORER
+:: ====================================================
+:taskbar
+cls
+
+echo %CYAN%====================================================%RESET%
+echo %GREEN%Fixing Taskbar & Explorer%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %YELLOW%[1/3] Closing Explorer...%RESET%
+taskkill /f /im explorer.exe
+
+timeout /t 2 >nul
+
+echo.
+echo %YELLOW%[2/3] Restarting Explorer...%RESET%
+start explorer.exe
+
+echo.
+echo %YELLOW%[3/3] Refreshing Taskbar...%RESET%
+
+powershell -Command "& {$manifest = (Get-AppxPackage Microsoft.Windows.ShellExperienceHost).InstallLocation + '\AppxManifest.xml' ; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+
+echo.
+echo %GREEN%[✓] Taskbar & Explorer repaired successfully.%RESET%
+echo.
+
+pause
+goto menu
+
+:: ====================================================
+:: HDD DEFRAGMENT
+:: ====================================================
+:defrag
+cls
+
+echo %CYAN%====================================================%RESET%
+echo %GREEN%HDD Defragment Tool%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %YELLOW%Available Drives:%RESET%
+echo.
+
+powershell -Command "Get-Volume | Where-Object {$_.DriveLetter} | Format-Table DriveLetter, FileSystemLabel -AutoSize"
+
+echo.
+set /p drive=%YELLOW%Enter Drive Letter (Example C): %RESET%
+
+:: Remove colon if user typed it
+set drive=%drive::=%
+
+echo.
+echo %YELLOW%Checking Drive Type...%RESET%
+echo.
+
+:: Detect if SSD or HDD
+for /f "skip=1 tokens=*" %%a in ('powershell -Command "(Get-PhysicalDisk | Select MediaType | findstr /i HDD)"') do set dtype=%%a
+
+if /I "%dtype%"=="SSD" (
+    echo %RED%[✕] SSD Detected! Defragmentation canceled.%RESET%
+    echo.
+    pause
+    goto menu
+)
+
+echo %GREEN%[✓] HDD Detected.%RESET%
+echo.
+
+echo %YELLOW%Starting Defragmentation on Drive %drive%:%RESET%
+echo.
+
+defrag %drive%: /O /U /V
+
+echo.
+echo %GREEN%[✓] Defragmentation Completed Successfully.%RESET%
 echo.
 
 pause
