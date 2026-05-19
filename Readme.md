@@ -1,228 +1,228 @@
 # 🛠️ Windows Repair Tool Pro
 
-## 📌 About The Tool
-**Windows Repair Tool Pro** is a free all-in-one maintenance and repair utility for Windows systems.  
-The tool is designed to help users quickly fix common Windows issues, improve performance, and perform essential maintenance tasks from a simple command-line interface.
+# 📌 نبذة عن الأداة
+**Windows Repair Tool Pro** هي أداة مجانية متكاملة لصيانة وإصلاح أنظمة ويندوز.  
+تم تصميم الأداة لمساعدة المستخدمين على حل مشاكل الويندوز الشائعة، وتحسين الأداء، وتنفيذ عمليات الصيانة الأساسية بسهولة من خلال واجهة CMD بسيطة وسريعة.
 
 ---
 
-# 👨‍💻 Developer Information
-### Developed By:
-## Hesham Taha
+# 👨‍💻 معلومات المطور
+## تطوير:
+# Hesham Taha
 
-- YouTube Channel: Hesham Taha
-- Tech Content Creator
-
----
-
-# © Copyright Notice
-## All Rights Reserved © Hesham Taha
-
-This tool is completely free to use for personal and educational purposes.  
-Re-uploading, modifying, or redistributing the tool without permission from the developer is not allowed.
+- قناة يوتيوب: Hesham Taha
+- صانع محتوى تقني
 
 ---
 
-# 💚 Free To Use
-✅ The tool is 100% FREE.  
-✅ No activation required.  
-✅ No subscriptions.  
-✅ No hidden payments.  
+# © حقوق الملكية
+## جميع الحقوق محفوظة © Hesham Taha
+
+هذه الأداة مجانية بالكامل للاستخدام الشخصي والتعليمي.  
+يُمنع إعادة رفع الأداة أو تعديلها أو إعادة نشرها بدون إذن من المطور.
 
 ---
 
-# ⚠️ Important Notes
-- It is recommended to run the tool as **Administrator**.
-- Some repair operations may require restarting the computer.
-- Creating a System Restore Point before using advanced repair functions is recommended.
+# 💚 الأداة مجانية بالكامل
+✅ الأداة مجانية 100%  
+✅ لا تحتاج تفعيل  
+✅ لا توجد اشتراكات  
+✅ لا توجد أي رسوم مخفية  
 
 ---
 
-# ✨ Tool Features
+# ⚠️ ملاحظات مهمة
+- يُفضل تشغيل الأداة بصلاحيات المسؤول (Run as Administrator).
+- بعض عمليات الإصلاح قد تتطلب إعادة تشغيل الجهاز.
+- يُنصح بإنشاء نقطة استعادة للنظام قبل استخدام أدوات الإصلاح المتقدمة.
 
-## 1️⃣ System File Checker (SFC Scan)
-Scans Windows system files and automatically repairs corrupted files.
+---
 
-### Command Used:
+# ✨ مميزات الأداة
+
+## 1️⃣ فحص وإصلاح ملفات النظام (SFC Scan)
+تقوم الأداة بفحص ملفات ويندوز التالفة وإصلاحها تلقائيًا.
+
+### الأمر المستخدم:
 ```cmd
 sfc /scannow
 ```
 
-### Benefits:
-- Fixes corrupted Windows files
-- Solves many random system issues
-- Improves system stability
+### الفوائد:
+- إصلاح ملفات النظام التالفة
+- حل الكثير من مشاكل الويندوز
+- تحسين استقرار النظام
 
 ---
 
-## 2️⃣ DISM Image Repair
-Repairs damaged Windows image files using DISM.
+## 2️⃣ إصلاح صورة الويندوز (DISM Repair)
+تقوم الأداة بإصلاح ملفات صورة الويندوز التالفة باستخدام DISM.
 
-### Command Used:
+### الأمر المستخدم:
 ```cmd
 DISM /Online /Cleanup-Image /RestoreHealth
 ```
 
-### Benefits:
-- Repairs deep Windows corruption
-- Helps fix update problems
-- Works with SFC for better repair results
+### الفوائد:
+- إصلاح مشاكل الويندوز العميقة
+- المساعدة في حل مشاكل التحديثات
+- تحسين نتائج إصلاح النظام
 
 ---
 
-## 3️⃣ Temporary Files Cleaner
-Deletes unnecessary temporary files from Windows.
+## 3️⃣ تنظيف الملفات المؤقتة
+تقوم الأداة بحذف الملفات غير الضرورية من النظام.
 
-### Cleans:
-- Temp files
-- Windows Temp
-- Prefetch files
-- Cache files
+### تشمل عملية التنظيف:
+- ملفات Temp
+- ملفات Windows Temp
+- ملفات Prefetch
+- ملفات الكاش المؤقتة
 
-### Benefits:
-- Frees storage space
-- Improves system performance
-- Reduces junk files
+### الفوائد:
+- توفير مساحة تخزين
+- تحسين الأداء
+- تقليل الملفات غير الضرورية
 
 ---
 
-## 4️⃣ Internet & DNS Repair
-Resets important network components.
+## 4️⃣ إصلاح الإنترنت و DNS
+تقوم الأداة بإعادة ضبط مكونات الشبكة الأساسية.
 
-### Includes:
+### تشمل:
 - Flush DNS
 - Reset Winsock
 - Reset TCP/IP
 - Renew IP Address
 
-### Benefits:
-- Fixes internet connection issues
-- Solves DNS problems
-- Helps improve network stability
+### الفوائد:
+- حل مشاكل الإنترنت
+- إصلاح مشاكل DNS
+- تحسين استقرار الشبكة
 
 ---
 
-## 5️⃣ Run All Repairs
-Runs multiple repair and optimization tools automatically.
+## 5️⃣ تشغيل جميع أدوات الإصلاح
+تشغيل عدة أدوات صيانة وإصلاح دفعة واحدة تلقائيًا.
 
-### Includes:
-- SFC Scan
-- DISM Repair
-- Temp Cleaning
-- Network Repair
+### تشمل:
+- فحص SFC
+- إصلاح DISM
+- تنظيف الملفات المؤقتة
+- إصلاح الشبكة
 
-### Benefits:
-- One-click maintenance solution
-- Saves time
-- Useful for general troubleshooting
+### الفوائد:
+- صيانة شاملة بضغطة واحدة
+- توفير الوقت
+- مفيدة لحل المشاكل العامة
 
 ---
 
-## 6️⃣ Disk Check (CHKDSK)
-Schedules a disk scan and repair operation.
+## 6️⃣ فحص القرص الصلب (CHKDSK)
+تقوم الأداة بجدولة فحص وإصلاح للهارد.
 
-### Command Used:
+### الأمر المستخدم:
 ```cmd
 chkdsk C: /f /r
 ```
 
-### Benefits:
-- Detects bad sectors
-- Repairs file system errors
-- Improves drive health
+### الفوائد:
+- اكتشاف القطاعات التالفة
+- إصلاح أخطاء نظام الملفات
+- تحسين صحة القرص
 
 ---
 
-## 7️⃣ Shutdown Timer
-Allows users to schedule automatic shutdown after a selected time.
+## 7️⃣ مؤقت إيقاف التشغيل
+تسمح الأداة بتحديد وقت لإيقاف تشغيل الجهاز تلقائيًا.
 
-### Benefits:
-- Useful for downloads
-- Helpful for overnight tasks
+### الفوائد:
+- مفيد أثناء التحميلات
+- مناسب للمهام الطويلة
 
 ---
 
-## 8️⃣ Boot Directly To BIOS/UEFI
-Restarts the computer directly into BIOS settings.
+## 8️⃣ الدخول المباشر إلى BIOS/UEFI
+إعادة تشغيل الجهاز والدخول مباشرة إلى إعدادات البيوس.
 
-### Command Used:
+### الأمر المستخدم:
 ```cmd
 shutdown /r /fw /t 0
 ```
 
-### Benefits:
-- Quick access to BIOS
-- No need for repeated keyboard presses
+### الفوائد:
+- وصول سريع للبيوس
+- بدون الحاجة للضغط المتكرر على أزرار الكيبورد
 
 ---
 
-## 9️⃣ Windows Update Repair
-Fully resets Windows Update components.
+## 9️⃣ إصلاح Windows Update
+تقوم الأداة بإعادة ضبط مكونات تحديثات ويندوز بالكامل.
 
-### Includes:
-- Restarting update services
-- Clearing SoftwareDistribution
-- Resetting Catroot2
+### تشمل:
+- إعادة تشغيل خدمات التحديث
+- حذف SoftwareDistribution
+- إعادة ضبط Catroot2
 
-### Benefits:
-- Fixes update errors
-- Solves stuck updates
-- Repairs broken Windows Update services
+### الفوائد:
+- حل مشاكل التحديثات
+- إصلاح التحديثات العالقة
+- إعادة تشغيل خدمات Windows Update بشكل صحيح
 
 ---
 
-## 🔟 Microsoft Store Repair
-Resets and repairs Microsoft Store components.
+## 🔟 إصلاح Microsoft Store
+إعادة ضبط وإصلاح متجر مايكروسوفت.
 
-### Command Used:
+### الأمر المستخدم:
 ```cmd
 wsreset.exe
 ```
 
-### Benefits:
-- Fixes Microsoft Store issues
-- Helps solve app download problems
+### الفوائد:
+- حل مشاكل المتجر
+- إصلاح مشاكل تحميل التطبيقات
 
 ---
 
-## 1️⃣1️⃣ Icon Cache Rebuild
-Rebuilds Windows icon cache.
+## 1️⃣1️⃣ إعادة بناء كاش الأيقونات
+إعادة إنشاء Icon Cache الخاص بالويندوز.
 
-### Benefits:
-- Fixes corrupted icons
-- Restores missing desktop icons
-
----
-
-## 1️⃣2️⃣ Taskbar & Explorer Repair
-Restarts Windows Explorer and repairs shell components.
-
-### Benefits:
-- Fixes frozen taskbar
-- Solves Explorer issues
-- Refreshes Windows interface
+### الفوائد:
+- إصلاح الأيقونات التالفة
+- استعادة الأيقونات المفقودة
 
 ---
 
-## 1️⃣3️⃣ HDD Defragment Tool
-Optimizes HDD drives using Windows Defragment utility.
+## 1️⃣2️⃣ إصلاح شريط المهام و Explorer
+إعادة تشغيل Windows Explorer وإصلاح مكونات الواجهة.
 
-### Benefits:
-- Improves HDD performance
-- Organizes fragmented files
-- Speeds up file access
-
----
-
-# 🚀 How To Use
-
-## Step 1
-Download the tool.
+### الفوائد:
+- حل مشكلة تجمد التاسك بار
+- إصلاح مشاكل Explorer
+- تحديث واجهة الويندوز
 
 ---
 
-## Step 2
-Right-click the file and choose:
+## 1️⃣3️⃣ أداة Defragment للهارد HDD
+تحسين أداء أقراص HDD باستخدام أداة Defrag الخاصة بويندوز.
+
+### الفوائد:
+- تحسين سرعة الهارد HDD
+- تنظيم الملفات المجزأة
+- تسريع الوصول للملفات
+
+---
+
+# 🚀 طريقة الاستخدام
+
+## الخطوة 1
+قم بتحميل الأداة.
+
+---
+
+## الخطوة 2
+اضغط كليك يمين على الملف واختر:
 
 ```text
 Run as administrator
@@ -230,34 +230,34 @@ Run as administrator
 
 ---
 
-## Step 3
-Choose the repair option you want from the menu.
+## الخطوة 3
+اختر أداة الإصلاح المطلوبة من القائمة.
 
 ---
 
-## Step 4
-Wait until the operation is completed.
+## الخطوة 4
+انتظر حتى تنتهي العملية.
 
 ---
 
-## Step 5
-Restart your computer if required.
+## الخطوة 5
+قم بإعادة تشغيل الجهاز إذا طُلب منك ذلك.
 
 ---
 
-# 🖥️ Supported Systems
+# 🖥️ الأنظمة المدعومة
 - Windows 10
 - Windows 11
 
 ---
 
-# 🔒 Safety Information
-The tool uses official Windows commands only.  
-No malware, spyware, mining software, or harmful scripts are included.
+# 🔒 معلومات الأمان
+الأداة تستخدم أوامر ويندوز الرسمية فقط.  
+لا تحتوي على أي برامج ضارة أو أدوات تجسس أو تعدين أو أكواد خبيثة.
 
 ---
 
-# ❤️ Thank You For Using Windows Repair Tool Pro
-Developed with passion by:
+# ❤️ شكرًا لاستخدامك Windows Repair Tool Pro
+تم التطوير بكل شغف بواسطة:
 
 # Hesham Taha
