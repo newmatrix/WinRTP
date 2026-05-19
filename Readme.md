@@ -1,4 +1,4 @@
-<img width="642" height="512" alt="image" src="https://github.com/user-attachments/assets/820f8b29-8417-4acc-9c18-fd0640f3a4f2" />
+<img width="979" height="512" alt="image" src="https://github.com/user-attachments/assets/f14b643b-98f0-43fa-b6ea-c3cd43d9428a" />
 
 # 🛠️ Windows Repair Tool Pro
 
