@@ -1,7 +1,7 @@
 @echo off
 
 :: =========================================
-:: Auto Update System - Hesham Taha
+:: Auto Update System
 :: =========================================
 
 set CURRENT_VERSION=1.2
@@ -13,13 +13,17 @@ set TEMP_VERSION=%temp%\Version.txt
 set NEW_TOOL=%temp%\WindowsRepairToolPro.bat
 
 echo Checking for updates...
+echo.
 
-powershell -Command "(New-Object Net.WebClient).DownloadFile('%VERSION_URL%', '%TEMP_VERSION%')"
+:: تحميل ملف النسخة
+powershell -Command "(New-Object Net.WebClient).DownloadFile('%VERSION_URL%', '%TEMP_VERSION%')" >nul 2>&1
 
+:: التأكد إن الملف اتحمل
 if exist "%TEMP_VERSION%" (
 
     set /p ONLINE_VERSION=<"%TEMP_VERSION%"
 
+    :: مقارنة النسخ
     if NOT "%ONLINE_VERSION%"=="%CURRENT_VERSION%" (
 
         cls
@@ -32,12 +36,20 @@ if exist "%TEMP_VERSION%" (
         echo Downloading update...
         echo.
 
-        powershell -Command "(New-Object Net.WebClient).DownloadFile('%TOOL_URL%', '%NEW_TOOL%')"
+        :: تحميل النسخة الجديدة
+        powershell -Command "(New-Object Net.WebClient).DownloadFile('%TOOL_URL%', '%NEW_TOOL%')" >nul 2>&1
 
+        :: التأكد إن النسخة اتحملت
         if exist "%NEW_TOOL%" (
 
+            echo.
             echo Update completed successfully!
+            echo Launching updated version...
+            echo.
+
             timeout /t 2 >nul
+
+            del "%TEMP_VERSION%" >nul 2>&1
 
             start "" "%NEW_TOOL%"
 
