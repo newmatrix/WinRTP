@@ -31,7 +31,7 @@ if %errorLevel% neq 0 (
 :menu
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%              Windows Repair Tool Pro%RESET%
+echo %GREEN%            Windows Repair Tool Pro v1.1%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%[1]%RESET% Optimize OS
@@ -497,7 +497,7 @@ echo.
 echo %WHITE%Developer:%RESET% Hesham Taha
 echo %WHITE%YouTube:%RESET% Hesham Taha
 echo %WHITE%Facebook:%RESET% Hesham Taha Official
-echo %WHITE%Version:%RESET% 1.0
+echo %WHITE%Version:%RESET% 1.1
 echo.
 
 echo %YELLOW%Opening links...%RESET%
