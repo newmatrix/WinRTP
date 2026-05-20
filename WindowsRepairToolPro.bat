@@ -40,7 +40,7 @@ echo %WHITE%[3]%RESET% Advanced Tools
 echo %WHITE%[4]%RESET% Repair OS
 echo %WHITE%[5]%RESET% Security
 echo %WHITE%[6]%RESET% CHK Update
-echo %WHITE%[6]%RESET% About
+echo %WHITE%[7]%RESET% About
 echo %RED%[0]%RESET% Exit
 echo.
 echo %CYAN%----------------------------------------------------%RESET%
