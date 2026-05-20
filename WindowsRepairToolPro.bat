@@ -430,7 +430,9 @@ echo           CHECKING FOR UPDATES
 echo =========================================
 echo.
 
-set CURRENT_VERSION=1.1
+setlocal EnableDelayedExpansion
+
+set CURRENT_VERSION=1.0
 
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
@@ -443,9 +445,19 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('%VERSION_URL%', '%
 
 if exist "%TEMP_VERSION%" (
 
-    set /p ONLINE_VERSION=<"%TEMP_VERSION%"
+    set ONLINE_VERSION=
 
-    if "%ONLINE_VERSION%"=="%CURRENT_VERSION%" (
+    for /f "delims=" %%i in ('type "%TEMP_VERSION%"') do (
+        set ONLINE_VERSION=%%i
+    )
+
+    set ONLINE_VERSION=!ONLINE_VERSION: =!
+
+    echo Current Version : %CURRENT_VERSION%
+    echo New version found: !ONLINE_VERSION!
+    echo.
+
+    if "!ONLINE_VERSION!"=="%CURRENT_VERSION%" (
 
         echo You already have the latest version.
         echo.
@@ -453,7 +465,6 @@ if exist "%TEMP_VERSION%" (
         goto MENU
     )
 
-    echo New version found: %ONLINE_VERSION%
     echo.
     echo Downloading update...
     echo.
@@ -461,6 +472,9 @@ if exist "%TEMP_VERSION%" (
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%TOOL_URL%', '%NEW_FILE%')" >nul 2>&1
 
     if exist "%NEW_FILE%" (
+
+        echo Creating updater...
+        echo.
 
         (
         echo @echo off
@@ -471,7 +485,6 @@ if exist "%TEMP_VERSION%" (
         echo del "%%~f0" ^>nul 2^>^&1
         ) > "%UPDATER%"
 
-        echo.
         echo Update installed successfully!
         echo Restarting tool...
         timeout /t 2 >nul
