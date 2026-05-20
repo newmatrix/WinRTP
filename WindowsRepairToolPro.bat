@@ -430,7 +430,7 @@ echo           CHECKING FOR UPDATES
 echo =========================================
 echo.
 
-set CURRENT_VERSION=1.0
+set CURRENT_VERSION=1.1
 
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
