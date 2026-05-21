@@ -113,6 +113,13 @@ echo %WHITE%[3]%RESET% Restore Balanced Power Mode (Default)
 echo %WHITE%[4]%RESET% Schedule Auto Shutdown
 echo %WHITE%[5]%RESET% Cancel Auto Shutdown
 echo %WHITE%[6]%RESET% Restart to BIOS/UEFI
+echo %WHITE%[7]%RESET% Restart to Safe Mode
+echo %WHITE%[8]%RESET% Debloat Windows (Remove Junk Apps)
+echo %WHITE%[9]%RESET% Clean Old Windows Updates (Windows.old)
+echo %WHITE%[10]%RESET% Clean Crash Dumps Files
+echo %WHITE%[11]%RESET% Show WI-FI Password
+echo %WHITE%[12]%RESET% Disable Windows Update
+echo %WHITE%[13]%RESET% Enable Windows Update
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p adv_choice=%YELLOW%Enter your choice: %RESET%
@@ -122,6 +129,13 @@ if "%adv_choice%"=="3" goto restore_balanced
 if "%adv_choice%"=="4" goto shutdown
 if "%adv_choice%"=="5" goto cancelshutdown
 if "%adv_choice%"=="6" goto bios
+if "%adv_choice%"=="7" goto safemode
+if "%adv_choice%"=="8" goto debloat
+if "%adv_choice%"=="9" goto clean_updates
+if "%adv_choice%"=="10" goto clean_dumps
+if "%adv_choice%"=="11" goto wifi_pwd
+if "%adv_choice%"=="12" goto disable_updates
+if "%adv_choice%"=="13" goto enable_updates
 if "%adv_choice%"=="0" goto menu
 goto menu_advanced
 
@@ -154,12 +168,16 @@ echo.
 echo %WHITE%[1]%RESET% Quick Scan
 echo %WHITE%[2]%RESET% Full Scan
 echo %WHITE%[3]%RESET% Reset Windows Firewall Settings
+echo %WHITE%[4]%RESET% Disable Telemetry (Windows Tracking)
+echo %WHITE%[5]%RESET% Fix Windows Defender
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p sec_choice=%YELLOW%Enter your choice: %RESET%
 if "%sec_choice%"=="1" goto quickscan
 if "%sec_choice%"=="2" goto fullscan
 if "%sec_choice%"=="3" goto firewall_reset
+if "%sec_choice%"=="4" goto telemetry
+if "%sec_choice%"=="5" goto fix_defender
 if "%sec_choice%"=="0" goto menu
 goto menu_security
 
@@ -175,16 +193,24 @@ goto menu_optimize
 :dism
 cls
 echo %GREEN%Running DISM RestoreHealth...%RESET%
-DISM /Online /Cleanup-Image /RestoreHealth
+echo %WHITE%Checking system image health, please wait...%RESET%
+echo.
+cmd /c "DISM /Online /Cleanup-Image /RestoreHealth"
+echo.
+echo %GREEN%[✓] DISM Process Finished.%RESET%
+echo.
 pause
 goto menu_optimize
 
 :comp_cleanup
 cls
 echo %GREEN%Component Store Cleanup (Deep Repair)...%RESET%
-DISM /Online /Cleanup-Image /StartComponentCleanup
+echo %WHITE%Cleaning component store, please wait...%RESET%
+echo.
+cmd /c "DISM /Online /Cleanup-Image /StartComponentCleanup"
 echo.
 echo %GREEN%[✓] Cleanup Completed.%RESET%
+echo.
 pause
 goto menu_optimize
 
@@ -422,6 +448,138 @@ echo %YELLOW%Resetting Firewall...%RESET%
 netsh advfirewall reset
 pause
 goto menu_security
+
+:safemode
+cls
+echo %YELLOW%Preparing to boot into Safe Mode...%RESET%
+echo %RED%[!] IMPORTANT: To return to Normal Mode later, you will need to open CMD and type:%RESET%
+echo %WHITE%bcdedit /deletevalue {current} safeboot%RESET%
+echo.
+pause
+bcdedit /set {current} safeboot minimal
+shutdown /r /t 60
+goto menu_advanced
+
+:debloat
+cls
+echo %YELLOW%Removing unnecessary default Windows apps (Debloat)...%RESET%
+powershell -Command "Get-AppxPackage *bing* | Remove-AppxPackage"
+powershell -Command "Get-AppxPackage *zune* | Remove-AppxPackage"
+powershell -Command "Get-AppxPackage *xboxapp* | Remove-AppxPackage"
+powershell -Command "Get-AppxPackage *solitaire* | Remove-AppxPackage"
+powershell -Command "Get-AppxPackage *skypeapp* | Remove-AppxPackage"
+echo %GREEN%[✓] Windows Debloat Completed.%RESET%
+pause
+goto menu_advanced
+
+:telemetry
+cls
+echo %YELLOW%Disabling Windows Telemetry and Data Collection...%RESET%
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f >nul 2>&1
+sc config DiagTrack start= disabled >nul 2>&1
+sc stop DiagTrack >nul 2>&1
+echo %GREEN%[✓] Telemetry and Tracking disabled successfully.%RESET%
+pause
+goto menu_security
+
+:clean_updates
+cls
+echo %YELLOW%Cleaning up old Windows Updates (Deep Clean)...%RESET%
+echo %WHITE%This process might take a long time. Please do not close the window...%RESET%
+echo.
+
+cmd /c "DISM /online /Cleanup-Image /StartComponentCleanup /ResetBase"
+
+echo.
+if exist "C:\Windows.old" (
+    echo %YELLOW%Removing Windows.old folder...%RESET%
+    rd /s /q "C:\Windows.old"
+)
+
+echo.
+echo %GREEN%[✓] Updates Cleanup Completed Successfully.%RESET%
+echo.
+pause
+goto menu_advanced
+
+:wifi_pwd
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%             Saved Wi-Fi Passwords%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+powershell -Command "netsh wlan show profiles | Select-String 'All User Profile' | ForEach-Object { $profile = $_.ToString().Split(':')[1].Trim(); $pass = (netsh wlan show profile name=$profile key=clear | Select-String 'Key Content' | ForEach-Object { $_.ToString().Split(':')[1].Trim() }); [PSCustomObject]@{ 'Wi-Fi Name' = $profile; 'Password' = $pass } } | Format-Table -AutoSize"
+echo.
+pause
+goto menu_advanced
+
+:fix_defender
+cls
+echo %YELLOW%Repairing and Resetting Windows Defender...%RESET%
+powershell -Command "Get-AppxPackage *Microsoft.Windows.SecHealthUI* | Reset-AppxPackage"
+echo %GREEN%[✓] Windows Defender has been reset successfully.%RESET%
+pause
+goto menu_security
+
+:clean_dumps
+cls
+echo %YELLOW%Cleaning Windows Crash Dumps and Error Logs...%RESET%
+del /f /q /s %systemroot%\Minidump\* >nul 2>&1
+del /f /q /s %systemroot%\MEMORY.DMP >nul 2>&1
+del /f /q /s %systemroot%\Logs\CBS\* >nul 2>&1
+echo %GREEN%[✓] Crash Dumps and System Logs cleaned!%RESET%
+pause
+goto menu_advanced
+
+:disable_updates
+cls
+echo %YELLOW%Disabling Windows Update services and registry keys...%RESET%
+echo.
+
+net stop wuauserv >nul 2>&1
+net stop bits >nul 2>&1
+net stop dosvc >nul 2>&1
+net stop WaaSMedicSvc >nul 2>&1
+
+sc config wuauserv start= disabled >nul 2>&1
+sc config bits start= disabled >nul 2>&1
+sc config dosvc start= disabled >nul 2>&1
+
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\wuauserv" /v Start /t REG_DWORD /d 4 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\bits" /v Start /t REG_DWORD /d 4 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\dosvc" /v Start /t REG_DWORD /d 4 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\WaaSMedicSvc" /v Start /t REG_DWORD /d 4 /f >nul 2>&1
+
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoUpdate /t REG_DWORD /d 1 /f >nul 2>&1
+
+echo %GREEN%[✓] Windows Update fully disabled.%RESET%
+echo.
+pause
+goto menu_advanced
+
+:enable_updates
+cls
+echo %YELLOW%Enabling Windows Update services...%RESET%
+echo.
+
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\wuauserv" /v Start /t REG_DWORD /d 3 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\bits" /v Start /t REG_DWORD /d 2 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\dosvc" /v Start /t REG_DWORD /d 2 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\WaaSMedicSvc" /v Start /t REG_DWORD /d 3 /f >nul 2>&1
+
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoUpdate /f >nul 2>&1
+
+sc config wuauserv start= demand >nul 2>&1
+net start wuauserv >nul 2>&1
+sc config bits start= delayed-auto >nul 2>&1
+net start bits >nul 2>&1
+sc config dosvc start= delayed-auto >nul 2>&1
+net start dosvc >nul 2>&1
+
+echo %GREEN%[✓] Windows Update services have been restored to default.%RESET%
+echo.
+pause
+goto menu_advanced
 
 :UPDATE
 cls
