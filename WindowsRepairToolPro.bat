@@ -690,33 +690,26 @@ pause
 goto menu
 
 :silent_check_update
-:: إعداد المتغيرات وروابط الفحص (تأكد من مطابقة أرقام الإصدارات والروابط)
 set "AUTO_CURR_VER=1.1"
 set "AUTO_VER_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt"
 set "AUTO_TEMP_VER=%temp%\SilentVersion.txt"
 
-:: حذف أي ملف قديم لو موجود من فحص سابق
 if exist "%AUTO_TEMP_VER%" del "%AUTO_TEMP_VER%" >nul 2>&1
 
-:: تحميل ملف الإصدار أونلاين في الخلفية بصمت تام
 powershell -NoProfile -ExecutionPolicy Bypass -Command "(New-Object Net.WebClient).DownloadFile('%AUTO_VER_URL%', '%AUTO_TEMP_VER%')" >nul 2>&1
 
-:: مهلة صغيرة جداً للتأكد من اكتمال تحميل الملف
 timeout /t 1 >nul 2>&1
 
 if exist "%AUTO_TEMP_VER%" (
     set "ONLINE_VER_FOUND="
     for /f "delims=" %%i in ('type "%AUTO_TEMP_VER%"') do (set "ONLINE_VER_FOUND=%%i")
     
-    :: تنظيف المسافات من النص
     if defined ONLINE_VER_FOUND set "ONLINE_VER_FOUND=!ONLINE_VER_FOUND: =!"
     
-    :: إذا كان الإصدار أونلاين مختلف عن الحالي، نقوم بتفعيل متغير التنبيه
     if defined ONLINE_VER_FOUND if "!ONLINE_VER_FOUND!" neq "%AUTO_CURR_VER%" (
         set "UPDATE_ALERT=YES"
         set "NEW_VERSION_NUM=!ONLINE_VER_FOUND!"
     )
-    :: حذف الملف المؤقت فوراً بعد القراءة
     del "%AUTO_TEMP_VER%" >nul 2>&1
 )
 goto :eof
