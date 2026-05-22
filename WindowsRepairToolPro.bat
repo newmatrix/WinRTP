@@ -34,26 +34,31 @@ echo %CYAN%====================================================%RESET%
 echo %GREEN%            Windows Repair Tool Pro v1.1%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
+echo %GREEN%[0]%RESET% %GREEN%Create Restore Point%RESET%
 echo %WHITE%[1]%RESET% Optimize OS
 echo %WHITE%[2]%RESET% Disk Tools
 echo %WHITE%[3]%RESET% Advanced Tools
 echo %WHITE%[4]%RESET% Repair OS
 echo %WHITE%[5]%RESET% Security
-echo %WHITE%[6]%RESET% CHK Update
-echo %WHITE%[7]%RESET% About
-echo %RED%[0]%RESET% Exit
+echo %WHITE%[6]%RESET% Check Drivers Update
+echo.
+echo %WHITE%[C]%RESET% CHK Update
+echo %WHITE%[A]%RESET% About
+echo %RED%[E]%RESET% Exit
 echo.
 echo %CYAN%----------------------------------------------------%RESET%
 set /p choice=%YELLOW%Enter your choice: %RESET%
 
+if "%choice%"=="0" goto create_restore_point
 if "%choice%"=="1" goto menu_optimize
 if "%choice%"=="2" goto menu_disk
 if "%choice%"=="3" goto menu_advanced
 if "%choice%"=="4" goto menu_repair
 if "%choice%"=="5" goto menu_security
-if "%choice%"=="6" goto UPDATE
-if "%choice%"=="7" goto about
-if "%choice%"=="0" exit
+if "%choice%"=="6" goto driver_updater
+if "%choice%"=="c" goto UPDATE
+if "%choice%"=="a" goto about
+if "%choice%"=="e" exit
 goto menu
 
 :: ====================================================
@@ -108,8 +113,8 @@ echo %GREEN%                 Advanced Tools%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%[1]%RESET% Update All Installed Programs (Winget)
-echo %WHITE%[2]%RESET% Enable Ultimate Performance Mode
-echo %WHITE%[3]%RESET% Restore Balanced Power Mode (Default)
+echo %GREEN%[2]%RESET% %GREEN%Enable Ultimate Performance Mode%RESET%
+echo %RED%[3]%RESET% %RED%Restore Balanced Power Mode (Default)%RESET%
 echo %WHITE%[4]%RESET% Schedule Auto Shutdown
 echo %WHITE%[5]%RESET% Cancel Auto Shutdown
 echo %WHITE%[6]%RESET% Restart to BIOS/UEFI
@@ -118,8 +123,8 @@ echo %WHITE%[8]%RESET% Debloat Windows (Remove Junk Apps)
 echo %WHITE%[9]%RESET% Clean Old Windows Updates (Windows.old)
 echo %WHITE%[10]%RESET% Clean Crash Dumps Files
 echo %WHITE%[11]%RESET% Show WI-FI Password
-echo %WHITE%[12]%RESET% Disable Windows Update
-echo %WHITE%[13]%RESET% Enable Windows Update
+echo %GREEN%[12]%RESET% %GREEN%Enable Windows Update%RESET%%RESET%
+echo %RED%[13]%RESET% %RED%Disable Windows Update%RESET%
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p adv_choice=%YELLOW%Enter your choice: %RESET%
@@ -134,8 +139,8 @@ if "%adv_choice%"=="8" goto debloat
 if "%adv_choice%"=="9" goto clean_updates
 if "%adv_choice%"=="10" goto clean_dumps
 if "%adv_choice%"=="11" goto wifi_pwd
-if "%adv_choice%"=="12" goto disable_updates
-if "%adv_choice%"=="13" goto enable_updates
+if "%adv_choice%"=="12" goto enable_updates
+if "%adv_choice%"=="13" goto disable_updates
 if "%adv_choice%"=="0" goto menu
 goto menu_advanced
 
@@ -168,16 +173,18 @@ echo.
 echo %WHITE%[1]%RESET% Quick Scan
 echo %WHITE%[2]%RESET% Full Scan
 echo %WHITE%[3]%RESET% Reset Windows Firewall Settings
-echo %WHITE%[4]%RESET% Disable Telemetry (Windows Tracking)
-echo %WHITE%[5]%RESET% Fix Windows Defender
+echo %GREEN%[4]%RESET% %GREEN%Enable Telemetry (Windows Tracking)%RESET%
+echo %RED%[5]%RESET% %RED%Disable Telemetry (Windows Tracking)%RESET%
+echo %WHITE%[6]%RESET% Fix Windows Defender
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p sec_choice=%YELLOW%Enter your choice: %RESET%
 if "%sec_choice%"=="1" goto quickscan
 if "%sec_choice%"=="2" goto fullscan
 if "%sec_choice%"=="3" goto firewall_reset
-if "%sec_choice%"=="4" goto telemetry
-if "%sec_choice%"=="5" goto fix_defender
+if "%sec_choice%"=="4" goto enable_telemetry
+if "%sec_choice%"=="5" goto disable_telemetry
+if "%sec_choice%"=="6" goto fix_defender
 if "%sec_choice%"=="0" goto menu
 goto menu_security
 
@@ -220,6 +227,7 @@ echo %GREEN%Cleaning Temporary Files...%RESET%
 del /q /f /s C:\Windows\Prefetch\*
 del /q /f /s C:\Windows\Temp\*
 del /q /f /s "%temp%\*"
+for /d %%p in ("%temp%\*") do rmdir /s /q "%%p"
 cleanmgr /sagerun:1
 pause
 goto menu_optimize
@@ -232,7 +240,7 @@ ipconfig /release
 ipconfig /renew
 netsh winsock reset
 netsh int ip reset
-arp -d *
+arp -d
 pause
 goto menu_optimize
 
@@ -251,7 +259,7 @@ ipconfig /release
 ipconfig /renew
 netsh winsock reset
 netsh int ip reset
-arp -d *
+arp -d
 echo.
 echo %GREEN%[✓] Full Repair Completed Successfully.%RESET%
 pause
@@ -472,13 +480,30 @@ echo %GREEN%[✓] Windows Debloat Completed.%RESET%
 pause
 goto menu_advanced
 
-:telemetry
+:disable_telemetry
 cls
 echo %YELLOW%Disabling Windows Telemetry and Data Collection...%RESET%
+
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f >nul 2>&1
 sc config DiagTrack start= disabled >nul 2>&1
 sc stop DiagTrack >nul 2>&1
+
+echo.
 echo %GREEN%[✓] Telemetry and Tracking disabled successfully.%RESET%
+pause
+goto menu_security
+
+:enable_telemetry
+cls
+echo %YELLOW%Enabling Windows Telemetry and Data Collection...%RESET%
+echo.
+
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 1 /f >nul 2>&1
+sc config DiagTrack start= auto >nul 2>&1
+net start DiagTrack >nul 2>&1
+
+echo.
+echo %GREEN%[✓] Telemetry and Tracking services restored to default.%RESET%
 pause
 goto menu_security
 
@@ -581,6 +606,79 @@ echo.
 pause
 goto menu_advanced
 
+:driver_updater
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%               Driver Update Manager%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %YELLOW%Checking for available driver updates... Please wait...%RESET%
+echo.
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command "if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) { Install-Module -Name PSWindowsUpdate -Force -SkipPublisherCheck -AllowClobber }" >nul 2>&1
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers.Count -gt 0) { $i = 1; foreach ($d in $drivers) { Write-Host \"[$i] $($d.Title)\"; $i++ }; exit 0 } else { Write-Host 'All drivers are fully up to date!' -ForegroundColor Green; exit 1 }"
+
+if %errorlevel% equ 1 (
+    echo.
+    pause
+    goto menu
+)
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Options:%RESET%
+echo %WHITE%[A]%RESET% Update %GREEN%ALL%RESET% available drivers
+echo %WHITE%[0]%RESET% Back to Main Menu
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+set /p drv_sel=%YELLOW%Enter Driver Index Number or (A) for All: %RESET%
+
+if /i "%drv_sel%"=="0" goto menu
+
+if /i "%drv_sel%"=="A" (
+    echo.
+    echo %YELLOW%Updating ALL drivers... This might take a while.%RESET%
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "$updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers.Count -gt 0) { $drivers | Install-WindowsUpdate -AcceptAll -AutoReboot:$false }"
+    echo.
+    echo %GREEN%[✓] All drivers updated successfully!%RESET%
+    pause
+    goto menu
+)
+
+echo.
+echo %YELLOW%Preparing to install the selected driver...%RESET%
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$idx = [int]'%drv_sel%' - 1; $updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers[$idx]) { Write-Host \"Installing: $($drivers[$idx].Title)\" -ForegroundColor Yellow; Install-WindowsUpdate -UpdateID $drivers[$idx].UpdateID -AcceptAll -AutoReboot:$false } else { Write-Host 'Invalid Selection' -ForegroundColor Red }"
+echo.
+echo %GREEN%[✓] Selected driver installation attempt completed.%RESET%
+echo.
+pause
+goto driver_updater
+
+:create_restore_point
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%             System Restore Point Creator%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %YELLOW%Creating a System Restore Point... Please wait...%RESET%
+echo %WHITE%This ensures you can revert changes if anything goes wrong.%RESET%
+echo.
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Enable-ComputerRestore -Drive 'C:\'" >nul 2>&1
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Checkpoint-Computer -Description 'WinRTP_Auto_Backup' -RestorePointType 'MODIFY_SETTINGS'" >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo %GREEN%[✓] Restore Point [WinRTP_Auto_Backup] Created Successfully!%RESET%
+) else (
+    echo %RED%[X] Failed to create Restore Point.%RESET%
+    echo %YELLOW%Hint: Ensure System Protection is enabled in Windows settings.%RESET%
+)
+
+echo.
+pause
+goto menu
+
 :UPDATE
 cls
 echo =========================================
@@ -590,7 +688,7 @@ echo.
 
 setlocal EnableDelayedExpansion
 
-set CURRENT_VERSION=1.1
+set CURRENT_VERSION=1.2
 
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
