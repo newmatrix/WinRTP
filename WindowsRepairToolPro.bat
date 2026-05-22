@@ -28,21 +28,11 @@ if %errorLevel% neq 0 (
 :: ====================================================
 :: MAIN MENU
 :: ====================================================
-setlocal EnableDelayedExpansion
-set "UPDATE_ALERT=NO"
-call :silent_check_update
-
 :menu
 cls
 echo %CYAN%====================================================%RESET%
 echo %GREEN%            Windows Repair Tool Pro v1.2%RESET%
 echo %CYAN%====================================================%RESET%
-
-if "!UPDATE_ALERT!"=="YES" (
-    echo %SOFT_YELLOW%[!] Notice: A new version [v!NEW_VERSION_NUM!] is available! You can install it by pressing [C].%RESET%
-    echo %CYAN%----------------------------------------------------%RESET%
-)
-
 echo.
 echo %GREEN%[0]%RESET% %GREEN%Create Restore Point%RESET%
 echo %WHITE%[1]%RESET% Optimize OS
@@ -713,31 +703,6 @@ if exist "%AUTO_TEMP_VER%" (
     del "%AUTO_TEMP_VER%" >nul 2>&1
 )
 goto menu
-
-:silent_check_update
-set "AUTO_CURR_VER=1.1"
-set "AUTO_VER_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt"
-set "AUTO_TEMP_VER=%temp%\SilentVersion.txt"
-
-if exist "%AUTO_TEMP_VER%" del "%AUTO_TEMP_VER%" >nul 2>&1
-
-powershell -NoProfile -ExecutionPolicy Bypass -Command "(New-Object Net.WebClient).DownloadFile('%AUTO_VER_URL%', '%AUTO_TEMP_VER%')" >nul 2>&1
-
-timeout /t 1 >nul 2>&1
-
-if exist "%AUTO_TEMP_VER%" (
-    set "ONLINE_VER_FOUND="
-    for /f "delims=" %%i in ('type "%AUTO_TEMP_VER%"') do (set "ONLINE_VER_FOUND=%%i")
-    
-    if defined ONLINE_VER_FOUND set "ONLINE_VER_FOUND=!ONLINE_VER_FOUND: =!"
-    
-    if defined ONLINE_VER_FOUND if "!ONLINE_VER_FOUND!" neq "%AUTO_CURR_VER%" (
-        set "UPDATE_ALERT=YES"
-        set "NEW_VERSION_NUM=!ONLINE_VER_FOUND!"
-    )
-    del "%AUTO_TEMP_VER%" >nul 2>&1
-)
-goto :eof
 
 :UPDATE
 cls
