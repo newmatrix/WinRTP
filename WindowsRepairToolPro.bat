@@ -730,7 +730,7 @@ echo.
 
 setlocal EnableDelayedExpansion
 
-set CURRENT_VERSION=1.1
+set CURRENT_VERSION=1.2
 
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
