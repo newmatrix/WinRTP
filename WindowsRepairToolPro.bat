@@ -35,7 +35,7 @@ call :silent_check_update
 :menu
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%            Windows Repair Tool Pro v1.1%RESET%
+echo %GREEN%            Windows Repair Tool Pro v1.2%RESET%
 echo %CYAN%====================================================%RESET%
 
 if "!UPDATE_ALERT!"=="YES" (
