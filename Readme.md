@@ -1,6 +1,6 @@
 <img width="979" height="512" alt="image" src="https://github.com/user-attachments/assets/616a8193-f305-4a72-9afe-82f6f2e7cd2b" />
 
-# 🛠️ Windows Repair Tool Pro v1.2
+# 🛠️ Windows Repair Tool Pro
 
 **Windows Repair Tool Pro** هي أداة متكاملة ومفتوحة المصدر مصممة خصيصاً لمساعدة المستخدمين واللاعبين (Gamers) في تنظيف، تسريع، وإصلاح نظام التشغيل Windows بضغطة زر واحدة ومن خلال واجهة نصية تفاعلية واحترافية.
 
