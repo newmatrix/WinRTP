@@ -31,7 +31,7 @@ if %errorLevel% neq 0 (
 :menu
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%            Windows Repair Tool Pro v1.2%RESET%
+echo %GREEN%            Windows Repair Tool Pro v1.3%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %GREEN%[0]%RESET% %GREEN%Create Restore Point%RESET%
@@ -40,7 +40,8 @@ echo %WHITE%[2]%RESET% Disk Tools
 echo %WHITE%[3]%RESET% Advanced Tools
 echo %WHITE%[4]%RESET% Repair OS
 echo %WHITE%[5]%RESET% Security
-echo %WHITE%[6]%RESET% Check Drivers Update
+echo %WHITE%[6]%RESET% Drivers Manager (Updates ^& Backup)
+echo %WHITE%[7]%RESET% Silent Apps Installer (New)
 echo.
 echo %WHITE%[C]%RESET% CHK Update
 echo %WHITE%[A]%RESET% About
@@ -55,7 +56,9 @@ if "%choice%"=="2" goto menu_disk
 if "%choice%"=="3" goto menu_advanced
 if "%choice%"=="4" goto menu_repair
 if "%choice%"=="5" goto menu_security
-if "%choice%"=="6" goto driver_updater
+if "%choice%"=="6" goto menu_drivers
+if "%choice%"=="7" goto menu_apps
+
 if "%choice%"=="c" goto UPDATE
 if "%choice%"=="a" goto about
 if "%choice%"=="e" exit
@@ -112,35 +115,37 @@ echo %CYAN%====================================================%RESET%
 echo %GREEN%                 Advanced Tools%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %WHITE%[1]%RESET% Update All Installed Programs (Winget)
-echo %GREEN%[2]%RESET% %GREEN%Enable Ultimate Performance Mode%RESET%
-echo %RED%[3]%RESET% %RED%Restore Balanced Power Mode (Default)%RESET%
-echo %WHITE%[4]%RESET% Schedule Auto Shutdown
-echo %WHITE%[5]%RESET% Cancel Auto Shutdown
-echo %WHITE%[6]%RESET% Restart to BIOS/UEFI
-echo %WHITE%[7]%RESET% Restart to Safe Mode
-echo %WHITE%[8]%RESET% Debloat Windows (Remove Junk Apps)
-echo %WHITE%[9]%RESET% Clean Old Windows Updates (Windows.old)
-echo %WHITE%[10]%RESET% Clean Crash Dumps Files
-echo %WHITE%[11]%RESET% Show WI-FI Password
-echo %GREEN%[12]%RESET% %GREEN%Enable Windows Update%RESET%%RESET%
-echo %RED%[13]%RESET% %RED%Disable Windows Update%RESET%
+echo %GREEN%[1]%RESET% %GREEN%Enable Ultimate Performance Mode%RESET%
+echo %RED%[2]%RESET% %RED%Restore Balanced Power Mode (Default)%RESET%
+echo %WHITE%[3]%RESET% Schedule Auto Shutdown
+echo %WHITE%[4]%RESET% Cancel Auto Shutdown
+echo %WHITE%[5]%RESET% Restart to BIOS/UEFI
+echo %WHITE%[6]%RESET% Restart to Safe Mode
+echo %WHITE%[7]%RESET% Debloat Windows (Remove Junk Apps)
+echo %WHITE%[8]%RESET% Clean Old Windows Updates (Windows.old)
+echo %WHITE%[9]%RESET% Clean Crash Dumps Files
+echo %WHITE%[10]%RESET% Show WI-FI Password
+echo %GREEN%[11]%RESET% %GREEN%Enable Windows Update%RESET%%RESET%
+echo %RED%[12]%RESET% %RED%Disable Windows Update%RESET%
+echo %WHITE%[13]%RESET% Change Internet DNS (Gaming ^& Speed)
+echo %WHITE%[14]%RESET% Clean Gamer Cashe (Steam, Epic Games, EA, Discord)
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p adv_choice=%YELLOW%Enter your choice: %RESET%
-if "%adv_choice%"=="1" goto winget_update
-if "%adv_choice%"=="2" goto ultimate_perf
-if "%adv_choice%"=="3" goto restore_balanced
-if "%adv_choice%"=="4" goto shutdown
-if "%adv_choice%"=="5" goto cancelshutdown
-if "%adv_choice%"=="6" goto bios
-if "%adv_choice%"=="7" goto safemode
-if "%adv_choice%"=="8" goto debloat
-if "%adv_choice%"=="9" goto clean_updates
-if "%adv_choice%"=="10" goto clean_dumps
-if "%adv_choice%"=="11" goto wifi_pwd
-if "%adv_choice%"=="12" goto enable_updates
-if "%adv_choice%"=="13" goto disable_updates
+if "%adv_choice%"=="1" goto ultimate_perf
+if "%adv_choice%"=="2" goto restore_balanced
+if "%adv_choice%"=="3" goto shutdown
+if "%adv_choice%"=="4" goto cancelshutdown
+if "%adv_choice%"=="5" goto bios
+if "%adv_choice%"=="6" goto safemode
+if "%adv_choice%"=="7" goto debloat
+if "%adv_choice%"=="8" goto clean_updates
+if "%adv_choice%"=="9" goto clean_dumps
+if "%adv_choice%"=="10" goto wifi_pwd
+if "%adv_choice%"=="11" goto enable_updates
+if "%adv_choice%"=="12" goto disable_updates
+if "%adv_choice%"=="13" goto change_dns
+if "%adv_choice%"=="14" goto clean_gamers_cache
 if "%adv_choice%"=="0" goto menu
 goto menu_advanced
 
@@ -187,6 +192,26 @@ if "%sec_choice%"=="5" goto disable_telemetry
 if "%sec_choice%"=="6" goto fix_defender
 if "%sec_choice%"=="0" goto menu
 goto menu_security
+
+:menu_drivers
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%                 Drivers Manager%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%[1]%RESET% Check ^& Install Driver Updates
+echo %GREEN%[2]%RESET% %GREEN%Backup All Installed Drivers%RESET%
+echo %YELLOW%[3]%RESET% %YELLOW%Restore Drivers From Backup%RESET%
+echo %RED%[4]%RESET% %RED%Uninstall Specific Driver (Silent Uninstaller)%RESET%
+echo %RED%[0]%RESET% Back to Main Menu
+echo.
+set /p drv_choice=%YELLOW%Enter your choice: %RESET%
+if "%drv_choice%"=="1" goto driver_updater
+if "%drv_choice%"=="2" goto backup_drivers
+if "%drv_choice%"=="3" goto restore_drivers
+if "%drv_choice%"=="4" goto drivers_uninstaller_wizard
+if "%drv_choice%"=="0" goto menu
+goto menu_drivers
 
 :: --- FUNCTIONS ---
 
@@ -609,7 +634,7 @@ goto menu_advanced
 :driver_updater
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%               Driver Update Manager%RESET%
+echo %GREEN%               Driver Update Wizard%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %YELLOW%Checking for available driver updates... Please wait...%RESET%
@@ -621,7 +646,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$updates = Get-WindowsUp
 if %errorlevel% equ 1 (
     echo.
     pause
-    goto menu
+    goto menu_drivers
 )
 
 echo.
@@ -634,7 +659,7 @@ echo.
 
 set /p drv_sel=%YELLOW%Enter Driver Index Number or (A) for All: %RESET%
 
-if /i "%drv_sel%"=="0" goto menu
+if /i "%drv_sel%"=="0" goto menu_drivers
 
 if /i "%drv_sel%"=="A" (
     echo.
@@ -643,7 +668,7 @@ if /i "%drv_sel%"=="A" (
     echo.
     echo %GREEN%[✓] All drivers updated successfully!%RESET%
     pause
-    goto menu
+    goto menu_drivers
 )
 
 echo.
@@ -653,7 +678,104 @@ echo.
 echo %GREEN%[✓] Selected driver installation attempt completed.%RESET%
 echo.
 pause
-goto driver_updater
+goto menu_drivers
+
+:backup_drivers
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%               Drivers Backup Wizard%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %YELLOW%Creating a complete backup of your drivers...%RESET%
+echo %WHITE%Please wait, this might take a minute or two...%RESET%
+echo.
+
+if not exist "D:\Drivers_Backup" mkdir "D:\Drivers_Backup"
+
+dism /online /export-driver /destination:"D:\Drivers_Backup"
+
+if %errorlevel% equ 0 (
+    echo.
+    echo %GREEN%[✓] Drivers Backup Created Successfully!%RESET%
+    echo %WHITE%Saved to: %YELLOW%D:\Drivers_Backup%RESET%
+) else (
+    echo.
+    echo %RED%[X] Failed to backup drivers.%RESET%
+    echo %YELLOW%Hint: Ensure you have enough space on Drive D:%RESET%
+)
+echo.
+pause
+goto menu_drivers
+
+
+:restore_drivers
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%               Drivers Restore Wizard%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %YELLOW%Restoring all drivers from backup...%RESET%
+echo %WHITE%Windows will scan and install your backed up drivers...%RESET%
+echo.
+
+if not exist "D:\Drivers_Backup" (
+    echo %RED%[X] Error: Backup folder not found at D:\Drivers_Backup%RESET%
+    echo %YELLOW%Please make sure the backup folder exists.%RESET%
+    echo.
+    pause
+    goto menu_drivers
+)
+
+pnputil /add-driver "D:\Drivers_Backup\*.inf" /subdirs /install /reboot
+
+echo.
+echo %GREEN%[✓] Drivers Restoration Process Completed!%RESET%
+echo %WHITE%If some drivers require a restart, your PC might prompt you.%RESET%
+echo.
+pause
+goto menu_drivers
+
+:drivers_uninstaller_wizard
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%               Drivers Silent Uninstaller%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %YELLOW%Loading third-party installed drivers... Please wait...%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+for /f "tokens=*" %%a in ('pnputil /enum-drivers') do (
+    echo %%a
+    echo %%a | findstr /i "version الإصدار Version" >nul && (
+        echo %CYAN%----------------------------------------------------%RESET%
+    )
+)
+
+echo.
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Please look at the list above and find the %GREEN%Published Name%WHITE% of the driver.%RESET%
+echo %WHITE%Example: %CYAN%oem12.inf%WHITE% or %CYAN%oem5.inf%RESET%
+echo %RED%[0] Cancel and Back%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+set /p "target_driver=%YELLOW%Enter Driver Published Name (e.g., oemXX.inf): %RESET%"
+
+if "%target_driver%"=="0" goto menu_drivers
+if "%target_driver%"=="" goto drivers_uninstaller_wizard
+
+echo.
+echo %RED%[!] Uninstalling and deleting driver %target_driver%...%RESET%
+pnputil /delete-driver "%target_driver%" /uninstall /force
+if %errorlevel% equ 0 (
+    echo.
+    echo %GREEN%[✓] Driver %target_driver% Uninstalled and Deleted Successfully!%RESET%
+) else (
+    echo.
+    echo %RED%[X] Failed to delete driver. Make sure you typed the correct oemXX.inf name.%RESET%
+)
+pause
+goto menu_drivers
 
 :create_restore_point
 cls
@@ -679,17 +801,339 @@ echo.
 pause
 goto menu
 
+:change_dns
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%                 DNS Changer Wizard%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %GREEN%[1]%RESET% Cloudflare DNS %CYAN%(1.1.1.1 / 1.0.0.1)%RESET%    - Best for Gaming
+echo %GREEN%[2]%RESET% Google DNS %CYAN%(8.8.8.8 / 8.8.4.4)%RESET%        - Best for Browsing
+echo %GREEN%[3]%RESET% Quad9 DNS %CYAN%(9.9.9.9 / 149.112.112.112)%RESET% - Best for Security
+echo %GREEN%[4]%RESET% AdGuard DNS %CYAN%(94.140.14.14 / 94.140.15.15)%RESET% - Best for Blocking Ads
+echo %WHITE%[5]%RESET% Restore Default DNS %CYAN%(Automatic / DHCP)%RESET% - Reset to Normal
+echo.
+echo %RED%[0]%RESET% Back to Advanced Tools Menu
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "dns_ch=%YELLOW%Choose DNS Option: %RESET%"
+
+if "%dns_ch%"=="0" goto menu_advanced
+if "%dns_ch%"=="1" goto set_cloudflare
+if "%dns_ch%"=="2" goto set_google
+if "%dns_ch%"=="3" goto set_quad9
+if "%dns_ch%"=="4" goto set_adguard
+if "%dns_ch%"=="5" goto set_default
+goto change_dns
+
+:set_cloudflare
+echo.
+echo %YELLOW%Applying Cloudflare DNS...%RESET%
+netsh interface ip set dns name="Wi-Fi" source=static address=1.1.1.1 >nul 2>&1
+netsh interface ip add dns name="Wi-Fi" addr=1.0.0.1 index=2 >nul 2>&1
+netsh interface ip set dns name="Ethernet" source=static address=1.1.1.1 >nul 2>&1
+netsh interface ip add dns name="Ethernet" addr=1.0.0.1 index=2 >nul 2>&1
+ipconfig /flushdns >nul 2>&1
+echo.
+echo %GREEN%[✓] Cloudflare DNS Applied Successfully!%RESET%
+pause
+goto change_dns
+
+:set_google
+echo.
+echo %YELLOW%Applying Google DNS...%RESET%
+netsh interface ip set dns name="Wi-Fi" source=static address=8.8.8.8 >nul 2>&1
+netsh interface ip add dns name="Wi-Fi" addr=8.8.4.4 index=2 >nul 2>&1
+netsh interface ip set dns name="Ethernet" source=static address=8.8.8.8 >nul 2>&1
+netsh interface ip add dns name="Ethernet" addr=8.8.4.4 index=2 >nul 2>&1
+ipconfig /flushdns >nul 2>&1
+echo.
+echo %GREEN%[✓] Google DNS Applied Successfully!%RESET%
+pause
+goto change_dns
+
+:set_quad9
+echo.
+echo %YELLOW%Applying Quad9 Secure DNS...%RESET%
+netsh interface ip set dns name="Wi-Fi" source=static address=9.9.9.9 >nul 2>&1
+netsh interface ip add dns name="Wi-Fi" addr=149.112.112.112 index=2 >nul 2>&1
+netsh interface ip set dns name="Ethernet" source=static address=9.9.9.9 >nul 2>&1
+netsh interface ip add dns name="Ethernet" addr=149.112.112.112 index=2 >nul 2>&1
+ipconfig /flushdns >nul 2>&1
+echo.
+echo %GREEN%[✓] Quad9 Secure DNS Applied Successfully!%RESET%
+pause
+goto change_dns
+
+:set_adguard
+echo.
+echo %YELLOW%Applying AdGuard DNS (Ad-Block)...%RESET%
+netsh interface ip set dns name="Wi-Fi" source=static address=94.140.14.14 >nul 2>&1
+netsh interface ip add dns name="Wi-Fi" addr=94.140.15.15 index=2 >nul 2>&1
+netsh interface ip set dns name="Ethernet" source=static address=94.140.14.14 >nul 2>&1
+netsh interface ip add dns name="Ethernet" addr=94.140.15.15 index=2 >nul 2>&1
+ipconfig /flushdns >nul 2>&1
+echo.
+echo %GREEN%[✓] AdGuard DNS Applied! Ads will be blocked.%RESET%
+pause
+goto change_dns
+
+:set_default
+echo.
+echo %YELLOW%Restoring Default DNS Settings (DHCP)...%RESET%
+netsh interface ip set dns name="Wi-Fi" source=dhcp >nul 2>&1
+netsh interface ip set dns name="Ethernet" source=dhcp >nul 2>&1
+ipconfig /flushdns >nul 2>&1
+echo.
+echo %GREEN%[✓] DNS Restored to Default Successfully!%RESET%
+pause
+goto change_dns
+
+:clean_gamers_cache
+cls
+echo %YELLOW%Cleaning Gaming & Apps Cache...%RESET%
+if exist "%appdata%\Discord\Cache" del /q /f /s "%appdata%\Discord\Cache\*" >nul 2>&1
+if exist "%localappdata%\Steam\htmlcache" del /q /f /s "%localappdata%\Steam\htmlcache\*" >nul 2>&1
+if exist "%localappdata%\EpicGamesLauncher\Saved\webcache" del /q /f /s "%localappdata%\EpicGamesLauncher\Saved\webcache\*" >nul 2>&1
+del /q /f /s "%localappdata%\D3DSCache\*" >nul 2>&1
+echo %GREEN%[✓] Gaming Cache Cleaned Successfully!%RESET%
+pause
+goto menu_advanced
+
+:menu_apps
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%       Silent Applications Installer ^& Manager%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %GREEN%[1]%RESET% %GREEN%Update Installed Programs (Interactive Wizard)%RESET%
+echo %GREEN%[2]%RESET% %RED%Uninstall Installed Programs (Silent Uninstaller)%RESET%
+echo %GREEN%[3]%RESET% %YELLOW%Microsoft .NET Framework Full%RESET%
+echo %GREEN%[4]%RESET% %YELLOW%Microsoft DirectX Runtime%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo %GREEN%[5]%RESET% Google Chrome                  %GREEN%[11]%RESET% WinRAR
+echo %GREEN%[6]%RESET% Mozilla Firefox                %GREEN%[12]%RESET% 7-Zip
+echo %GREEN%[7]%RESET% Internet Download Manager      %GREEN%[13]%RESET% Visual Studio Code
+echo %GREEN%[8]%RESET% Discord                        %GREEN%[14]%RESET% Steam
+echo %GREEN%[9]%RESET% Zoom                           %GREEN%[15]%RESET% Epic Games Launcher
+echo %GREEN%[10]%RESET% WhatsApp Desktop              %GREEN%[16]%RESET% OBS Studio
+echo                                    %GREEN%[17]%RESET% VLC Media Player
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %GREEN%[S]%RESET% %CYAN%Search ^& Install Custom App (Write App Name)%RESET%
+echo %YELLOW%[A] Install ALL Basic Apps (5, 7, 11, 12, 17)%RESET%
+echo %RED%[0] Back to Main Menu%RESET%
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "app_ch=%YELLOW%Choose Option Number: %RESET%"
+
+if "%app_ch%"=="0" goto menu
+if /i "%app_ch%"=="a" goto install_all_apps
+if /i "%app_ch%"=="s" goto search_install_app
+if "%app_ch%"=="1" goto apps_updater_wizard
+if "%app_ch%"=="2" goto apps_uninstaller_wizard
+
+if "%app_ch%"=="3" set "app_id=Microsoft.DotNet.Framework.DeveloperPack_4" & goto install_silent
+if "%app_ch%"=="4" set "app_id=Microsoft.DirectX" & goto install_silent
+if "%app_ch%"=="5" set "app_id=Google.Chrome" & goto install_silent
+if "%app_ch%"=="6" set "app_id=Mozilla.Firefox" & goto install_silent
+if "%app_ch%"=="7" set "app_id=Tonec.InternetDownloadManager" & goto install_silent
+if "%app_ch%"=="8" set "app_id=Discord.Discord" & goto install_silent
+if "%app_ch%"=="9" set "app_id=Zoom.Zoom" & goto install_silent
+if "%app_ch%"=="10" set "app_id=WhatsApp.WhatsApp" & goto install_silent
+if "%app_ch%"=="11" set "app_id=RARLab.WinRAR" & goto install_silent
+if "%app_ch%"=="12" set "app_id=7zip.7zip" & goto install_silent
+if "%app_ch%"=="13" set "app_id=Microsoft.VisualStudioCode" & goto install_silent
+if "%app_ch%"=="14" set "app_id=Valve.Steam" & goto install_silent
+if "%app_ch%"=="15" set "app_id=EpicGames.EpicGamesLauncher" & goto install_silent
+if "%app_ch%"=="16" set "app_id=OBSProject.OBSStudio" & goto install_silent
+if "%app_ch%"=="17" set "app_id=VideoLAN.VLC" & goto install_silent
+goto menu_apps
+
+:install_silent
+echo.
+echo %YELLOW%Installing %app_id% Silently... Please wait...%RESET%
+winget install --id "%app_id%" --silent --accept-source-agreements --accept-package-agreements
+if %errorlevel% equ 0 (
+    echo.
+    echo %GREEN%[✓] Installed Successfully!%RESET%
+) else (
+    echo.
+    echo %RED%[X] Failed to install or already installed.%RESET%
+)
+pause
+goto menu_apps
+
+:install_all_apps
+cls
+echo %YELLOW%Installing All Basic Apps (Chrome, IDM, VLC, WinRAR, 7-Zip)...%RESET%
+echo %WHITE%This will take a few minutes, please don't close the window...%RESET%
+echo.
+for %%g in (Google.Chrome Tonec.InternetDownloadManager VideoLAN.VLC RARLab.WinRAR 7zip.7zip) do (
+    echo %YELLOW%Installing: %%g...%RESET%
+    winget install --id "%%g" --silent --accept-source-agreements --accept-package-agreements >nul 2>&1
+)
+echo.
+echo %GREEN%[✓] All Basic Apps Installed Successfully!%RESET%
+pause
+goto menu_apps
+
+
+:apps_uninstaller_wizard
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%             Applications Silent Uninstaller%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %YELLOW%Loading installed applications list... Please wait...%RESET%
+echo.
+
+winget list
+echo.
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Please copy and paste the %GREEN%ID%WHITE% or %GREEN%Name%WHITE% of the app you want to delete from the list above.%RESET%
+echo %WHITE%Example: %CYAN%Google.Chrome%WHITE% or %CYAN%EpicGamesLauncher%RESET%
+echo %RED%[0] Cancel and Back%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+set /p "un_app_id=%YELLOW%Enter App ID or Name to UNINSTALL: %RESET%"
+
+if "%un_app_id%"=="0" goto menu_apps
+if "%un_app_id%"=="" goto apps_uninstaller_wizard
+
+echo.
+echo %RED%[!] Uninstalling %un_app_id% from its roots... Please wait...%RESET%
+
+winget uninstall --id "%un_app_id%" --silent --purge
+if %errorlevel% neq 0 (
+    winget uninstall "%un_app_id%" --silent --purge
+)
+
+if %errorlevel% equ 0 (
+    echo.
+    echo %GREEN%[✓] %un_app_id% Uninstalled and Cleaned Successfully!%RESET%
+) else (
+    echo.
+    echo %RED%[X] Failed to uninstall. Please make sure you copied the Name/ID correctly.%RESET%
+)
+pause
+goto menu_apps
+
+
+:apps_updater_wizard
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%             Applications Updater Wizard%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %YELLOW%Checking for available updates... Please wait...%RESET%
+echo.
+
+winget upgrade
+echo.
+echo %CYAN%====================================================%RESET%
+echo %GREEN%[1]%RESET% Update ALL Apps Automatically
+echo %GREEN%[2]%RESET% Update a Specific App (By entering its ID)
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%====================================================%RESET%
+echo.
+set /p "up_choice=%YELLOW%Enter your choice: %RESET%"
+
+if "%up_choice%"=="0" goto menu_apps
+if "%up_choice%"=="" goto menu_apps
+
+if "%up_choice%"=="1" (
+    echo.
+    echo %YELLOW%Updating ALL applications silently...%RESET%
+    winget upgrade --all --silent --accept-source-agreements --accept-package-agreements
+    echo.
+    echo %GREEN%[✓] Bulk Update Process Completed!%RESET%
+    pause
+    goto menu_apps
+)
+
+if "%up_choice%"=="2" (
+    echo.
+    echo %WHITE%Please copy and paste the %GREEN%ID%WHITE% of the app you want to update from the list above.%RESET%
+    echo %WHITE%Example: %CYAN%Google.Chrome%RESET%
+    echo.
+    set /p "single_up_id=%YELLOW%Enter App ID: %RESET%"
+    
+    if "%single_up_id%"=="" goto apps_updater_wizard
+    
+    echo.
+    echo %YELLOW%Updating %single_up_id% Silently...%RESET%
+    winget upgrade --id "%single_up_id%" --silent --accept-source-agreements --accept-package-agreements
+    if %errorlevel% equ 0 (
+        echo.
+        echo %GREEN%[✓] %single_up_id% Updated Successfully!%RESET%
+    ) else (
+        echo.
+        echo %RED%[X] Failed to update. Please check if the ID is correct.%RESET%
+    )
+    pause
+)
+goto apps_updater_wizard
+
+:search_install_app
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%          Search ^& Install Custom Application%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+set /p "custom_app=%YELLOW%Type the name of the app you want to search: %RESET%"
+
+if "%custom_app%"=="" goto menu_apps
+
+echo.
+echo %YELLOW%Searching for "%custom_app%" in Microsoft Database...%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+winget search "%custom_app%"
+if %errorlevel% neq 0 (
+    echo.
+    echo %RED%[X] No applications found with the name "%custom_app%".%RESET%
+    pause
+    goto menu_apps
+)
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%To install, please copy and paste the %GREEN%ID%WHITE% of the app from the list above.%RESET%
+echo %WHITE%Example: %CYAN%Google.Chrome%WHITE% or %CYAN%Brave.Brave%RESET%
+echo %RED%[0] Cancel and Back%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+set /p "app_id_choice=%YELLOW%Enter the App ID to Install: %RESET%"
+
+if "%app_id_choice%"=="0" goto menu_apps
+if "%app_id_choice%"=="" goto menu_apps
+
+echo.
+echo %YELLOW%Installing %app_id_choice% Silently... Please wait...%RESET%
+winget install --id "%app_id_choice%" --silent --accept-source-agreements --accept-package-agreements
+
+if %errorlevel% equ 0 (
+    echo.
+    echo %GREEN%[✓] %app_id_choice% Installed Successfully!%RESET%
+) else (
+    echo.
+    echo %RED%[X] Failed to install. Please make sure you copied the ID correctly.%RESET%
+)
+pause
+goto menu_apps
+
 :UPDATE
 cls
 echo =========================================
 echo           CHECKING FOR UPDATES
 echo =========================================
 echo.
-
 setlocal EnableDelayedExpansion
 
-set CURRENT_VERSION=1.2
-
+set CURRENT_VERSION=1.3
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
 
@@ -697,41 +1141,43 @@ set TEMP_VERSION=%temp%\Version.txt
 set NEW_FILE=%temp%\WindowsRepairToolPro_New.bat
 set UPDATER=%temp%\Updater.bat
 
+if exist "%TEMP_VERSION%" del "%TEMP_VERSION%" >nul 2>&1
+
 powershell -Command "(New-Object Net.WebClient).DownloadFile('%VERSION_URL%', '%TEMP_VERSION%')" >nul 2>&1
 
 if exist "%TEMP_VERSION%" (
-
     set ONLINE_VERSION=
-
     for /f "delims=" %%i in ('type "%TEMP_VERSION%"') do (
         set ONLINE_VERSION=%%i
     )
-
     set ONLINE_VERSION=!ONLINE_VERSION: =!
 
+    if "!ONLINE_VERSION!"=="" (
+        echo %RED%[X] Error: Received empty version file from server.%RESET%
+        pause
+        goto MENU
+    )
+
     echo Current Version : %CURRENT_VERSION%
-    echo New version found: !ONLINE_VERSION!
+    echo Server Version  : !ONLINE_VERSION!
     echo.
 
     if "!ONLINE_VERSION!"=="%CURRENT_VERSION%" (
-
-        echo You already have the latest version.
+        echo %GREEN%You already have the latest version.%RESET%
         echo.
         pause
         goto MENU
     )
 
-    echo.
+    echo %YELLOW%New version [!ONLINE_VERSION!] found!%RESET%
     echo Downloading update...
     echo.
 
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%TOOL_URL%', '%NEW_FILE%')" >nul 2>&1
 
     if exist "%NEW_FILE%" (
-
         echo Creating updater...
         echo.
-
         (
         echo @echo off
         echo timeout /t 2 ^>nul
@@ -741,17 +1187,15 @@ if exist "%TEMP_VERSION%" (
         echo del "%%~f0" ^>nul 2^>^&1
         ) > "%UPDATER%"
 
-        echo Update installed successfully!
+        echo %GREEN%Update installed successfully!%RESET%
         echo Restarting tool...
         timeout /t 2 >nul
-
         start "" "%UPDATER%"
-
         exit
     )
 )
 
-echo Failed to check for updates.
+echo %RED%Failed to check for updates (Connection Error).%RESET%
 pause
 goto MENU
 
@@ -766,7 +1210,7 @@ echo.
 echo %WHITE%Developer:%RESET% Hesham Taha
 echo %WHITE%YouTube:%RESET% Hesham Taha
 echo %WHITE%Facebook:%RESET% Hesham Taha Official
-echo %WHITE%Version:%RESET% 1.2
+echo %WHITE%Version:%RESET% 1.3
 echo.
 
 echo %YELLOW%Opening links...%RESET%
