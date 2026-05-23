@@ -41,7 +41,7 @@ echo %WHITE%[3]%RESET% Advanced Tools
 echo %WHITE%[4]%RESET% Repair OS
 echo %WHITE%[5]%RESET% Security
 echo %WHITE%[6]%RESET% Drivers Manager (Updates ^& Backup)
-echo %WHITE%[7]%RESET% Silent Apps Installer (New)
+echo %WHITE%[7]%RESET% Silent Apps Installer (Winget)
 echo.
 echo %WHITE%[C]%RESET% CHK Update
 echo %WHITE%[A]%RESET% About
@@ -59,9 +59,9 @@ if "%choice%"=="5" goto menu_security
 if "%choice%"=="6" goto menu_drivers
 if "%choice%"=="7" goto menu_apps
 
-if "%choice%"=="c" goto UPDATE
-if "%choice%"=="a" goto about
-if "%choice%"=="e" exit
+if /i "%choice%"=="c" goto UPDATE
+if /i "%choice%"=="a" goto about
+if /i "%choice%"=="e" exit
 goto menu
 
 :: ====================================================
@@ -73,18 +73,18 @@ echo %CYAN%====================================================%RESET%
 echo %GREEN%                  Optimize OS%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %WHITE%[1]%RESET% Run SFC Scan
-echo %WHITE%[2]%RESET% Run DISM RestoreHealth
-echo %WHITE%[3]%RESET% Component Store Cleanup (Deep Repair)
+echo %WHITE%[1]%RESET% Run DISM RestoreHealth
+echo %WHITE%[2]%RESET% Component Store Cleanup (Deep Repair)
+echo %WHITE%[3]%RESET% Run SFC Scan
 echo %WHITE%[4]%RESET% Clean Temporary Files
 echo %WHITE%[5]%RESET% Optimize Internet ^& DNS
 echo %WHITE%[6]%RESET% Run ALL Repairs
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p opt_choice=%YELLOW%Enter your choice: %RESET%
-if "%opt_choice%"=="1" goto sfc
-if "%opt_choice%"=="2" goto dism
-if "%opt_choice%"=="3" goto comp_cleanup
+if "%opt_choice%"=="1" goto dism
+if "%opt_choice%"=="2" goto comp_cleanup
+if "%opt_choice%"=="3" goto sfc
 if "%opt_choice%"=="4" goto clean
 if "%opt_choice%"=="5" goto internet
 if "%opt_choice%"=="6" goto all
@@ -254,6 +254,9 @@ del /q /f /s C:\Windows\Temp\*
 del /q /f /s "%temp%\*"
 for /d %%p in ("%temp%\*") do rmdir /s /q "%%p"
 cleanmgr /sagerun:1
+echo.
+echo %GREEN%[✓] Cleaning completed successfully, enjoy!%RESET%
+echo.
 pause
 goto menu_optimize
 
@@ -265,18 +268,18 @@ ipconfig /release
 ipconfig /renew
 netsh winsock reset
 netsh int ip reset
-arp -d
 pause
 goto menu_optimize
 
 :all
 cls
 echo %YELLOW%Running Full Repair (SFC, DISM, Cleanup)...%RESET%
-sfc /scannow
 DISM /Online /Cleanup-Image /RestoreHealth
 DISM /Online /Cleanup-Image /StartComponentCleanup
+sfc /scannow
 del /q /f /s C:\Windows\Prefetch\*
 del /q /f /s C:\Windows\Temp\*
+for /d %%p in ("%temp%\*") do rmdir /s /q "%%p"
 del /q /f /s "%temp%\*"
 cleanmgr /sagerun:1
 ipconfig /flushdns
@@ -284,7 +287,6 @@ ipconfig /release
 ipconfig /renew
 netsh winsock reset
 netsh int ip reset
-arp -d
 echo.
 echo %GREEN%[✓] Full Repair Completed Successfully.%RESET%
 pause
@@ -415,9 +417,14 @@ cls
 echo %YELLOW%Repairing Windows Update...%RESET%
 net stop wuauserv
 net stop bits
+net stop cryptsvc
+net stop msiserver
 rd /s /q C:\Windows\SoftwareDistribution
 net start wuauserv
 net start bits
+net start cryptsvc
+net start msiserver
+UsoClient StartInteractiveScan
 echo %GREEN%[✓] Done.%RESET%
 pause
 goto menu_repair
@@ -498,7 +505,7 @@ cls
 echo %YELLOW%Removing unnecessary default Windows apps (Debloat)...%RESET%
 powershell -Command "Get-AppxPackage *bing* | Remove-AppxPackage"
 powershell -Command "Get-AppxPackage *zune* | Remove-AppxPackage"
-powershell -Command "Get-AppxPackage *xboxapp* | Remove-AppxPackage"
+powershell -Command "Get-AppxPackage Microsoft.Xbox* | Remove-AppxPackage"
 powershell -Command "Get-AppxPackage *solitaire* | Remove-AppxPackage"
 powershell -Command "Get-AppxPackage *skypeapp* | Remove-AppxPackage"
 echo %GREEN%[✓] Windows Debloat Completed.%RESET%
@@ -566,7 +573,9 @@ goto menu_advanced
 :fix_defender
 cls
 echo %YELLOW%Repairing and Resetting Windows Defender...%RESET%
-powershell -Command "Get-AppxPackage *Microsoft.Windows.SecHealthUI* | Reset-AppxPackage"
+Get-AppxPackage Microsoft.Windows.SecHealthUI | ForEach {
+Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"
+}
 echo %GREEN%[✓] Windows Defender has been reset successfully.%RESET%
 pause
 goto menu_security
@@ -576,7 +585,7 @@ cls
 echo %YELLOW%Cleaning Windows Crash Dumps and Error Logs...%RESET%
 del /f /q /s %systemroot%\Minidump\* >nul 2>&1
 del /f /q /s %systemroot%\MEMORY.DMP >nul 2>&1
-del /f /q /s %systemroot%\Logs\CBS\* >nul 2>&1
+del /f /q "%systemroot%\Logs\CBS\*.cab" >nul 2>&1
 echo %GREEN%[✓] Crash Dumps and System Logs cleaned!%RESET%
 pause
 goto menu_advanced
@@ -625,6 +634,7 @@ sc config bits start= delayed-auto >nul 2>&1
 net start bits >nul 2>&1
 sc config dosvc start= delayed-auto >nul 2>&1
 net start dosvc >nul 2>&1
+UsoClient StartInteractiveScan
 
 echo %GREEN%[✓] Windows Update services have been restored to default.%RESET%
 echo.
@@ -640,7 +650,7 @@ echo.
 echo %YELLOW%Checking for available driver updates... Please wait...%RESET%
 echo.
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) { Install-Module -Name PSWindowsUpdate -Force -SkipPublisherCheck -AllowClobber }" >nul 2>&1
+powershell -NoProfile -ExecutionPolicy Bypass -Command "if (-not (Get-Module -ListAvailable -Name Get-Module -ListAvailable PSWindowsUpdate)) { Install-Module -Name Get-Module -ListAvailable PSWindowsUpdate -Force -SkipPublisherCheck -AllowClobber }" >nul 2>&1
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers.Count -gt 0) { $i = 1; foreach ($d in $drivers) { Write-Host \"[$i] $($d.Title)\"; $i++ }; exit 0 } else { Write-Host 'All drivers are fully up to date!' -ForegroundColor Green; exit 1 }"
 
 if %errorlevel% equ 1 (
@@ -1155,7 +1165,7 @@ if exist "%TEMP_VERSION%" (
     if "!ONLINE_VERSION!"=="" (
         echo %RED%[X] Error: Received empty version file from server.%RESET%
         pause
-        goto MENU
+        goto menu
     )
 
     echo Current Version : %CURRENT_VERSION%
@@ -1166,7 +1176,7 @@ if exist "%TEMP_VERSION%" (
         echo %GREEN%You already have the latest version.%RESET%
         echo.
         pause
-        goto MENU
+        goto menu
     )
 
     echo %YELLOW%New version [!ONLINE_VERSION!] found!%RESET%
@@ -1197,7 +1207,7 @@ if exist "%TEMP_VERSION%" (
 
 echo %RED%Failed to check for updates (Connection Error).%RESET%
 pause
-goto MENU
+goto menu
 
 :about
 cls
