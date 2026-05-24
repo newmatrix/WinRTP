@@ -70,24 +70,30 @@ goto menu
 :menu_optimize
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%                  Optimize OS%RESET%
+echo %GREEN%                    Optimize OS%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%[1]%RESET% Run DISM RestoreHealth
 echo %WHITE%[2]%RESET% Component Store Cleanup (Deep Repair)
-echo %WHITE%[3]%RESET% Run SFC Scan
-echo %WHITE%[4]%RESET% Clean Temporary Files
-echo %WHITE%[5]%RESET% Optimize Internet ^& DNS
-echo %WHITE%[6]%RESET% Run ALL Repairs
+echo %WHITE%[3]%RESET% Clean Old Windows Updates (Windows.old)
+echo %WHITE%[4]%RESET% Clean Crash Dumps Files
+echo %WHITE%[5]%RESET% Run SFC Scan
+echo %WHITE%[6]%RESET% Clean Temporary Files
+echo %WHITE%[7]%RESET% Optimize Internet ^& DNS
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %GREEN%[8]%RESET% %GREEN%Safe and quick cleaning (1, 5, 6, 7)%RESET%
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p opt_choice=%YELLOW%Enter your choice: %RESET%
 if "%opt_choice%"=="1" goto dism
 if "%opt_choice%"=="2" goto comp_cleanup
-if "%opt_choice%"=="3" goto sfc
-if "%opt_choice%"=="4" goto clean
-if "%opt_choice%"=="5" goto internet
-if "%opt_choice%"=="6" goto all
+if "%opt_choice%"=="3" goto clean_updates
+if "%opt_choice%"=="4" goto clean_dumps
+if "%opt_choice%"=="5" goto sfc
+if "%opt_choice%"=="6" goto clean
+if "%opt_choice%"=="7" goto internet
+if "%opt_choice%"=="8" goto quick_optimize
 if "%opt_choice%"=="0" goto menu
 goto menu_optimize
 
@@ -122,13 +128,11 @@ echo %WHITE%[4]%RESET% Cancel Auto Shutdown
 echo %WHITE%[5]%RESET% Restart to BIOS/UEFI
 echo %WHITE%[6]%RESET% Restart to Safe Mode
 echo %WHITE%[7]%RESET% Debloat Windows (Remove Junk Apps)
-echo %WHITE%[8]%RESET% Clean Old Windows Updates (Windows.old)
-echo %WHITE%[9]%RESET% Clean Crash Dumps Files
-echo %WHITE%[10]%RESET% Show WI-FI Password
-echo %GREEN%[11]%RESET% %GREEN%Enable Windows Update%RESET%%RESET%
-echo %RED%[12]%RESET% %RED%Disable Windows Update%RESET%
-echo %WHITE%[13]%RESET% Change Internet DNS (Gaming ^& Speed)
-echo %WHITE%[14]%RESET% Clean Gamer Cashe (Steam, Epic Games, EA, Discord)
+echo %WHITE%[8]%RESET% Show WI-FI Password
+echo %GREEN%[9]%RESET% %GREEN%Enable Windows Update%RESET%%RESET%
+echo %RED%[10]%RESET% %RED%Disable Windows Update%RESET%
+echo %WHITE%[11]%RESET% Change Internet DNS (Gaming ^& Speed)
+echo %WHITE%[12]%RESET% Clean Gamer Cashe (Steam, Epic Games, EA, Discord)
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p adv_choice=%YELLOW%Enter your choice: %RESET%
@@ -139,13 +143,11 @@ if "%adv_choice%"=="4" goto cancelshutdown
 if "%adv_choice%"=="5" goto bios
 if "%adv_choice%"=="6" goto safemode
 if "%adv_choice%"=="7" goto debloat
-if "%adv_choice%"=="8" goto clean_updates
-if "%adv_choice%"=="9" goto clean_dumps
-if "%adv_choice%"=="10" goto wifi_pwd
-if "%adv_choice%"=="11" goto enable_updates
-if "%adv_choice%"=="12" goto disable_updates
-if "%adv_choice%"=="13" goto change_dns
-if "%adv_choice%"=="14" goto clean_gamers_cache
+if "%adv_choice%"=="8" goto wifi_pwd
+if "%adv_choice%"=="9" goto enable_updates
+if "%adv_choice%"=="10" goto disable_updates
+if "%adv_choice%"=="11" goto change_dns
+if "%adv_choice%"=="12" goto clean_gamers_cache
 if "%adv_choice%"=="0" goto menu
 goto menu_advanced
 
@@ -271,16 +273,15 @@ netsh int ip reset
 pause
 goto menu_optimize
 
-:all
+:quick_optimize
 cls
-echo %YELLOW%Running Full Repair (SFC, DISM, Cleanup)...%RESET%
+echo %YELLOW%Running Full Repair (DISM, SFC, Temp, Internet, Cleanup)...%RESET%
 DISM /Online /Cleanup-Image /RestoreHealth
-DISM /Online /Cleanup-Image /StartComponentCleanup
 sfc /scannow
 del /q /f /s C:\Windows\Prefetch\*
 del /q /f /s C:\Windows\Temp\*
-for /d %%p in ("%temp%\*") do rmdir /s /q "%%p"
 del /q /f /s "%temp%\*"
+for /d %%p in ("%temp%\*") do rmdir /s /q "%%p"
 cleanmgr /sagerun:1
 ipconfig /flushdns
 ipconfig /release
