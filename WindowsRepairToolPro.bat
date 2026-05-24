@@ -28,6 +28,7 @@ if %errorLevel% neq 0 (
 :: ====================================================
 :: MAIN MENU
 :: ====================================================
+call :AUTO_UPDATE
 :menu
 cls
 echo %CYAN%====================================================%RESET%
@@ -43,7 +44,6 @@ echo %WHITE%[5]%RESET% Security
 echo %WHITE%[6]%RESET% Drivers Manager (Updates ^& Backup)
 echo %WHITE%[7]%RESET% Silent Apps Installer (Winget)
 echo.
-echo %WHITE%[C]%RESET% CHK Update
 echo %WHITE%[A]%RESET% About
 echo %RED%[E]%RESET% Exit
 echo.
@@ -59,7 +59,6 @@ if "%choice%"=="5" goto menu_security
 if "%choice%"=="6" goto menu_drivers
 if "%choice%"=="7" goto menu_apps
 
-if /i "%choice%"=="c" goto UPDATE
 if /i "%choice%"=="a" goto about
 if /i "%choice%"=="e" exit
 goto menu
@@ -1136,12 +1135,7 @@ if %errorlevel% equ 0 (
 pause
 goto menu_apps
 
-:UPDATE
-cls
-echo =========================================
-echo           CHECKING FOR UPDATES
-echo =========================================
-echo.
+:AUTO_UPDATE
 setlocal EnableDelayedExpansion
 
 set CURRENT_VERSION=1.3
@@ -1157,38 +1151,24 @@ if exist "%TEMP_VERSION%" del "%TEMP_VERSION%" >nul 2>&1
 powershell -Command "(New-Object Net.WebClient).DownloadFile('%VERSION_URL%', '%TEMP_VERSION%')" >nul 2>&1
 
 if exist "%TEMP_VERSION%" (
+
     set ONLINE_VERSION=
+
     for /f "delims=" %%i in ('type "%TEMP_VERSION%"') do (
         set ONLINE_VERSION=%%i
     )
+
     set ONLINE_VERSION=!ONLINE_VERSION: =!
 
-    if "!ONLINE_VERSION!"=="" (
-        echo %RED%[X] Error: Received empty version file from server.%RESET%
-        pause
-        goto menu
-    )
-
-    echo Current Version : %CURRENT_VERSION%
-    echo Server Version  : !ONLINE_VERSION!
-    echo.
-
     if "!ONLINE_VERSION!"=="%CURRENT_VERSION%" (
-        echo %GREEN%You already have the latest version.%RESET%
-        echo.
-        pause
-        goto menu
+        endlocal
+        exit /b
     )
-
-    echo %YELLOW%New version [!ONLINE_VERSION!] found!%RESET%
-    echo Downloading update...
-    echo.
 
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%TOOL_URL%', '%NEW_FILE%')" >nul 2>&1
 
     if exist "%NEW_FILE%" (
-        echo Creating updater...
-        echo.
+
         (
         echo @echo off
         echo timeout /t 2 ^>nul
@@ -1198,17 +1178,23 @@ if exist "%TEMP_VERSION%" (
         echo del "%%~f0" ^>nul 2^>^&1
         ) > "%UPDATER%"
 
-        echo %GREEN%Update installed successfully!%RESET%
-        echo Restarting tool...
+        cls
+        echo =========================================
+        echo %YELLOW%            NEW UPDATE FOUND%RESET%
+        echo =========================================
+        echo.
+        echo Updating tool to version [%GREEN%!ONLINE_VERSION!%RESET%]
+        echo Please wait...
+        echo.
+
         timeout /t 2 >nul
         start "" "%UPDATER%"
         exit
     )
 )
 
-echo %RED%Failed to check for updates (Connection Error).%RESET%
-pause
-goto menu
+endlocal
+exit /b
 
 :about
 cls
