@@ -159,6 +159,7 @@ echo %WHITE%[12]%RESET% Clean Gamers Cache (Steam, EA..)
 echo %WHITE%[13]%RESET% Extract Original Windows Key (OEM)
 echo %WHITE%[14]%RESET% Context Menu Manager (Right-Click Tools)
 echo %WHITE%[15]%RESET% BSOD Log Analyzer (Blue Screen)
+echo %YELLOW%[16]%RESET% %YELLOW%Full System Backup (OS, Apps ^& Drivers)%RESET%
 echo.
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
@@ -180,6 +181,7 @@ if "%adv_choice%"=="12" goto clean_gamers_cache
 if "%adv_choice%"=="13" goto extract_oem_key
 if "%adv_choice%"=="14" goto context_menu_mgr
 if "%adv_choice%"=="15" goto bsod_analyzer
+if "%adv_choice%"=="16" goto full_system_backup
 if "%adv_choice%"=="0" goto menu
 goto menu_advanced
 
@@ -1063,6 +1065,58 @@ echo %WHITE%Scanning Windows Event Viewer for recent System Crashes...%RESET%
 echo %CYAN%----------------------------------------------------%RESET%
 echo.
 powershell -NoProfile -Command "$events = Get-EventLog -LogName System -Source BugCheck -Newest 5 -ErrorAction SilentlyContinue; if ($events) { Write-Host 'Recent crashes found:' -ForegroundColor Red; foreach ($e in $events) { Write-Host ('Date: ' + $e.TimeGenerated) -ForegroundColor Cyan; Write-Host ('Info: ' + $e.Message) -ForegroundColor Yellow; Write-Host '----------------------------------------------------' } } else { Write-Host '    [✓] Great News! No recent Blue Screen crashes found in the Event Log.' -ForegroundColor Green }"
+echo.
+pause
+goto menu_advanced
+
+:full_system_backup
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Create Full System Image Backup%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%This will backup your ENTIRE Windows (OS, Apps, Drivers, Files).%RESET%
+echo %RED%[!] Requirements:%RESET%
+echo %WHITE%- You MUST have a second drive or external hard disk (e.g., D:, E:).%RESET%
+echo %WHITE%- It must have enough free space (e.g., 50GB to 100GB+).%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+echo %WHITE%Type the Destination Drive Letter (e.g., %GREEN%D, E%WHITE%).%RESET%
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo.
+set /p "bk_drv=%YELLOW%Your Choice: %RESET%"
+
+if "%bk_drv%"=="" goto menu_advanced
+if "%bk_drv%"=="0" goto menu_advanced
+
+set "bk_drv=%bk_drv::=%"
+
+echo.
+echo %YELLOW%Preparing to backup System (Drive C:) to Drive %bk_drv%:\ ...%RESET%
+echo %RED%[!] Please DO NOT close this window. This process will take a LONG time.%RESET%
+echo.
+
+wbadmin start backup -backupTarget:%bk_drv%: -include:C: -allCritical -quiet
+
+if %errorlevel% equ 0 (
+    echo.
+    echo %GREEN%[✓] Full System Backup Completed Successfully!%RESET%
+    echo %WHITE%Your backup is safely stored on Drive %bk_drv%:%RESET%
+) else (
+    echo.
+    echo %RED%[X] Backup Failed.%RESET%
+    echo %YELLOW%Hint: Ensure you entered a valid drive letter [NOT Drive C] and have enough free space.%RESET%
+)
+
+echo.
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%      HOW TO RESTORE THIS BACKUP IN THE FUTURE?%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Because the OS is running, you cannot restore it from here.%RESET%
+echo %WHITE%To restore your PC from this backup later:%RESET%
+echo %WHITE%1. Boot into Windows Recovery Environment [Advanced Startup].%RESET%
+echo %WHITE%2. Go to: Troubleshoot -^> Advanced options -^> System Image Recovery.%RESET%
+echo %WHITE%3. Select the backup you just created and let Windows restore it.%RESET%
+echo %CYAN%====================================================%RESET%
 echo.
 pause
 goto menu_advanced
