@@ -1,6 +1,4 @@
 <img width="979" height="392" alt="image" src="https://github.com/user-attachments/assets/37517d5e-ace8-4eb1-88e2-0bce463422bc" />
-# Windows Repair Tool Pro v1.4
-
 <div align="center">
 
 # 🛠️ Windows Repair Tool Pro
@@ -40,7 +38,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 # 🚀 أقسام الأداة بالتفصيل
 
-# 1️⃣ Optimize OS
+# 1️⃣ Optimize OS قسم
 قسم خاص بتحسين أداء النظام وإصلاح المشاكل الشائعة.
 
 ## يحتوي على:
@@ -232,10 +230,9 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 # 🌐 الروابط الرسمية
 
 ## قناة يوتيوب
-https://www.youtube.com/
-
+[https://www.youtube.com/](https://www.youtube.com/@heshamtaha1)
 ## صفحة فيسبوك
-https://www.facebook.com/
+[https://www.facebook.com/](https://www.facebook.com/HeshamTahaOfficial)
 
 ---
 
