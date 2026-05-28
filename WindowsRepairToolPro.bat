@@ -32,7 +32,7 @@ call :AUTO_UPDATE
 :menu
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%            Windows Repair Tool Pro v1.3%RESET%
+echo %GREEN%            Windows Repair Tool Pro v1.4%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %GREEN%[0]%RESET% %GREEN%Create Restore Point%RESET%
@@ -43,6 +43,8 @@ echo %WHITE%[4]%RESET% Repair OS
 echo %WHITE%[5]%RESET% Security
 echo %WHITE%[6]%RESET% Drivers Manager (Updates ^& Backup)
 echo %WHITE%[7]%RESET% Silent Apps Installer (Winget)
+echo %WHITE%[8]%RESET% Windows Maintenance Tools
+echo %WHITE%[9]%RESET% User Accounts Manager
 echo.
 echo %WHITE%[A]%RESET% About
 echo %RED%[E]%RESET% Exit
@@ -58,6 +60,8 @@ if "%choice%"=="4" goto menu_repair
 if "%choice%"=="5" goto menu_security
 if "%choice%"=="6" goto menu_drivers
 if "%choice%"=="7" goto menu_apps
+if "%choice%"=="8" goto menu_maintenance
+if "%choice%"=="9" goto menu_users
 
 if /i "%choice%"=="a" goto about
 if /i "%choice%"=="e" exit
@@ -79,12 +83,16 @@ echo %WHITE%[4]%RESET% Clean Crash Dumps Files
 echo %WHITE%[5]%RESET% Run SFC Scan
 echo %WHITE%[6]%RESET% Clean Temporary Files
 echo %WHITE%[7]%RESET% Optimize Internet ^& DNS
+echo %WHITE%[8]%RESET% Clear Event Viewer Logs
+echo %WHITE%[9]%RESET% Disable Background Apps (RAM Optimization)
+echo %WHITE%[10]%RESET% Clear Delivery Optimization Cache
 echo.
 echo %CYAN%----------------------------------------------------%RESET%
-echo %GREEN%[8]%RESET% %GREEN%Safe and quick cleaning (1, 5, 6, 7)%RESET%
+echo %GREEN%[11]%RESET% %GREEN%Safe and quick cleaning (1, 5, 6, 7)%RESET%
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p opt_choice=%YELLOW%Enter your choice: %RESET%
+
 if "%opt_choice%"=="1" goto dism
 if "%opt_choice%"=="2" goto comp_cleanup
 if "%opt_choice%"=="3" goto clean_updates
@@ -92,7 +100,10 @@ if "%opt_choice%"=="4" goto clean_dumps
 if "%opt_choice%"=="5" goto sfc
 if "%opt_choice%"=="6" goto clean
 if "%opt_choice%"=="7" goto internet
-if "%opt_choice%"=="8" goto quick_optimize
+if "%opt_choice%"=="8" goto clean_events
+if "%opt_choice%"=="9" goto disable_bg_apps
+if "%opt_choice%"=="10" goto clean_delivery
+if "%opt_choice%"=="11" goto quick_optimize
 if "%opt_choice%"=="0" goto menu
 goto menu_optimize
 
@@ -103,14 +114,27 @@ echo %GREEN%                   Disk Tools%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%[1]%RESET% Schedule CHKDSK Scan
-echo %WHITE%[2]%RESET% Stop Schedule CHKDSK Scan
-echo %WHITE%[3]%RESET% Defragment HDD / Retrim SSD [Safe]
+echo %WHITE%[2]%RESET% Stop Scheduled CHKDSK Scan
+echo %WHITE%[3]%RESET% Smart Disk Optimization (Defrag / TRIM)
+echo %WHITE%[4]%RESET% Check Disk Health (S.M.A.R.T Status)
+echo %WHITE%[5]%RESET% View Disk Storage Information
+echo %YELLOW%[6]%RESET% %YELLOW%Secure Wipe Free Space (Anti-Recovery)%RESET%
+echo %WHITE%[7]%RESET% Disk Speed Test (Benchmark)
+echo %WHITE%[8]%RESET% USB/Drive Virus Rescue (Unhide Files)
+echo %WHITE%[9]%RESET% USB Write Protection Fixer (Deep Fix)
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p disk_choice=%YELLOW%Enter your choice: %RESET%
+
 if "%disk_choice%"=="1" goto chkdsk
 if "%disk_choice%"=="2" goto cancelchk
 if "%disk_choice%"=="3" goto defrag
+if "%disk_choice%"=="4" goto smart_check
+if "%disk_choice%"=="5" goto disk_info
+if "%disk_choice%"=="6" goto secure_wipe
+if "%disk_choice%"=="7" goto disk_speed
+if "%disk_choice%"=="8" goto usb_rescue
+if "%disk_choice%"=="9" goto write_protect_fix
 if "%disk_choice%"=="0" goto menu
 goto menu_disk
 
@@ -120,21 +144,27 @@ echo %CYAN%====================================================%RESET%
 echo %GREEN%                 Advanced Tools%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %GREEN%[1]%RESET% %GREEN%Enable Ultimate Performance Mode%RESET%
-echo %RED%[2]%RESET% %RED%Restore Balanced Power Mode (Default)%RESET%
-echo %WHITE%[3]%RESET% Schedule Auto Shutdown
-echo %WHITE%[4]%RESET% Cancel Auto Shutdown
-echo %WHITE%[5]%RESET% Restart to BIOS/UEFI
-echo %WHITE%[6]%RESET% Restart to Safe Mode
-echo %WHITE%[7]%RESET% Debloat Windows (Remove Junk Apps)
-echo %WHITE%[8]%RESET% Show WI-FI Password
-echo %GREEN%[9]%RESET% %GREEN%Enable Windows Update%RESET%%RESET%
-echo %RED%[10]%RESET% %RED%Disable Windows Update%RESET%
-echo %WHITE%[11]%RESET% Change Internet DNS (Gaming ^& Speed)
-echo %WHITE%[12]%RESET% Clean Gamer Cashe (Steam, Epic Games, EA, Discord)
+echo %GREEN%[1]%RESET% %GREEN%Enable Ultimate Performance%RESET%     
+echo %RED%[2]%RESET% %RED%Restore Balanced Mode%RESET%           
+echo %WHITE%[3]%RESET% Schedule Auto Shutdown           
+echo %WHITE%[4]%RESET% Cancel Auto Shutdown             
+echo %WHITE%[5]%RESET% Restart to BIOS/UEFI            
+echo %WHITE%[6]%RESET% Restart to Safe Mode             
+echo %WHITE%[7]%RESET% Debloat Windows (Remove Junk)
+echo %WHITE%[8]%RESET% Show WI-FI Passwords
+echo %RED%[9]%RESET% %RED%Disable Windows Update%RESET%
+echo %GREEN%[10]%RESET% %GREEN%Enable Windows Update%RESET%
+echo %WHITE%[11]%RESET% Change Internet DNS (Gaming)
+echo %WHITE%[12]%RESET% Clean Gamers Cache (Steam, EA..)
+echo %WHITE%[13]%RESET% Extract Original Windows Key (OEM)
+echo %WHITE%[14]%RESET% Context Menu Manager (Right-Click Tools)
+echo %WHITE%[15]%RESET% BSOD Log Analyzer (Blue Screen)
+echo.
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
+echo %CYAN%----------------------------------------------------%RESET%
 set /p adv_choice=%YELLOW%Enter your choice: %RESET%
+
 if "%adv_choice%"=="1" goto ultimate_perf
 if "%adv_choice%"=="2" goto restore_balanced
 if "%adv_choice%"=="3" goto shutdown
@@ -143,10 +173,13 @@ if "%adv_choice%"=="5" goto bios
 if "%adv_choice%"=="6" goto safemode
 if "%adv_choice%"=="7" goto debloat
 if "%adv_choice%"=="8" goto wifi_pwd
-if "%adv_choice%"=="9" goto enable_updates
-if "%adv_choice%"=="10" goto disable_updates
+if "%adv_choice%"=="9" goto disable_updates
+if "%adv_choice%"=="10" goto enable_updates
 if "%adv_choice%"=="11" goto change_dns
 if "%adv_choice%"=="12" goto clean_gamers_cache
+if "%adv_choice%"=="13" goto extract_oem_key
+if "%adv_choice%"=="14" goto context_menu_mgr
+if "%adv_choice%"=="15" goto bsod_analyzer
 if "%adv_choice%"=="0" goto menu
 goto menu_advanced
 
@@ -156,41 +189,61 @@ echo %CYAN%====================================================%RESET%
 echo %GREEN%                   Repair OS%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %WHITE%[1]%RESET% Repair Windows Update
-echo %WHITE%[2]%RESET% Repair Microsoft Store
-echo %WHITE%[3]%RESET% Rebuild Windows Icons
-echo %WHITE%[4]%RESET% Fix Taskbar and Explorer
+echo %WHITE%[1]%RESET% Deep Repair Windows Update
+echo %WHITE%[2]%RESET% Repair Store ^& Default Apps
+echo %WHITE%[3]%RESET% Rebuild Icons ^& Thumbnails
+echo %WHITE%[4]%RESET% Fix Taskbar, Search ^& Explorer
+echo %WHITE%[5]%RESET% Fix Audio Services
+echo %WHITE%[6]%RESET% Fix Bluetooth Services
+echo %WHITE%[7]%RESET% Fix Printer ^& Spooler
+echo %WHITE%[8]%RESET% Restart Core Services
+echo.
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
+echo %CYAN%----------------------------------------------------%RESET%
 set /p rep_choice=%YELLOW%Enter your choice: %RESET%
+
 if "%rep_choice%"=="1" goto winupdate
-if "%rep_choice%"=="2" goto store
-if "%rep_choice%"=="3" goto icons
-if "%rep_choice%"=="4" goto taskbar
+if "%rep_choice%"=="2" goto store_apps
+if "%rep_choice%"=="3" goto icons_thumbs
+if "%rep_choice%"=="4" goto taskbar_search
+if "%rep_choice%"=="5" goto fix_audio
+if "%rep_choice%"=="6" goto fix_bluetooth
+if "%rep_choice%"=="7" goto fix_printer
+if "%rep_choice%"=="8" goto restart_services
 if "%rep_choice%"=="0" goto menu
 goto menu_repair
 
 :menu_security
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%                    Security%RESET%
+echo %GREEN%               Security ^& Privacy%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %WHITE%[1]%RESET% Quick Scan
-echo %WHITE%[2]%RESET% Full Scan
-echo %WHITE%[3]%RESET% Reset Windows Firewall Settings
-echo %GREEN%[4]%RESET% %GREEN%Enable Telemetry (Windows Tracking)%RESET%
-echo %RED%[5]%RESET% %RED%Disable Telemetry (Windows Tracking)%RESET%
-echo %WHITE%[6]%RESET% Fix Windows Defender
+echo %WHITE%[1]%RESET% Quick Virus Scan          
+echo %WHITE%[2]%RESET% Full Virus Scan           
+echo %YELLOW%[3]%RESET% %YELLOW%Offline Virus Scan (Rootkits, Trojan) (Restart require)%RESET%        
+echo %WHITE%[4]%RESET% Clear Defender History    
+echo %WHITE%[5]%RESET% Deep Repair Windows Defender
+echo %WHITE%[6]%RESET% Reset Windows Firewall
+echo %WHITE%[7]%RESET% Reset Hosts File (Fix Network)
+echo %RED%[8]%RESET% %RED%Disable Windows Telemetry%RESET%
+echo %GREEN%[9]%RESET% %GREEN%Enable Windows Telemetry%RESET%
+echo.
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
+echo %CYAN%----------------------------------------------------%RESET%
 set /p sec_choice=%YELLOW%Enter your choice: %RESET%
+
 if "%sec_choice%"=="1" goto quickscan
 if "%sec_choice%"=="2" goto fullscan
-if "%sec_choice%"=="3" goto firewall_reset
-if "%sec_choice%"=="4" goto enable_telemetry
-if "%sec_choice%"=="5" goto disable_telemetry
-if "%sec_choice%"=="6" goto fix_defender
+if "%sec_choice%"=="3" goto offlinescan
+if "%sec_choice%"=="4" goto clear_defender_history
+if "%sec_choice%"=="5" goto fix_defender
+if "%sec_choice%"=="6" goto firewall_reset
+if "%sec_choice%"=="7" goto reset_hosts
+if "%sec_choice%"=="8" goto disable_telemetry
+if "%sec_choice%"=="9" goto enable_telemetry
 if "%sec_choice%"=="0" goto menu
 goto menu_security
 
@@ -214,67 +267,252 @@ if "%drv_choice%"=="4" goto drivers_uninstaller_wizard
 if "%drv_choice%"=="0" goto menu
 goto menu_drivers
 
-:: --- FUNCTIONS ---
-
-:sfc
+:menu_maintenance
 cls
-echo %GREEN%Running SFC Scan...%RESET%
-sfc /scannow
-pause
-goto menu_optimize
+echo %CYAN%====================================================%RESET%
+echo %GREEN%             Windows Maintenance Tools%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%[1]%RESET% Task Manager             %WHITE%[16]%RESET% Temp Folder
+echo %WHITE%[2]%RESET% Services Manager         %WHITE%[17]%RESET% Advanced System Settings
+echo %WHITE%[3]%RESET% Device Manager           %WHITE%[18]%RESET% Windows Memory Diagnostic
+echo %WHITE%[4]%RESET% Disk Cleanup             %WHITE%[19]%RESET% Disk Management
+echo %WHITE%[5]%RESET% MSCONFIG                 %WHITE%[20]%RESET% Computer Management
+echo %WHITE%[6]%RESET% Registry Editor          %WHITE%[21]%RESET% Group Policy (gpedit)
+echo %WHITE%[7]%RESET% Startup Apps Folder      %WHITE%[22]%RESET% Power Options
+echo %WHITE%[8]%RESET% Resource Monitor         %WHITE%[23]%RESET% Sound Control Panel
+echo %WHITE%[9]%RESET% Event Viewer             %WHITE%[24]%RESET% Network Connections
+echo %WHITE%[10]%RESET% Reliability Monitor     %WHITE%[25]%RESET% Task Scheduler
+echo %WHITE%[11]%RESET% Windows Tools           %WHITE%[26]%RESET% Advanced Firewall (wf.msc)
+echo %WHITE%[12]%RESET% Programs and Features   %WHITE%[27]%RESET% Local Users ^& Groups
+echo %WHITE%[13]%RESET% Network Reset           %WHITE%[28]%RESET% User Accounts (netplwiz)
+echo %WHITE%[14]%RESET% DirectX Diagnostic      %WHITE%[29]%RESET% Performance Monitor
+echo %WHITE%[15]%RESET% System Information      %WHITE%[30]%RESET% Windows Update Settings
+echo.
+echo %RED%[0]%RESET% Back to Main Menu
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+set /p maintenance_choice=%YELLOW%Enter your choice: %RESET%
+
+if "%maintenance_choice%"=="1" goto open_taskmgr
+if "%maintenance_choice%"=="2" goto open_services
+if "%maintenance_choice%"=="3" goto open_devicemgr
+if "%maintenance_choice%"=="4" goto open_diskcleanup
+if "%maintenance_choice%"=="5" goto open_msconfig
+if "%maintenance_choice%"=="6" goto open_regedit
+if "%maintenance_choice%"=="7" goto open_startup
+if "%maintenance_choice%"=="8" goto open_resmon
+if "%maintenance_choice%"=="9" goto open_eventviewer
+if "%maintenance_choice%"=="10" goto open_reliability
+if "%maintenance_choice%"=="11" goto open_wintools
+if "%maintenance_choice%"=="12" goto open_programs
+if "%maintenance_choice%"=="13" goto open_networkreset
+if "%maintenance_choice%"=="14" goto open_dxdiag
+if "%maintenance_choice%"=="15" goto open_sysinfo
+if "%maintenance_choice%"=="16" goto open_temp
+if "%maintenance_choice%"=="17" goto open_advancedsys
+if "%maintenance_choice%"=="18" goto open_memorydiag
+if "%maintenance_choice%"=="19" goto open_diskmgmt
+if "%maintenance_choice%"=="20" goto open_compmgmt
+if "%maintenance_choice%"=="21" goto open_gpedit
+if "%maintenance_choice%"=="22" goto open_powercfg
+if "%maintenance_choice%"=="23" goto open_soundcpl
+if "%maintenance_choice%"=="24" goto open_ncpa
+if "%maintenance_choice%"=="25" goto open_taskschd
+if "%maintenance_choice%"=="26" goto open_firewall
+if "%maintenance_choice%"=="27" goto open_lusrmgr
+if "%maintenance_choice%"=="28" goto open_netplwiz
+if "%maintenance_choice%"=="29" goto open_perfmon
+if "%maintenance_choice%"=="30" goto open_wusettings
+if "%maintenance_choice%"=="0" goto menu
+goto menu_maintenance
+
+:menu_users
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%               User Accounts Manager%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%[1]%RESET% Add New User Account
+echo %RED%[2]%RESET% %RED%Delete User Account%RESET%
+echo %YELLOW%[3]%RESET% %YELLOW%Rename User Account (Change Username)%RESET%
+echo %WHITE%[4]%RESET% Change Existing User Password
+echo %WHITE%[5]%RESET% Grant Administrator Privileges
+echo %WHITE%[6]%RESET% Revoke Administrator Privileges (Demote to Standard)
+echo %WHITE%[7]%RESET% Hide Account from Login Screen (Secret Account)
+echo %WHITE%[8]%RESET% Show Hidden Account on Login Screen
+echo %WHITE%[9]%RESET% Freeze / Unfreeze User Account (Disable/Enable)
+echo %WHITE%[10]%RESET% Toggle Built-in Administrator (Enable/Disable)
+echo %WHITE%[11]%RESET% View Detailed User Information
+echo %RED%[0]%RESET% Back to Main Menu
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+set /p usr_choice=%YELLOW%Enter your choice: %RESET%
+
+if "%usr_choice%"=="1" goto add_user
+if "%usr_choice%"=="2" goto delete_user
+if "%usr_choice%"=="3" goto rename_user
+if "%usr_choice%"=="4" goto change_password
+if "%usr_choice%"=="5" goto grant_admin
+if "%usr_choice%"=="6" goto revoke_admin
+if "%usr_choice%"=="7" goto hide_account
+if "%usr_choice%"=="8" goto unhide_account
+if "%usr_choice%"=="9" goto toggle_user_status
+if "%usr_choice%"=="10" goto toggle_builtin_admin
+if "%usr_choice%"=="11" goto user_info
+if "%usr_choice%"=="0" goto menu
+goto menu_users
+
+:: --- FUNCTIONS ---
 
 :dism
 cls
-echo %GREEN%Running DISM RestoreHealth...%RESET%
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%            Running DISM RestoreHealth%RESET%
+echo %CYAN%====================================================%RESET%
 echo %WHITE%Checking system image health, please wait...%RESET%
 echo.
-cmd /c "DISM /Online /Cleanup-Image /RestoreHealth"
+DISM /Online /Cleanup-Image /RestoreHealth
 echo.
-echo %GREEN%[✓] DISM Process Finished.%RESET%
-echo.
+echo %GREEN%[✓] DISM Process Finished Successfully.%RESET%
 pause
 goto menu_optimize
 
 :comp_cleanup
 cls
-echo %GREEN%Component Store Cleanup (Deep Repair)...%RESET%
-echo %WHITE%Cleaning component store, please wait...%RESET%
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%      Component Store Cleanup (Deep Repair)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Cleaning component store to free up space...%RESET%
 echo.
-cmd /c "DISM /Online /Cleanup-Image /StartComponentCleanup"
+DISM /Online /Cleanup-Image /StartComponentCleanup
 echo.
-echo %GREEN%[✓] Cleanup Completed.%RESET%
+echo %GREEN%[✓] Cleanup Completed Successfully.%RESET%
+pause
+goto menu_optimize
+
+:clean_updates
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Cleaning up old Windows Updates%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%This process might take a long time. Please wait...%RESET%
 echo.
+DISM /online /Cleanup-Image /StartComponentCleanup /ResetBase
+
+if exist "C:\Windows.old" (
+    echo %YELLOW%Removing Windows.old folder...%RESET%
+    rd /s /q "C:\Windows.old"
+)
+
+echo %GREEN%[✓] Updates Cleanup Completed Successfully.%RESET%
+echo.
+pause
+goto menu_optimize
+
+:clean_dumps
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%       Cleaning Crash Dumps and Error Logs%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Scanning and deleting system dump files...%RESET%
+echo.
+del /f /q /s "%systemroot%\Minidump\*"
+del /f /q /s "%systemroot%\MEMORY.DMP" 
+del /f /q "%systemroot%\Logs\CBS\*.cab"
+echo %GREEN%[✓] Crash Dumps and System Logs cleaned!%RESET%
+pause
+goto menu_optimize
+
+:sfc
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%                 Running SFC Scan%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Scanning and repairing corrupted system files...%RESET%
+echo.
+sfc /scannow
+echo.
+echo %GREEN%[✓] SFC Scan Process Finished.%RESET%
 pause
 goto menu_optimize
 
 :clean
 cls
-echo %GREEN%Cleaning Temporary Files...%RESET%
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%             Cleaning Temporary Files%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Emptying Temp and Prefetch folders...%RESET%
+echo.
 del /q /f /s C:\Windows\Prefetch\*
 del /q /f /s C:\Windows\Temp\*
 del /q /f /s "%temp%\*"
 for /d %%p in ("%temp%\*") do rmdir /s /q "%%p"
 cleanmgr /sagerun:1
-echo.
 echo %GREEN%[✓] Cleaning completed successfully, enjoy!%RESET%
-echo.
 pause
 goto menu_optimize
 
 :internet
 cls
-echo %GREEN%Optimizing Internet & DNS...%RESET%
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%             Optimizing Internet ^& DNS%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Flushing DNS and resetting network adapters...%RESET%
+echo.
 ipconfig /flushdns
 ipconfig /release
 ipconfig /renew
 netsh winsock reset
 netsh int ip reset
+echo %GREEN%[✓] Internet and DNS Optimized Successfully!%RESET%
+pause
+goto menu_optimize
+
+:clean_events
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%             Clearing Event Viewer Logs%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Emptying Windows activity logs to free up space...%RESET%
+echo.
+for /F "tokens=*" %%1 in ('wevtutil.exe el') DO wevtutil.exe cl "%%1"
+echo %GREEN%[✓] All Event Logs Cleared Successfully!%RESET%
+pause
+goto menu_optimize
+
+:disable_bg_apps
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%      Disabling Background Apps (RAM Optimization)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Stopping unnecessary Windows apps from running...%RESET%
+echo.
+Reg Add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v GlobalUserEdge /t REG_DWORD /d 1 /f
+Reg Add "HKLM\Software\Policies\Microsoft\Windows\AppPrivacy" /v LetAppsRunInBackground /t REG_DWORD /d 2 /f
+echo %GREEN%[✓] Background Apps Disabled! Enjoy more free RAM.%RESET%
+pause
+goto menu_optimize
+
+:clean_delivery
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%          Clearing Delivery Optimization Cache%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Deleting shared update files to save disk space...%RESET%
+echo.
+del /q /f /s "C:\Windows\SoftwareDistribution\DeliveryOptimization\*"
+echo %GREEN%[✓] Delivery Optimization Cache Cleaned Successfully!%RESET%
 pause
 goto menu_optimize
 
 :quick_optimize
 cls
-echo %YELLOW%Running Full Repair (DISM, SFC, Temp, Internet, Cleanup)...%RESET%
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%        Running Safe ^& Quick Cleaning...%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Please wait while we perform background repairs...%RESET%
+echo.
 DISM /Online /Cleanup-Image /RestoreHealth
 sfc /scannow
 del /q /f /s C:\Windows\Prefetch\*
@@ -287,24 +525,250 @@ ipconfig /release
 ipconfig /renew
 netsh winsock reset
 netsh int ip reset
-echo.
-echo %GREEN%[✓] Full Repair Completed Successfully.%RESET%
+echo %GREEN%[✓] Full Repair ^& Optimization Completed Successfully!%RESET%
 pause
 goto menu_optimize
 
 :chkdsk
 cls
-echo %YELLOW%Scheduling CHKDSK on next restart...%RESET%
-echo y | chkdsk C: /f /r
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%              Schedule CHKDSK Scan%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%[!] %RED%Important Note:%RESET%
+echo %WHITE%- System Drive (%GREEN%C%WHITE%): The scan will be %YELLOW%SCHEDULED%WHITE% for the next restart.%RESET%
+echo %WHITE%- Other Drives (%GREEN%D, E, etc.%WHITE%): The scan will run %GREEN%IMMEDIATELY%WHITE% inside this window.%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+echo %WHITE%Type the Drive Letter (e.g., %GREEN%C%WHITE%) to start.%RESET%
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo.
+set /p "chk_drv=%YELLOW%Your Choice: %RESET%"
+set "chk_drv=%chk_drv::=%"
+
+if "%chk_drv%"=="" goto menu_disk
+if "%chk_drv%"=="0" goto menu_disk
+
+echo.
+echo %YELLOW%Scheduling CHKDSK for drive %chk_drv%: on next restart...%RESET%
+echo y | chkdsk %chk_drv%: /f /r
+echo.
 echo %GREEN%[✓] The check is scheduled for the next restart.%RESET%
 pause
 goto menu_disk
 
 :cancelchk
 cls
-echo %GREEN%Removing scheduled CHKDSK...%RESET%
-chkntfs /x C:
-echo %GREEN%[✓] The scheduling process has been cancelled.%RESET%
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%           Stop Scheduled CHKDSK Scan%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %WHITE%Checking system for scheduled scans...%RESET%
+powershell -NoProfile -Command ^
+    "$reg = (Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager' 'BootExecute').BootExecute -join ' '; " ^
+    "if ($reg -match '\\\?\?\\([A-Za-z]):') { " ^
+    "    Write-Host '    [!] SCHEDULED SCAN DETECTED ON DRIVE: ' -NoNewline -ForegroundColor Red; " ^
+    "    Write-Host ($matches[1].ToUpper() + ':') -ForegroundColor Yellow " ^
+    "} else { " ^
+    "    Write-Host '    [✓] No Scheduled Scans.' -ForegroundColor Green " ^
+    "}"
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+
+echo %WHITE%Type the Drive Letter (e.g., %GREEN%C%WHITE%) to clear its schedule.%RESET%
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo.
+set /p "chk_drv=%YELLOW%Your Choice: %RESET%"
+
+if "%chk_drv%"=="" goto menu_disk
+if "%chk_drv%"=="0" goto menu_disk
+
+set "chk_drv=%chk_drv::=%"
+
+echo.
+echo %WHITE%Removing scheduled CHKDSK for Drive %YELLOW%%chk_drv%:%WHITE%...%RESET%
+chkntfs /x %chk_drv%: >nul 2>&1
+
+echo %GREEN%[✓] The scheduling process has been cancelled successfully.%RESET%
+echo.
+pause
+goto menu_disk
+
+:defrag
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%       Smart Disk Optimization (Defrag / TRIM)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Windows will automatically detect if it's an HDD (Defrag) or SSD (TRIM).%RESET%
+echo.
+echo %WHITE%Type the Drive Letter (e.g., %GREEN%C%WHITE%) to optimize.%RESET%
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo.
+set /p "defrag_drv=%YELLOW%Your Choice: %RESET%"
+if "%defrag_drv%"=="" goto menu_disk
+if "%chk_drv%"=="0" goto menu_disk
+
+echo.
+echo %YELLOW%Optimizing Drive %defrag_drv%: ... Please wait.%RESET%
+defrag %defrag_drv%: /O /U /V
+echo.
+echo %GREEN%[✓] Disk Optimization Completed Successfully!%RESET%
+pause
+goto menu_disk
+
+:smart_check
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Check Disk Health (S.M.A.R.T Status)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Checking the physical health of all connected drives...%RESET%
+echo.
+
+powershell -NoProfile -Command "Get-PhysicalDisk | Select-Object FriendlyName, HealthStatus | Format-Table -AutoSize"
+
+echo.
+echo %WHITE%If the status says %GREEN%Healthy%WHITE%, your disk is in good condition.%RESET%
+echo %WHITE%If it says %RED%Warning%WHITE% or %RED%Unhealthy%WHITE%, backup your data immediately!%RESET%
+echo.
+pause
+goto menu_disk
+
+:disk_info
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%              Disk Storage Information%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%Fetching storage details for all connected drives...%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+
+powershell -NoProfile -Command "Get-Volume | Where-Object { $_.DriveLetter } | Select-Object DriveLetter, FileSystemLabel, @{Name='Capacity(GB)';Expression={[math]::Round($_.Size/1GB, 2)}}, @{Name='FreeSpace(GB)';Expression={[math]::Round($_.SizeRemaining/1GB, 2)}} | Sort-Object DriveLetter | Format-Table -AutoSize"
+
+echo.
+pause
+goto menu_disk
+
+
+:secure_wipe
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%       Secure Wipe Free Space (Anti-Recovery)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%This will overwrite deleted files so they %RED%CANNOT%WHITE% be recovered.%RESET%
+echo %GREEN%Note: This only affects FREE SPACE. Your current files are 100%% safe.%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+echo %WHITE%Type the Drive Letter (e.g., %GREEN%C%WHITE%) to wipe its free space.%RESET%
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo.
+set /p "wipe_drv=%YELLOW%Your Choice: %RESET%"
+
+if "%wipe_drv%"=="" goto menu_disk
+if "%wipe_drv%"=="0" goto menu_disk
+
+set "wipe_drv=%wipe_drv::=%"
+
+echo.
+echo %RED%[!] Warning: This process might take a LONG time depending on disk size.%RESET%
+echo %YELLOW%Wiping free space on Drive %wipe_drv%: ... Please wait.%RESET%
+echo.
+
+cipher /w:%wipe_drv%:
+
+echo.
+echo %GREEN%[✓] Free space on Drive %wipe_drv%: wiped successfully!%RESET%
+pause
+goto menu_disk
+
+:disk_speed
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%              Disk Speed Test (Benchmark)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%This will test the Read and Write speeds of your drive.%RESET%
+echo.
+echo %WHITE%Type the Drive Letter (e.g., %GREEN%C%WHITE%) to test.%RESET%
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo.
+set /p "speed_drv=%YELLOW%Your Choice: %RESET%"
+
+if "%speed_drv%"=="" goto menu_disk
+if "%speed_drv%"=="0" goto menu_disk
+set "speed_drv=%speed_drv::=%"
+
+echo.
+echo %YELLOW%Running performance test on Drive %speed_drv%: ... Please wait.%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+
+winsat disk -drive %speed_drv%
+
+echo %CYAN%----------------------------------------------------%RESET%
+echo %GREEN%[✓] Speed test completed successfully!%RESET%
+pause
+goto menu_disk
+
+
+:usb_rescue
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%       USB/Drive Virus Rescue (Unhide Files)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Fixes drives where a virus hid all your files and created shortcuts.%RESET%
+echo.
+
+echo %WHITE%Type the Drive Letter (e.g., %GREEN%D, E%WHITE%) to rescue.%RESET%
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo.
+set /p "usb_drv=%YELLOW%Your Choice: %RESET%"
+
+if "%usb_drv%"=="" goto menu_disk
+if "%usb_drv%"=="0" goto menu_disk
+set "usb_drv=%usb_drv::=%"
+
+echo.
+echo %YELLOW%Removing hidden and system attributes from Drive %usb_drv%: ...%RESET%
+echo %WHITE%This may take a minute depending on the number of files.%RESET%
+
+attrib -h -r -s /s /d %usb_drv%:\*.* >nul 2>&1
+
+echo.
+echo %GREEN%[✓] All files on Drive %usb_drv%: are now visible and rescued!%RESET%
+pause
+goto menu_disk
+
+:write_protect_fix
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         USB Write Protection Fixer (Deep Fix)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Fixes "The disk is write-protected" error on USBs and SD Cards.%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+echo %WHITE%Type the USB Drive Letter (e.g., %GREEN%F, G%WHITE%) to fix.%RESET%
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo.
+set /p "wp_drv=%YELLOW%Your Choice: %RESET%"
+if "%wp_drv%"=="" goto menu_disk
+if "%wp_drv%"=="0" goto menu_disk
+set "wp_drv=%wp_drv::=%"
+
+echo.
+echo %YELLOW%[1] Resetting Windows Storage Policies...%RESET%
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\StorageDevicePolicies" /v WriteProtect /t REG_DWORD /d 0 /f >nul 2>&1
+
+echo %YELLOW%[2] Clearing Read-Only attributes from the physical drive...%RESET%
+echo select volume %wp_drv% > "%temp%\wp_fix.txt"
+echo attributes disk clear readonly >> "%temp%\wp_fix.txt"
+diskpart /s "%temp%\wp_fix.txt" >nul 2>&1
+del "%temp%\wp_fix.txt" >nul 2>&1
+
+echo.
+echo %GREEN%[✓] Write Protection removed successfully from Drive %wp_drv%:%RESET%
+echo %WHITE%Note: If the issue persists, the USB drive might be physically damaged.%RESET%
 pause
 goto menu_disk
 
@@ -349,22 +813,17 @@ goto winget_update
 
 :ultimate_perf
 cls
-echo =====================================
-echo   Enabling Ultimate Performance
-echo =====================================
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Enabling Ultimate Performance Mode%RESET%
+echo %CYAN%====================================================%RESET%
 echo.
-
 powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 > temp.txt
-
 for /f "tokens=4" %%i in ('findstr /i "GUID" temp.txt') do set GUID=%%i
+powercfg /setactive %GUID% >nul 2>&1
+del temp.txt >nul 2>&1
 
-powercfg /setactive %GUID%
-
-del temp.txt
-
-echo.
-echo Ultimate Performance Mode Enabled Successfully.
-echo Active GUID: %GUID%
+echo %GREEN%[✓] Ultimate Performance Mode Enabled Successfully!%RESET%
+echo %WHITE%Active GUID: %GUID%%RESET%
 echo.
 pause
 goto menu_advanced
@@ -372,189 +831,89 @@ goto menu_advanced
 :restore_balanced
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%Restoring Balanced Mode ^& Cleaning Up%RESET%
+echo %YELLOW%      Restoring Balanced Mode ^& Cleaning Up%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %YELLOW%Activating Balanced Mode...%RESET%
+echo %WHITE%Activating Balanced Mode...%RESET%
+powercfg -setactive 381b4222-f694-41f0-9685-ff5bb260df2e >nul 2>&1
 
-powercfg -setactive 381b4222-f694-41f0-9685-ff5bb260df2e
-
-echo %YELLOW%Removing Ultimate Performance profiles...%RESET%
+echo %WHITE%Removing Ultimate Performance profiles...%RESET%
 for /f "tokens=4" %%i in ('powercfg -list ^| findstr /i "Ultimate"') do (
     powercfg -delete %%i >nul 2>&1
 )
 
 echo.
-echo %GREEN%[✓] Balanced Mode Restored and Ultimate Profiles Cleaned!%RESET%
+echo %GREEN%[✓] Balanced Mode Restored and Custom Profiles Cleaned!%RESET%
 echo.
 pause
 goto menu_advanced
 
 :shutdown
 cls
-set /p st=%YELLOW%Enter minutes: %RESET%
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%             Schedule Auto Shutdown%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+set /p st=%YELLOW%Enter minutes until shutdown: %RESET%
 set /a ss=%st%*60
 shutdown /s /t %ss%
+echo.
+echo %GREEN%[✓] PC will shutdown in %st% minutes.%RESET%
 pause
 goto menu_advanced
 
 :cancelshutdown
 cls
-shutdown /a
-echo %GREEN%Shutdown canceled.%RESET%
+shutdown /a >nul 2>&1
+echo %GREEN%[✓] Scheduled shutdown canceled.%RESET%
 pause
 goto menu_advanced
 
 :bios
 cls
-echo %RED%System will restart to BIOS in 60 seconds...%RESET%
-shutdown /r /fw /t 60
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%              Restart to BIOS / UEFI%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%System will restart to BIOS in 5 seconds...%RESET%
+shutdown /r /fw /t 5
+if %errorlevel% neq 0 (
+    echo.
+    echo %RED%[X] Your motherboard does not support restarting to BIOS from Windows.%RESET%
+    echo %YELLOW%You will need to restart manually and press (DEL) or (F2).%RESET%
+)
+echo.
 pause
 goto menu_advanced
 
-:winupdate
-cls
-echo %YELLOW%Repairing Windows Update...%RESET%
-net stop wuauserv
-net stop bits
-net stop cryptsvc
-net stop msiserver
-rd /s /q C:\Windows\SoftwareDistribution
-net start wuauserv
-net start bits
-net start cryptsvc
-net start msiserver
-UsoClient StartInteractiveScan
-echo %GREEN%[✓] Done.%RESET%
-pause
-goto menu_repair
-
-:store
-cls
-echo %YELLOW%Resetting Microsoft Store (Please wait)...%RESET%
-wsreset.exe
-pause
-goto menu_repair
-
-:icons
-cls
-echo %YELLOW%Rebuilding Icon Cache...%RESET%
-taskkill /f /im explorer.exe
-del /a /q "%localappdata%\IconCache.db"
-start explorer.exe
-pause
-goto menu_repair
-
-:taskbar
-cls
-echo %YELLOW%Fixing Taskbar...%RESET%
-taskkill /f /im explorer.exe
-start explorer.exe
-powershell -Command "& {$manifest = (Get-AppxPackage Microsoft.Windows.ShellExperienceHost).InstallLocation + '\AppxManifest.xml' ; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-pause
-goto menu_repair
-
-:defrag
-cls
-set /p drv=%YELLOW%Enter Drive Letter (e.g. C): %RESET%
-set drv=%drv::=%
-echo %YELLOW%Checking Drive Type...%RESET%
-for /f "tokens=2 delims==" %%a in ('wmic logicaldisk where "DeviceID='%drv%:'" get Description /value 2^>nul') do set ddesc=%%a
-powershell -Command "if ((Get-PhysicalDisk | Where-Object { (Get-Partition -DriveLetter '%drv%').DiskNumber -eq $_.DeviceNumber }).MediaType -eq 'SSD') { exit 1 } else { exit 0 }"
-if %errorlevel% equ 1 (
-    echo %RED%[X] SSD Detected! Defragmentation skipped to protect drive.%RESET%
-) else (
-    echo %GREEN%HDD Detected. Starting Defragmentation...%RESET%
-    defrag %drv%: /O /U /V
-)
-pause
-goto menu_disk
-
-:quickscan
-cls
-"%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 1
-pause
-goto menu_security
-
-:fullscan
-cls
-"%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 2
-pause
-goto menu_security
-
-:firewall_reset
-cls
-echo %YELLOW%Resetting Firewall...%RESET%
-netsh advfirewall reset
-pause
-goto menu_security
-
 :safemode
 cls
-echo %YELLOW%Preparing to boot into Safe Mode...%RESET%
-echo %RED%[!] IMPORTANT: To return to Normal Mode later, you will need to open CMD and type:%RESET%
-echo %WHITE%bcdedit /deletevalue {current} safeboot%RESET%
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%             Boot into Safe Mode%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %RED%[!] IMPORTANT WARNING:%RESET%
+echo %WHITE%To return to Normal Mode later, you will need to open CMD in Safe Mode and type:%RESET%
+echo %YELLOW%bcdedit /deletevalue {current} safeboot%RESET%
 echo.
 pause
-bcdedit /set {current} safeboot minimal
-shutdown /r /t 60
+bcdedit /set {current} safeboot minimal >nul 2>&1
+shutdown /r /t 5
 goto menu_advanced
 
 :debloat
 cls
-echo %YELLOW%Removing unnecessary default Windows apps (Debloat)...%RESET%
-powershell -Command "Get-AppxPackage *bing* | Remove-AppxPackage"
-powershell -Command "Get-AppxPackage *zune* | Remove-AppxPackage"
-powershell -Command "Get-AppxPackage Microsoft.Xbox* | Remove-AppxPackage"
-powershell -Command "Get-AppxPackage *solitaire* | Remove-AppxPackage"
-powershell -Command "Get-AppxPackage *skypeapp* | Remove-AppxPackage"
-echo %GREEN%[✓] Windows Debloat Completed.%RESET%
-pause
-goto menu_advanced
-
-:disable_telemetry
-cls
-echo %YELLOW%Disabling Windows Telemetry and Data Collection...%RESET%
-
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f >nul 2>&1
-sc config DiagTrack start= disabled >nul 2>&1
-sc stop DiagTrack >nul 2>&1
-
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%   Debloating Windows (Removing Junk Default Apps)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Removing unnecessary apps... Please wait.%RESET%
 echo.
-echo %GREEN%[✓] Telemetry and Tracking disabled successfully.%RESET%
-pause
-goto menu_security
-
-:enable_telemetry
-cls
-echo %YELLOW%Enabling Windows Telemetry and Data Collection...%RESET%
-echo.
-
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 1 /f >nul 2>&1
-sc config DiagTrack start= auto >nul 2>&1
-net start DiagTrack >nul 2>&1
-
-echo.
-echo %GREEN%[✓] Telemetry and Tracking services restored to default.%RESET%
-pause
-goto menu_security
-
-:clean_updates
-cls
-echo %YELLOW%Cleaning up old Windows Updates (Deep Clean)...%RESET%
-echo %WHITE%This process might take a long time. Please do not close the window...%RESET%
-echo.
-
-cmd /c "DISM /online /Cleanup-Image /StartComponentCleanup /ResetBase"
-
-echo.
-if exist "C:\Windows.old" (
-    echo %YELLOW%Removing Windows.old folder...%RESET%
-    rd /s /q "C:\Windows.old"
-)
-
-echo.
-echo %GREEN%[✓] Updates Cleanup Completed Successfully.%RESET%
+powershell -Command "Get-AppxPackage *bing* | Remove-AppxPackage" >nul 2>&1
+powershell -Command "Get-AppxPackage *zune* | Remove-AppxPackage" >nul 2>&1
+powershell -Command "Get-AppxPackage Microsoft.XboxApp | Remove-AppxPackage" >nul 2>&1
+powershell -Command "Get-AppxPackage *solitaire* | Remove-AppxPackage" >nul 2>&1
+powershell -Command "Get-AppxPackage *skypeapp* | Remove-AppxPackage" >nul 2>&1
+echo %GREEN%[✓] Windows Debloat Completed Successfully.%RESET%
 echo.
 pause
 goto menu_advanced
@@ -562,39 +921,21 @@ goto menu_advanced
 :wifi_pwd
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%             Saved Wi-Fi Passwords%RESET%
+echo %GREEN%                Saved Wi-Fi Passwords%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-powershell -Command "netsh wlan show profiles | Select-String 'All User Profile' | ForEach-Object { $profile = $_.ToString().Split(':')[1].Trim(); $pass = (netsh wlan show profile name=$profile key=clear | Select-String 'Key Content' | ForEach-Object { $_.ToString().Split(':')[1].Trim() }); [PSCustomObject]@{ 'Wi-Fi Name' = $profile; 'Password' = $pass } } | Format-Table -AutoSize"
+powershell -Command "netsh wlan show profiles | Select-String 'All User Profile' | ForEach-Object { $profile = $_.ToString().Split(':')[1].Trim(); $pass = (netsh wlan show profile name=\"$profile\" key=clear | Select-String 'Key Content' | ForEach-Object { $_.ToString().Split(':')[1].Trim() }); [PSCustomObject]@{ 'Wi-Fi Name' = $profile; 'Password' = $pass } } | Format-Table -AutoSize"
 echo.
-pause
-goto menu_advanced
-
-:fix_defender
-cls
-echo %YELLOW%Repairing and Resetting Windows Defender...%RESET%
-Get-AppxPackage Microsoft.Windows.SecHealthUI | ForEach {
-Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"
-}
-echo %GREEN%[✓] Windows Defender has been reset successfully.%RESET%
-pause
-goto menu_security
-
-:clean_dumps
-cls
-echo %YELLOW%Cleaning Windows Crash Dumps and Error Logs...%RESET%
-del /f /q /s %systemroot%\Minidump\* >nul 2>&1
-del /f /q /s %systemroot%\MEMORY.DMP >nul 2>&1
-del /f /q "%systemroot%\Logs\CBS\*.cab" >nul 2>&1
-echo %GREEN%[✓] Crash Dumps and System Logs cleaned!%RESET%
 pause
 goto menu_advanced
 
 :disable_updates
 cls
-echo %YELLOW%Disabling Windows Update services and registry keys...%RESET%
+echo %CYAN%====================================================%RESET%
+echo %RED%          Disabling Windows Update Services%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Stopping services and modifying registry keys...%RESET%
 echo.
-
 net stop wuauserv >nul 2>&1
 net stop bits >nul 2>&1
 net stop dosvc >nul 2>&1
@@ -618,9 +959,11 @@ goto menu_advanced
 
 :enable_updates
 cls
-echo %YELLOW%Enabling Windows Update services...%RESET%
+echo %CYAN%====================================================%RESET%
+echo %GREEN%          Enabling Windows Update Services%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Restoring services and registry keys to default...%RESET%
 echo.
-
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\wuauserv" /v Start /t REG_DWORD /d 3 /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\bits" /v Start /t REG_DWORD /d 2 /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\dosvc" /v Start /t REG_DWORD /d 2 /f >nul 2>&1
@@ -641,16 +984,396 @@ echo.
 pause
 goto menu_advanced
 
+:clean_gamers_cache
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%          Cleaning Gaming ^& Apps Cache%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Clearing temporary cache for Steam, Epic, EA, and Discord...%RESET%
+echo.
+if exist "%appdata%\Discord\Cache" del /q /f /s "%appdata%\Discord\Cache\*" >nul 2>&1
+if exist "%localappdata%\Steam\htmlcache" del /q /f /s "%localappdata%\Steam\htmlcache\*" >nul 2>&1
+if exist "%localappdata%\EpicGamesLauncher\Saved\webcache" del /q /f /s "%localappdata%\EpicGamesLauncher\Saved\webcache\*" >nul 2>&1
+if exist "%localappdata%\Electronic Arts\EA Desktop\Cache" del /q /f /s "%localappdata%\Electronic Arts\EA Desktop\Cache\*" >nul 2>&1
+if exist "%programdata%\Origin\DownloadCache" del /q /f /s "%programdata%\Origin\DownloadCache\*" >nul 2>&1
+del /q /f /s "%localappdata%\D3DSCache\*" >nul 2>&1
+
+echo %GREEN%[✓] Gaming Cache Cleaned Successfully!%RESET%
+echo.
+pause
+goto menu_advanced
+
+:extract_oem_key
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Extract Original Windows Key (OEM)%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%Extracting original Windows product key from motherboard...%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+powershell -NoProfile -Command "$key = (Get-WmiObject -Query 'select * from SoftwareLicensingService').OA3xOriginalProductKey; if ($key) { Write-Host '    [✓] OEM Key Found: ' -NoNewline -ForegroundColor Green; Write-Host $key -ForegroundColor Yellow; $path = [Environment]::GetFolderPath('Desktop') + '\Windows_OEM_Key.txt'; $key | Out-File -FilePath $path; Write-Host '    [✓] A copy has been saved to your Desktop (Windows_OEM_Key.txt)' -ForegroundColor Cyan } else { Write-Host '    [!] No OEM Key found in BIOS/UEFI. (You might be using a Retail key or Digital License)' -ForegroundColor Red }"
+echo.
+pause
+goto menu_advanced
+
+:context_menu_mgr
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%            Context Menu Manager (Right-Click)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Add useful tools to your Windows right-click menu.%RESET%
+echo.
+echo %WHITE%[1]%RESET% Add "Take Ownership" (Gain full access to protected files/folders)
+echo %WHITE%[2]%RESET% Remove "Take Ownership"
+echo %RED%[0]%RESET% Back to Advanced Tools
+echo.
+set /p "ctx_ch=%YELLOW%Your Choice: %RESET%"
+
+if "%ctx_ch%"=="0" goto menu_advanced
+if "%ctx_ch%"=="1" (
+    echo.
+    echo %YELLOW%Adding "Take Ownership" to registry...%RESET%
+    reg add "HKCR\*\shell\runas" /ve /t REG_SZ /d "Take Ownership" /f >nul 2>&1
+    reg add "HKCR\*\shell\runas" /v "NoWorkingDirectory" /t REG_SZ /d "" /f >nul 2>&1
+    reg add "HKCR\*\shell\runas\command" /ve /t REG_SZ /d "cmd.exe /c takeown /f \"%%1\" && icacls \"%%1\" /grant administrators:F /c /l & pause" /f >nul 2>&1
+    reg add "HKCR\Directory\shell\runas" /ve /t REG_SZ /d "Take Ownership" /f >nul 2>&1
+    reg add "HKCR\Directory\shell\runas" /v "NoWorkingDirectory" /t REG_SZ /d "" /f >nul 2>&1
+    reg add "HKCR\Directory\shell\runas\command" /ve /t REG_SZ /d "cmd.exe /c takeown /f \"%%1\" /r /d y && icacls \"%%1\" /grant administrators:F /t /c /l /q & pause" /f >nul 2>&1
+    echo %GREEN%[✓] Added Successfully! Right-click any file/folder to see it.%RESET%
+    pause
+    goto context_menu_mgr
+)
+if "%ctx_ch%"=="2" (
+    echo.
+    echo %YELLOW%Removing "Take Ownership" from registry...%RESET%
+    reg delete "HKCR\*\shell\runas" /f >nul 2>&1
+    reg delete "HKCR\Directory\shell\runas" /f >nul 2>&1
+    echo %GREEN%[✓] Removed Successfully!%RESET%
+    pause
+    goto context_menu_mgr
+)
+goto context_menu_mgr
+
+:bsod_analyzer
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%           BSOD Log Analyzer (Blue Screen)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Scanning Windows Event Viewer for recent System Crashes...%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+powershell -NoProfile -Command "$events = Get-EventLog -LogName System -Source BugCheck -Newest 5 -ErrorAction SilentlyContinue; if ($events) { Write-Host 'Recent crashes found:' -ForegroundColor Red; foreach ($e in $events) { Write-Host ('Date: ' + $e.TimeGenerated) -ForegroundColor Cyan; Write-Host ('Info: ' + $e.Message) -ForegroundColor Yellow; Write-Host '----------------------------------------------------' } } else { Write-Host '    [✓] Great News! No recent Blue Screen crashes found in the Event Log.' -ForegroundColor Green }"
+echo.
+pause
+goto menu_advanced
+
+:winupdate
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%            Deep Repairing Windows Update%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Stopping services and cleaning update cache...%RESET%
+net stop wuauserv >nul 2>&1
+net stop cryptSvc >nul 2>&1
+net stop bits >nul 2>&1
+net stop msiserver >nul 2>&1
+
+rd /s /q C:\Windows\SoftwareDistribution >nul 2>&1
+rd /s /q C:\Windows\System32\catroot2 >nul 2>&1
+
+echo %WHITE%Restarting update services...%RESET%
+net start wuauserv >nul 2>&1
+net start cryptSvc >nul 2>&1
+net start bits >nul 2>&1
+net start msiserver >nul 2>&1
+UsoClient StartInteractiveScan
+
+echo.
+echo %GREEN%[✓] Windows Update Deep Reset Completed Successfully!%RESET%
+pause
+goto menu_repair
+
+:store_apps
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%           Repairing Store ^& Default Apps%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%This might take a minute, please wait...%RESET%
+echo.
+echo %YELLOW%1. Resetting Microsoft Store Cache...%RESET%
+wsreset.exe
+echo %YELLOW%2. Re-registering Windows Default Apps...%RESET%
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppXPackage -AllUsers | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register \"$($_.InstallLocation)\AppXManifest.xml\"}" >nul 2>&1
+
+echo.
+echo %GREEN%[✓] Microsoft Store and Default Apps Repaired!%RESET%
+pause
+goto menu_repair
+
+:icons_thumbs
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%            Rebuilding Icons ^& Thumbnails%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Screen might flash for a second, this is normal.%RESET%
+echo.
+
+taskkill /f /im explorer.exe >nul 2>&1
+del /f /s /q /a "%localappdata%\IconCache.db" >nul 2>&1
+del /f /s /q /a "%localappdata%\Microsoft\Windows\Explorer\iconcache_*.db" >nul 2>&1
+del /f /s /q /a "%localappdata%\Microsoft\Windows\Explorer\thumbcache_*.db" >nul 2>&1
+start explorer.exe
+
+echo.
+echo %GREEN%[✓] Icons and Thumbnails Cache Rebuilt Successfully!%RESET%
+pause
+goto menu_repair
+
+:taskbar_search
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%          Fixing Taskbar, Search ^& Explorer%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Restarting critical shell processes...%RESET%
+echo.
+
+taskkill /f /im explorer.exe >nul 2>&1
+taskkill /f /im SearchApp.exe >nul 2>&1
+taskkill /f /im SearchUI.exe >nul 2>&1
+
+echo %YELLOW%Re-registering Shell Experience and Cortana/Search...%RESET%
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage Microsoft.Windows.ShellExperienceHost | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register \"$($_.InstallLocation)\AppXManifest.xml\"}" >nul 2>&1
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage Microsoft.Windows.Cortana | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register \"$($_.InstallLocation)\AppXManifest.xml\"}" >nul 2>&1
+
+start explorer.exe
+echo.
+echo %GREEN%[✓] Taskbar, Search, and Explorer Reset Successfully!%RESET%
+pause
+goto menu_repair
+
+:fix_audio
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%               Fixing Audio Services%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Restarting Windows Audio endpoints...%RESET%
+echo.
+
+net stop audiosrv >nul 2>&1
+net stop AudioEndpointBuilder >nul 2>&1
+net start AudioEndpointBuilder >nul 2>&1
+net start audiosrv >nul 2>&1
+
+echo %GREEN%[✓] Audio Services Restarted.%RESET%
+echo.
+echo %WHITE%Starting Windows Audio Troubleshooter just in case...%RESET%
+msdt.exe -id AudioPlaybackDiagnostic
+pause
+goto menu_repair
+
+:fix_bluetooth
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%              Fixing Bluetooth Services%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Restarting Bluetooth Support Service...%RESET%
+echo.
+
+net stop bthserv >nul 2>&1
+net start bthserv >nul 2>&1
+
+echo %GREEN%[✓] Bluetooth Services Restarted Successfully!%RESET%
+echo %WHITE%If your device is still not working, try unpairing and pairing it again.%RESET%
+echo.
+pause
+goto menu_repair
+
+:fix_printer
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%           Fixing Printer ^& Print Spooler%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Stopping Spooler and clearing stuck print jobs...%RESET%
+echo.
+
+net stop spooler >nul 2>&1
+del /Q /F /S "%systemroot%\System32\Spool\Printers\*.*" >nul 2>&1
+net start spooler >nul 2>&1
+
+echo %GREEN%[✓] Print Queue Cleared and Services Restarted!%RESET%
+echo.
+pause
+goto menu_repair
+
+:restart_services
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Restarting Important Core Services%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Please wait...%RESET%
+echo.
+
+net stop wuauserv /y >nul 2>&1
+net start wuauserv >nul 2>&1
+net stop bits /y >nul 2>&1
+net start bits >nul 2>&1
+net stop cryptSvc /y >nul 2>&1
+net start cryptSvc >nul 2>&1
+net stop Winmgmt /y >nul 2>&1
+net start Winmgmt >nul 2>&1
+
+echo %GREEN%[✓] Core Windows Services Restarted Successfully!%RESET%
+echo.
+pause
+goto menu_repair
+
+:quickscan
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%              Windows Defender Quick Scan%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Scanning your system for active threats...%RESET%
+echo.
+"%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 1
+echo.
+echo %GREEN%[✓] Quick Scan Completed!%RESET%
+pause
+goto menu_security
+
+:fullscan
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%               Windows Defender Full Scan%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Performing a deep scan of all files. This will take a while...%RESET%
+echo.
+"%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 2
+echo.
+echo %GREEN%[✓] Full Scan Completed!%RESET%
+pause
+goto menu_security
+
+:offlinescan
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%             Windows Defender Offline Scan%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%This will %RED%RESTART%WHITE% your PC immediately and scan for stubborn%RESET%
+echo %WHITE%malware before Windows loads.%RESET%
+echo.
+echo %YELLOW%Make sure you have saved all your open files and work!%RESET%
+echo.
+pause
+powershell -Command "Start-MpWDOScan"
+goto menu_security
+
+:clear_defender_history
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Clearing Defender Protection History%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Fixes the glitch where Defender keeps warning about old threats.%RESET%
+echo.
+del /q /f /s "C:\ProgramData\Microsoft\Windows Defender\Scans\History\Service\*" >nul 2>&1
+echo %GREEN%[✓] Defender Protection History Cleared!%RESET%
+pause
+goto menu_security
+
+:fix_defender
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Deep Repairing Windows Defender%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%1. Removing restrictions from Registry...%RESET%
+reg delete "HKLM\Software\Policies\Microsoft\Windows Defender" /f >nul 2>&1
+reg delete "HKLM\Software\Policies\Microsoft\Windows Advanced Threat Protection" /f >nul 2>&1
+
+echo %WHITE%2. Restarting Security Services...%RESET%
+sc config WinDefend start= auto >nul 2>&1
+net start WinDefend >nul 2>&1
+sc config SecurityHealthService start= auto >nul 2>&1
+net start SecurityHealthService >nul 2>&1
+sc config wscsvc start= auto >nul 2>&1
+net start wscsvc >nul 2>&1
+
+echo %WHITE%3. Updating Signatures to fix engine crashes...%RESET%
+"%ProgramFiles%\Windows Defender\MpCmdRun.exe" -SignatureUpdate >nul 2>&1
+
+echo %WHITE%4. Re-registering Security Interface...%RESET%
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage Microsoft.Windows.SecHealthUI | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register \"$($_.InstallLocation)\AppXManifest.xml\"}" >nul 2>&1
+
+echo.
+echo %GREEN%[✓] Windows Defender Services and Engine Repaired Successfully!%RESET%
+pause
+goto menu_security
+
+:firewall_reset
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%             Resetting Windows Firewall%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Restoring default firewall rules and permissions...%RESET%
+echo.
+netsh advfirewall reset >nul 2>&1
+echo %GREEN%[✓] Windows Firewall Reset to Defaults Successfully!%RESET%
+pause
+goto menu_security
+
+:reset_hosts
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%                Resetting Hosts File%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Fixes internet redirects caused by malware or bad configs.%RESET%
+echo.
+echo # Copyright (c) 1993-2009 Microsoft Corp. > %windir%\System32\drivers\etc\hosts
+echo # This is a default HOSTS file. >> %windir%\System32\drivers\etc\hosts
+echo 127.0.0.1 localhost >> %windir%\System32\drivers\etc\hosts
+echo ::1 localhost >> %windir%\System32\drivers\etc\hosts
+echo %GREEN%[✓] Hosts File Reset to Default Successfully!%RESET%
+pause
+goto menu_security
+
+:disable_telemetry
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%       Disabling Windows Telemetry ^& Tracking%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Stopping data collection services...%RESET%
+echo.
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f >nul 2>&1
+sc config DiagTrack start= disabled >nul 2>&1
+sc stop DiagTrack >nul 2>&1
+echo %GREEN%[✓] Telemetry and Tracking disabled successfully.%RESET%
+pause
+goto menu_security
+
+:enable_telemetry
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%       Enabling Windows Telemetry ^& Tracking%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Restoring default data collection services...%RESET%
+echo.
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 1 /f >nul 2>&1
+sc config DiagTrack start= auto >nul 2>&1
+net start DiagTrack >nul 2>&1
+echo %GREEN%[✓] Telemetry and Tracking services restored to default.%RESET%
+pause
+goto menu_security
+
 :driver_updater
 cls
 echo %CYAN%====================================================%RESET%
 echo %GREEN%               Driver Update Wizard%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %YELLOW%Checking for available driver updates... Please wait...%RESET%
+echo %YELLOW%Checking for available Windows Update drivers... Please wait...%RESET%
+echo %WHITE%This module checks Microsoft servers for core system drivers.%RESET%
+echo %CYAN%Note: For the latest GPU drivers, please use official apps (NVIDIA/AMD/Intel).%RESET%
 echo.
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "if (-not (Get-Module -ListAvailable -Name Get-Module -ListAvailable PSWindowsUpdate)) { Install-Module -Name Get-Module -ListAvailable PSWindowsUpdate -Force -SkipPublisherCheck -AllowClobber }" >nul 2>&1
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) { Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null; Install-Module -Name PSWindowsUpdate -Force -SkipPublisherCheck -AllowClobber | Out-Null }" >nul 2>&1
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers.Count -gt 0) { $i = 1; foreach ($d in $drivers) { Write-Host \"[$i] $($d.Title)\"; $i++ }; exit 0 } else { Write-Host 'All drivers are fully up to date!' -ForegroundColor Green; exit 1 }"
 
 if %errorlevel% equ 1 (
@@ -697,21 +1420,30 @@ echo %GREEN%               Drivers Backup Wizard%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %YELLOW%Creating a complete backup of your drivers...%RESET%
+echo.
+
+set /p "backup_drv=%YELLOW%Enter Drive Letter to save backup (e.g., C, D, E): %RESET%"
+
+set "backup_drv=%backup_drv::=%"
+
+set "BACKUP_PATH=%backup_drv%:\Drivers_Backup"
+
+if not exist "%BACKUP_PATH%" mkdir "%BACKUP_PATH%"
+
+echo.
 echo %WHITE%Please wait, this might take a minute or two...%RESET%
 echo.
 
-if not exist "D:\Drivers_Backup" mkdir "D:\Drivers_Backup"
-
-dism /online /export-driver /destination:"D:\Drivers_Backup"
+dism /online /export-driver /destination:"%BACKUP_PATH%"
 
 if %errorlevel% equ 0 (
     echo.
     echo %GREEN%[✓] Drivers Backup Created Successfully!%RESET%
-    echo %WHITE%Saved to: %YELLOW%D:\Drivers_Backup%RESET%
+    echo %WHITE%Saved to: %YELLOW%%BACKUP_PATH%%RESET%
 ) else (
     echo.
     echo %RED%[X] Failed to backup drivers.%RESET%
-    echo %YELLOW%Hint: Ensure you have enough space on Drive D:%RESET%
+    echo %YELLOW%Hint: Ensure you entered a valid drive and have enough free space.%RESET%
 )
 echo.
 pause
@@ -725,18 +1457,28 @@ echo %GREEN%               Drivers Restore Wizard%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %YELLOW%Restoring all drivers from backup...%RESET%
-echo %WHITE%Windows will scan and install your backed up drivers...%RESET%
 echo.
 
-if not exist "D:\Drivers_Backup" (
-    echo %RED%[X] Error: Backup folder not found at D:\Drivers_Backup%RESET%
-    echo %YELLOW%Please make sure the backup folder exists.%RESET%
+set /p "restore_drv=%YELLOW%Enter Drive Letter where backup is located (e.g., C, D, E): %RESET%"
+
+set "restore_drv=%restore_drv::=%"
+
+set "BACKUP_PATH=%restore_drv%:\Drivers_Backup"
+
+if not exist "%BACKUP_PATH%" (
+    echo.
+    echo %RED%[X] Error: Backup folder not found at %BACKUP_PATH%%RESET%
+    echo %YELLOW%Please make sure you entered the correct drive letter.%RESET%
     echo.
     pause
     goto menu_drivers
 )
 
-pnputil /add-driver "D:\Drivers_Backup\*.inf" /subdirs /install /reboot
+echo.
+echo %WHITE%Windows will scan and install your backed up drivers...%RESET%
+echo.
+
+pnputil /add-driver "%BACKUP_PATH%\*.inf" /subdirs /install /reboot
 
 echo.
 echo %GREEN%[✓] Drivers Restoration Process Completed!%RESET%
@@ -899,17 +1641,6 @@ echo %GREEN%[✓] DNS Restored to Default Successfully!%RESET%
 pause
 goto change_dns
 
-:clean_gamers_cache
-cls
-echo %YELLOW%Cleaning Gaming & Apps Cache...%RESET%
-if exist "%appdata%\Discord\Cache" del /q /f /s "%appdata%\Discord\Cache\*" >nul 2>&1
-if exist "%localappdata%\Steam\htmlcache" del /q /f /s "%localappdata%\Steam\htmlcache\*" >nul 2>&1
-if exist "%localappdata%\EpicGamesLauncher\Saved\webcache" del /q /f /s "%localappdata%\EpicGamesLauncher\Saved\webcache\*" >nul 2>&1
-del /q /f /s "%localappdata%\D3DSCache\*" >nul 2>&1
-echo %GREEN%[✓] Gaming Cache Cleaned Successfully!%RESET%
-pause
-goto menu_advanced
-
 :menu_apps
 cls
 echo %CYAN%====================================================%RESET%
@@ -918,20 +1649,19 @@ echo %CYAN%====================================================%RESET%
 echo.
 echo %GREEN%[1]%RESET% %GREEN%Update Installed Programs (Interactive Wizard)%RESET%
 echo %GREEN%[2]%RESET% %RED%Uninstall Installed Programs (Silent Uninstaller)%RESET%
-echo %GREEN%[3]%RESET% %YELLOW%Microsoft .NET Framework Full%RESET%
-echo %GREEN%[4]%RESET% %YELLOW%Microsoft DirectX Runtime%RESET%
+echo %GREEN%[3]%RESET% %YELLOW%Install ALL Core Runtimes (C++, DX, .NET, WebView2, etc..)%RESET%
 echo %CYAN%----------------------------------------------------%RESET%
-echo %GREEN%[5]%RESET% Google Chrome                  %GREEN%[11]%RESET% WinRAR
-echo %GREEN%[6]%RESET% Mozilla Firefox                %GREEN%[12]%RESET% 7-Zip
-echo %GREEN%[7]%RESET% Internet Download Manager      %GREEN%[13]%RESET% Visual Studio Code
-echo %GREEN%[8]%RESET% Discord                        %GREEN%[14]%RESET% Steam
-echo %GREEN%[9]%RESET% Zoom                           %GREEN%[15]%RESET% Epic Games Launcher
-echo %GREEN%[10]%RESET% WhatsApp Desktop              %GREEN%[16]%RESET% OBS Studio
-echo                                    %GREEN%[17]%RESET% VLC Media Player
+echo %GREEN%[4]%RESET% Google Chrome                  %GREEN%[11]%RESET% WinRAR
+echo %GREEN%[5]%RESET% Mozilla Firefox                %GREEN%[12]%RESET% 7-Zip
+echo %GREEN%[6]%RESET% Brave Browser                  %GREEN%[13]%RESET% Steam
+echo %GREEN%[7]%RESET% Internet Download Manager      %GREEN%[14]%RESET% Epic Games Launcher
+echo %GREEN%[8]%RESET% Discord                        %GREEN%[15]%RESET% OBS Studio
+echo %GREEN%[9]%RESET% Zoom                           %GREEN%[16]%RESET% VLC Media Player
+echo %GREEN%[10]%RESET% WhatsApp Desktop              
 echo.
 echo %CYAN%----------------------------------------------------%RESET%
 echo %GREEN%[S]%RESET% %CYAN%Search ^& Install Custom App (Write App Name)%RESET%
-echo %YELLOW%[A] Install ALL Basic Apps (5, 7, 11, 12, 17)%RESET%
+echo %YELLOW%[A] Install ALL Basic Apps (4, 7, 11, 12, 16)%RESET%
 echo %RED%[0] Back to Main Menu%RESET%
 echo.
 echo %CYAN%----------------------------------------------------%RESET%
@@ -942,22 +1672,43 @@ if /i "%app_ch%"=="a" goto install_all_apps
 if /i "%app_ch%"=="s" goto search_install_app
 if "%app_ch%"=="1" goto apps_updater_wizard
 if "%app_ch%"=="2" goto apps_uninstaller_wizard
+if "%app_ch%"=="3" goto install_core_runtimes
 
-if "%app_ch%"=="3" set "app_id=Microsoft.DotNet.Framework.DeveloperPack_4" & goto install_silent
-if "%app_ch%"=="4" set "app_id=Microsoft.DirectX" & goto install_silent
-if "%app_ch%"=="5" set "app_id=Google.Chrome" & goto install_silent
-if "%app_ch%"=="6" set "app_id=Mozilla.Firefox" & goto install_silent
+if "%app_ch%"=="4" set "app_id=Google.Chrome" & goto install_silent
+if "%app_ch%"=="5" set "app_id=Mozilla.Firefox" & goto install_silent
+if "%app_ch%"=="6" set "app_id=XP8C9QZMS2PC1T" & goto install_silent
 if "%app_ch%"=="7" set "app_id=Tonec.InternetDownloadManager" & goto install_silent
 if "%app_ch%"=="8" set "app_id=Discord.Discord" & goto install_silent
 if "%app_ch%"=="9" set "app_id=Zoom.Zoom" & goto install_silent
 if "%app_ch%"=="10" set "app_id=WhatsApp.WhatsApp" & goto install_silent
 if "%app_ch%"=="11" set "app_id=RARLab.WinRAR" & goto install_silent
 if "%app_ch%"=="12" set "app_id=7zip.7zip" & goto install_silent
-if "%app_ch%"=="13" set "app_id=Microsoft.VisualStudioCode" & goto install_silent
-if "%app_ch%"=="14" set "app_id=Valve.Steam" & goto install_silent
-if "%app_ch%"=="15" set "app_id=EpicGames.EpicGamesLauncher" & goto install_silent
-if "%app_ch%"=="16" set "app_id=OBSProject.OBSStudio" & goto install_silent
-if "%app_ch%"=="17" set "app_id=VideoLAN.VLC" & goto install_silent
+if "%app_ch%"=="13" set "app_id=Valve.Steam" & goto install_silent
+if "%app_ch%"=="14" set "app_id=EpicGames.EpicGamesLauncher" & goto install_silent
+if "%app_ch%"=="15" set "app_id=OBSProject.OBSStudio" & goto install_silent
+if "%app_ch%"=="16" set "app_id=VideoLAN.VLC" & goto install_silent
+goto menu_apps
+
+:install_core_runtimes
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%      Installing ALL Core ^& Legacy Runtimes%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%This will install: Modern ^& Legacy Visual C++, DirectX,%RESET%
+echo %WHITE%.NET 8, WebView2, XNA Framework, and Java JRE.%RESET%
+echo.
+echo %RED%[!] Please wait, this might take up to 10 minutes...%RESET%
+echo.
+
+for %%r in (Microsoft.VCRedist.2015+.x64 Microsoft.VCRedist.2015+.x86 Microsoft.VCRedist.2013.x64 Microsoft.VCRedist.2013.x86 Microsoft.VCRedist.2012.x64 Microsoft.VCRedist.2012.x86 Microsoft.VCRedist.2010.x64 Microsoft.VCRedist.2010.x86 Microsoft.DirectX Microsoft.DotNet.DesktopRuntime.8 Microsoft.EdgeWebView2Runtime Microsoft.XNAFramework Oracle.JavaRuntimeEnvironment) do (
+    echo %YELLOW%Installing: %%r...%RESET%
+    winget install --id "%%r" --silent --accept-source-agreements --accept-package-agreements >nul 2>&1
+)
+
+echo.
+echo %GREEN%[✓] All Core and Legacy Runtimes Installed Successfully!%RESET%
+echo %WHITE%Your PC is now fully optimized for all games and heavy software.%RESET%
+pause
 goto menu_apps
 
 :install_silent
@@ -1006,7 +1757,7 @@ echo %WHITE%Example: %CYAN%Google.Chrome%WHITE% or %CYAN%EpicGamesLauncher%RESET
 echo %RED%[0] Cancel and Back%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-set /p "un_app_id=%YELLOW%Enter App ID or Name to UNINSTALL: %RESET%"
+set /p "un_app_id=%YELLOW%Enter App ID or Name App to UNINSTALL: %RESET%"
 
 if "%un_app_id%"=="0" goto menu_apps
 if "%un_app_id%"=="" goto apps_uninstaller_wizard
@@ -1135,10 +1886,507 @@ if %errorlevel% equ 0 (
 pause
 goto menu_apps
 
+:open_taskmgr
+start taskmgr
+goto menu_maintenance
+
+:open_services
+start services.msc
+goto menu_maintenance
+
+:open_devicemgr
+start devmgmt.msc
+goto menu_maintenance
+
+:open_diskcleanup
+start cleanmgr
+goto menu_maintenance
+
+:open_msconfig
+start msconfig
+goto menu_maintenance
+
+:open_regedit
+start regedit
+goto menu_maintenance
+
+:open_startup
+start shell:startup
+goto menu_maintenance
+
+:open_resmon
+start resmon
+goto menu_maintenance
+
+:open_eventviewer
+start eventvwr.msc
+goto menu_maintenance
+
+:open_reliability
+start perfmon /rel
+goto menu_maintenance
+
+:open_wintools
+start control admintools
+goto menu_maintenance
+
+:open_programs
+start appwiz.cpl
+goto menu_maintenance
+
+:open_networkreset
+start ms-settings:network-status
+goto menu_maintenance
+
+:open_dxdiag
+start dxdiag
+goto menu_maintenance
+
+:open_sysinfo
+start msinfo32
+goto menu_maintenance
+
+:open_temp
+start %temp%
+goto menu_maintenance
+
+:open_advancedsys
+start sysdm.cpl
+goto menu_maintenance
+
+:open_memorydiag
+mdsched.exe
+goto menu_maintenance
+
+:open_diskmgmt
+start diskmgmt.msc
+goto menu_maintenance
+
+:open_compmgmt
+start compmgmt.msc
+goto menu_maintenance
+
+:open_gpedit
+start gpedit.msc
+goto menu_maintenance
+
+:open_powercfg
+start powercfg.cpl
+goto menu_maintenance
+
+:open_soundcpl
+start mmsys.cpl
+goto menu_maintenance
+
+:open_ncpa
+start ncpa.cpl
+goto menu_maintenance
+
+:open_taskschd
+start taskschd.msc
+goto menu_maintenance
+
+:open_firewall
+start wf.msc
+goto menu_maintenance
+
+:open_lusrmgr
+start lusrmgr.msc
+goto menu_maintenance
+
+:open_netplwiz
+start netplwiz
+goto menu_maintenance
+
+:open_perfmon
+start perfmon.msc
+goto menu_maintenance
+
+:open_wusettings
+start ms-settings:windowsupdate
+goto menu_maintenance
+
+:add_user
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%               Add New User Account%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "new_usr=%YELLOW%Enter new username (no spaces): %RESET%"
+
+if "%new_usr%"=="0" goto menu_users
+if "%new_usr%"=="" goto menu_users
+
+set /p "new_pass=%YELLOW%Enter password (leave blank for no password): %RESET%"
+echo.
+echo %YELLOW%Creating user '%new_usr%'...%RESET%
+net user "%new_usr%" "%new_pass%" /add >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo %GREEN%[✓] User '%new_usr%' created successfully!%RESET%
+) else (
+    echo %RED%[X] Failed to create user. It might already exist or the name is invalid.%RESET%
+)
+echo.
+pause
+goto menu_users
+
+
+:delete_user
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%                Delete User Account%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+call :show_users_list
+echo %RED%[!] WARNING: This action cannot be undone.%RESET%
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "del_usr=%YELLOW%Enter the username to DELETE: %RESET%"
+
+if "%del_usr%"=="0" goto menu_users
+if "%del_usr%"=="" goto menu_users
+
+echo.
+echo %YELLOW%Attempting to delete user '%del_usr%'...%RESET%
+net user "%del_usr%" /delete >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo %GREEN%[✓] User '%del_usr%' deleted successfully!%RESET%
+) else (
+    echo %RED%[X] Failed to delete user. Make sure the name is correct.%RESET%
+    echo %WHITE%Note: You cannot delete the account you are currently logged into.%RESET%
+)
+echo.
+pause
+goto menu_users
+
+
+:rename_user
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%               Rename User Account%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+call :show_users_list
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "old_name=%YELLOW%Enter the CURRENT username: %RESET%"
+
+if "%old_name%"=="0" goto menu_users
+if "%old_name%"=="" goto menu_users
+
+set /p "new_name=%YELLOW%Enter the NEW username: %RESET%"
+
+if "%new_name%"=="0" goto menu_users
+if "%new_name%"=="" goto menu_users
+
+echo.
+echo %YELLOW%Renaming '%old_name%' to '%new_name%'...%RESET%
+wmic useraccount where name="%old_name%" rename "%new_name%" >nul 2>&1
+if %errorlevel% neq 0 (
+    powershell -NoProfile -Command "Rename-LocalUser -Name '%old_name%' -NewName '%new_name%'" >nul 2>&1
+)
+
+if %errorlevel% equ 0 (
+    echo %GREEN%[✓] Success! User '%old_name%' is now named '%new_name%'.%RESET%
+) else (
+    echo %RED%[X] Failed to rename user. Make sure the current username is correct.%RESET%
+)
+echo.
+pause
+goto menu_users
+
+
+:change_password
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%              Change User Password%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+call :show_users_list
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "target_usr=%YELLOW%Enter the username: %RESET%"
+
+if "%target_usr%"=="0" goto menu_users
+if "%target_usr%"=="" goto menu_users
+
+set /p "target_pass=%YELLOW%Enter the NEW password (leave blank to remove): %RESET%"
+echo.
+echo %YELLOW%Changing password for '%target_usr%'...%RESET%
+net user "%target_usr%" "%target_pass%" >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo %GREEN%[✓] Password changed successfully for '%target_usr%'!%RESET%
+) else (
+    echo %RED%[X] Failed. Make sure you typed the username correctly.%RESET%
+)
+echo.
+pause
+goto menu_users
+
+
+:grant_admin
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Grant Administrator Privileges%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+call :show_users_list
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "admin_usr=%YELLOW%Enter the username to promote to Admin: %RESET%"
+
+if "%admin_usr%"=="0" goto menu_users
+if "%admin_usr%"=="" goto menu_users
+
+echo.
+echo %YELLOW%Promoting '%admin_usr%' to Administrator...%RESET%
+set "AdminGroup="
+for /f "delims=" %%G in ('powershell -NoProfile -Command "(Get-LocalGroup | Where-Object { $_.SID -eq 'S-1-5-32-544' }).Name"') do set "AdminGroup=%%G"
+
+net localgroup "%AdminGroup%" "%admin_usr%" /add >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo %GREEN%[✓] Success! User '%admin_usr%' is now an Administrator.%RESET%
+) else (
+    echo %RED%[X] Failed. User might already be an admin, or the name is incorrect.%RESET%
+)
+echo.
+pause
+goto menu_users
+
+
+:revoke_admin
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%      Revoke Administrator Privileges (Demote)%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+call :show_users_list
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "std_usr=%YELLOW%Enter the username to demote to Standard: %RESET%"
+
+if "%std_usr%"=="0" goto menu_users
+if "%std_usr%"=="" goto menu_users
+
+echo.
+echo %YELLOW%Removing '%std_usr%' from Administrators...%RESET%
+set "AdminGroup="
+for /f "delims=" %%G in ('powershell -NoProfile -Command "(Get-LocalGroup | Where-Object { $_.SID -eq 'S-1-5-32-544' }).Name"') do set "AdminGroup=%%G"
+
+net localgroup "%AdminGroup%" "%std_usr%" /delete >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo %GREEN%[✓] Success! User '%std_usr%' is now a Standard User.%RESET%
+) else (
+    echo %RED%[X] Failed. User might not be an admin, or the name is incorrect.%RESET%
+    echo %WHITE%Note: You cannot demote the built-in Administrator account.%RESET%
+)
+echo.
+pause
+goto menu_users
+
+
+:hide_account
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%          Hide Account from Login Screen%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+call :show_users_list
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "hide_usr=%YELLOW%Enter the username to hide: %RESET%"
+
+if "%hide_usr%"=="0" goto menu_users
+if "%hide_usr%"=="" goto menu_users
+
+echo.
+echo %YELLOW%Hiding user '%hide_usr%'...%RESET%
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList" /v "%hide_usr%" /t REG_DWORD /d 0 /f >nul 2>&1
+
+echo %GREEN%[✓] User '%hide_usr%' is now hidden from the login screen!%RESET%
+echo %WHITE%Note: To login to this account, you will need to type its name manually.%RESET%
+echo.
+pause
+goto menu_users
+
+
+:unhide_account
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%        Show Hidden Account on Login Screen%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+call :show_users_list
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "unhide_usr=%YELLOW%Enter the username to show (unhide): %RESET%"
+
+if "%unhide_usr%"=="0" goto menu_users
+if "%unhide_usr%"=="" goto menu_users
+
+echo.
+echo %YELLOW%Restoring user '%unhide_usr%' to the login screen...%RESET%
+reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList" /v "%unhide_usr%" /f >nul 2>&1
+
+echo %GREEN%[✓] User '%unhide_usr%' is now visible on the login screen again!%RESET%
+echo.
+pause
+goto menu_users
+
+
+:toggle_user_status
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%         Freeze / Unfreeze User Account%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+call :show_users_list
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "status_usr=%YELLOW%Enter the username: %RESET%"
+
+if "%status_usr%"=="0" goto menu_users
+if "%status_usr%"=="" goto menu_users
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%[1]%RESET% Freeze Account (Disable from Login)
+echo %WHITE%[2]%RESET% Unfreeze Account (Enable for Login)
+echo %RED%[0]%RESET% Cancel
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "status_ch=%YELLOW%Choose action: %RESET%"
+
+if "%status_ch%"=="1" (
+    net user "%status_usr%" /active:no >nul 2>&1
+    echo.
+    echo %GREEN%[✓] Account '%status_usr%' is now FROZEN and Disabled.%RESET%
+    echo.
+    pause
+    goto menu_users
+)
+if "%status_ch%"=="2" (
+    net user "%status_usr%" /active:yes >nul 2>&1
+    echo.
+    echo %GREEN%[✓] Account '%status_usr%' is now ACTIVE and Enabled.%RESET%
+    echo.
+    pause
+    goto menu_users
+)
+goto menu_users
+
+
+:toggle_builtin_admin
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%          Toggle Built-in Administrator%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%Locating the exact Built-in Administrator name for your OS language...%RESET%
+set "BuiltInAdmin="
+for /f "delims=" %%G in ('powershell -NoProfile -Command "(Get-LocalUser | Where-Object { $_.SID -like '*-500' }).Name"') do set "BuiltInAdmin=%%G"
+
+if "%BuiltInAdmin%"=="" (
+    echo %RED%[X] Error: Could not locate the Built-in Administrator account.%RESET%
+    pause
+    goto menu_users
+)
+
+echo %YELLOW%Found Built-in Admin: %BuiltInAdmin%%RESET%
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%[1]%RESET% Enable Built-in Administrator
+echo %WHITE%[2]%RESET% Disable Built-in Administrator
+echo %RED%[0]%RESET% Cancel
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "admin_ch=%YELLOW%Choose action: %RESET%"
+
+if "%admin_ch%"=="1" (
+    net user "%BuiltInAdmin%" /active:yes >nul 2>&1
+    echo.
+    echo %GREEN%[✓] Built-in Administrator is now ENABLED!%RESET%
+    echo.
+    pause
+    goto menu_users
+)
+if "%admin_ch%"=="2" (
+    net user "%BuiltInAdmin%" /active:no >nul 2>&1
+    echo.
+    echo %GREEN%[✓] Built-in Administrator is now DISABLED!%RESET%
+    echo.
+    pause
+    goto menu_users
+)
+goto menu_users
+
+
+:user_info
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%            Detailed User Information%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+call :show_users_list
+echo %RED%[0]%RESET% Cancel and Back
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "info_usr=%YELLOW%Enter the username to view details: %RESET%"
+
+if "%info_usr%"=="0" goto menu_users
+if "%info_usr%"=="" goto menu_users
+
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%      Report for User: %info_usr%%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+net user "%info_usr%"
+echo.
+echo %CYAN%====================================================%RESET%
+pause
+goto menu_users
+
+:about
+cls
+
+echo %CYAN%====================================================%RESET%
+echo %GREEN%                 About Developer%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %WHITE%Developer:%RESET% Hesham Taha
+echo %WHITE%YouTube:%RESET% Hesham Taha
+echo %WHITE%Facebook:%RESET% Hesham Taha Official
+echo %WHITE%Version:%RESET% 1.4
+echo.
+
+echo %YELLOW%Opening links...%RESET%
+
+timeout /t 2 >nul
+
+start "" "https://www.youtube.com/@heshamtaha1"
+start "" "https://facebook.com/HeshamTahaOfficial"
+
+pause
+goto menu
+
+:: --- CALL FUNCTIONS ---
+
+:show_users_list
+echo %WHITE%Current Users on this PC:%RESET%
+net user | findstr /V "Command The"
+echo.
+exit /b
+
 :AUTO_UPDATE
 setlocal EnableDelayedExpansion
 
-set CURRENT_VERSION=1.3
+set CURRENT_VERSION=1.4
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
 
@@ -1195,27 +2443,3 @@ if exist "%TEMP_VERSION%" (
 
 endlocal
 exit /b
-
-:about
-cls
-
-echo %CYAN%====================================================%RESET%
-echo %GREEN%                 About Developer%RESET%
-echo %CYAN%====================================================%RESET%
-echo.
-
-echo %WHITE%Developer:%RESET% Hesham Taha
-echo %WHITE%YouTube:%RESET% Hesham Taha
-echo %WHITE%Facebook:%RESET% Hesham Taha Official
-echo %WHITE%Version:%RESET% 1.3
-echo.
-
-echo %YELLOW%Opening links...%RESET%
-
-timeout /t 2 >nul
-
-start "" "https://www.youtube.com/@heshamtaha1"
-start "" "https://facebook.com/HeshamTahaOfficial"
-
-pause
-goto menu
