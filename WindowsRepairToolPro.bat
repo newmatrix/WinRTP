@@ -1427,8 +1427,9 @@ echo %WHITE%This module checks Microsoft servers for core system drivers.%RESET%
 echo %CYAN%Note: For the latest GPU drivers, please use official apps (NVIDIA/AMD/Intel).%RESET%
 echo.
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) { Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null; Install-Module -Name PSWindowsUpdate -Force -SkipPublisherCheck -AllowClobber | Out-Null }" >nul 2>&1
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers.Count -gt 0) { $i = 1; foreach ($d in $drivers) { Write-Host \"[$i] $($d.Title)\"; $i++ }; exit 0 } else { Write-Host 'All drivers are fully up to date!' -ForegroundColor Green; exit 1 }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) { Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser -ErrorAction SilentlyContinue | Out-Null; Install-Module -Name PowerShellGet -Force -SkipPublisherCheck -AllowClobber -Scope CurrentUser -ErrorAction SilentlyContinue | Out-Null; Install-Module -Name PSWindowsUpdate -Force -SkipPublisherCheck -AllowClobber -Scope CurrentUser -ErrorAction SilentlyContinue | Out-Null }" >nul 2>&1
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module PSWindowsUpdate -ErrorAction SilentlyContinue; $updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers.Count -gt 0) { $i = 1; foreach ($d in $drivers) { Write-Host \"[$i] $($d.Title)\"; $i++ }; exit 0 } else { Write-Host 'All drivers are fully up to date!' -ForegroundColor Green; exit 1 }"
 
 if %errorlevel% equ 1 (
     echo.
@@ -1451,7 +1452,7 @@ if /i "%drv_sel%"=="0" goto menu_drivers
 if /i "%drv_sel%"=="A" (
     echo.
     echo %YELLOW%Updating ALL drivers... This might take a while.%RESET%
-    powershell -NoProfile -ExecutionPolicy Bypass -Command "$updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers.Count -gt 0) { $drivers | Install-WindowsUpdate -AcceptAll -AutoReboot:$false }"
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module PSWindowsUpdate -ErrorAction SilentlyContinue; $updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers.Count -gt 0) { $drivers | Install-WindowsUpdate -AcceptAll -AutoReboot:$false }"
     echo.
     echo %GREEN%[✓] All drivers updated successfully!%RESET%
     pause
@@ -1460,7 +1461,7 @@ if /i "%drv_sel%"=="A" (
 
 echo.
 echo %YELLOW%Preparing to install the selected driver...%RESET%
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$idx = [int]'%drv_sel%' - 1; $updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers[$idx]) { Write-Host \"Installing: $($drivers[$idx].Title)\" -ForegroundColor Yellow; Install-WindowsUpdate -UpdateID $drivers[$idx].UpdateID -AcceptAll -AutoReboot:$false } else { Write-Host 'Invalid Selection' -ForegroundColor Red }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module PSWindowsUpdate -ErrorAction SilentlyContinue; $idx = [int]'%drv_sel%' - 1; $updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers[$idx]) { Write-Host \"Installing: $($drivers[$idx].Title)\" -ForegroundColor Yellow; Install-WindowsUpdate -UpdateID $drivers[$idx].UpdateID -AcceptAll -AutoReboot:$false } else { Write-Host 'Invalid Selection' -ForegroundColor Red }"
 echo.
 echo %GREEN%[✓] Selected driver installation attempt completed.%RESET%
 echo.
