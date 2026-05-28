@@ -1476,8 +1476,14 @@ echo %CYAN%====================================================%RESET%
 echo.
 echo %YELLOW%Creating a complete backup of your drivers...%RESET%
 echo.
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
 
 set /p "backup_drv=%YELLOW%Enter Drive Letter to save backup (e.g., C, D, E): %RESET%"
+
+if "%backup_drv%"=="0" goto menu_drivers
+if "%backup_drv%"=="" goto backup_drivers
 
 set "backup_drv=%backup_drv::=%"
 
@@ -1513,8 +1519,14 @@ echo %CYAN%====================================================%RESET%
 echo.
 echo %YELLOW%Restoring all drivers from backup...%RESET%
 echo.
+echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
 
 set /p "restore_drv=%YELLOW%Enter Drive Letter where backup is located (e.g., C, D, E): %RESET%"
+
+if "%restore_drv%"=="0" goto menu_drivers
+if "%restore_drv%"=="" goto restore_drivers
 
 set "restore_drv=%restore_drv::=%"
 
