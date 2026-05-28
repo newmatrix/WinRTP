@@ -38,7 +38,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 # 🚀 أقسام الأداة بالتفصيل
 
-# 1️⃣ Optimize OS قسم
+# 1️⃣ قسم Optimize OS
 قسم خاص بتحسين أداء النظام وإصلاح المشاكل الشائعة.
 
 ## يحتوي على:
@@ -55,7 +55,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 ---
 
-# 2️⃣ Disk Tools
+# 2️⃣ قسم Disk Tools
 قسم متكامل لأدوات الأقراص والهاردات.
 
 ## يحتوي على:
@@ -73,7 +73,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 ---
 
-# 3️⃣ Advanced Tools
+# 3️⃣ قسم Advanced Tools
 مجموعة أدوات احترافية للمستخدمين المتقدمين.
 
 ## تشمل:
@@ -85,7 +85,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 ---
 
-# 4️⃣ Repair OS
+# 4️⃣ قسم Repair OS
 قسم خاص بإصلاح مشاكل الويندوز.
 
 ## الوظائف المتوفرة:
@@ -99,7 +99,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 ---
 
-# 5️⃣ Security
+# 5️⃣ قسم Security
 قسم الحماية والأمان.
 
 ## يوفر:
@@ -111,7 +111,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 ---
 
-# 6️⃣ Drivers Manager
+# 6️⃣ قسم Drivers Manager
 إدارة التعريفات بشكل احترافي.
 
 ## يشمل:
@@ -123,7 +123,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 ---
 
-# 7️⃣ Silent Apps Installer
+# 7️⃣ قسم Silent Apps Installer
 تثبيت التطبيقات بشكل صامت وسريع.
 
 ## المميزات:
@@ -135,7 +135,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 ---
 
-# 8️⃣ Windows Maintenance Tools
+# 8️⃣ قسم Windows Maintenance Tools
 قسم أدوات الصيانة الشاملة.
 
 ## يحتوي على:
@@ -147,7 +147,7 @@ Windows Repair Tool Pro هي أداة متقدمة تم تطويرها لتسه�
 
 ---
 
-# 9️⃣ User Accounts Manager
+# 9️⃣ قسم User Accounts Manager
 إدارة حسابات المستخدمين.
 
 ## الوظائف:
