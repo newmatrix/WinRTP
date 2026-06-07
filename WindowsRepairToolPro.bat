@@ -32,7 +32,7 @@ call :AUTO_UPDATE
 :menu
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%            Windows Repair Tool Pro v1.4%RESET%
+echo %GREEN%            Windows Repair Tool Pro v1.5%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %GREEN%[0]%RESET% %GREEN%Create Restore Point%RESET%
@@ -45,6 +45,7 @@ echo %WHITE%[6]%RESET% Drivers Manager (Updates ^& Backup)
 echo %WHITE%[7]%RESET% Silent Apps Installer (Winget)
 echo %WHITE%[8]%RESET% Windows Maintenance Tools
 echo %WHITE%[9]%RESET% User Accounts Manager
+echo %WHITE%[10]%RESET% Windows Tweaks (Performance ^& UI)
 echo.
 echo %WHITE%[A]%RESET% About
 echo %RED%[E]%RESET% Exit
@@ -62,6 +63,7 @@ if "%choice%"=="6" goto menu_drivers
 if "%choice%"=="7" goto menu_apps
 if "%choice%"=="8" goto menu_maintenance
 if "%choice%"=="9" goto menu_users
+if "%choice%"=="10" goto menu_tweaks
 
 if /i "%choice%"=="a" goto about
 if /i "%choice%"=="e" exit
@@ -77,18 +79,19 @@ echo %GREEN%                    Optimize OS%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%[1]%RESET% Run DISM RestoreHealth
-echo %WHITE%[2]%RESET% Component Store Cleanup (Deep Repair)
+echo %WHITE%[2]%RESET% Clean Component Store (WinSxS Deep Clean)
 echo %WHITE%[3]%RESET% Clean Old Windows Updates (Windows.old)
 echo %WHITE%[4]%RESET% Clean Crash Dumps Files
 echo %WHITE%[5]%RESET% Run SFC Scan
-echo %WHITE%[6]%RESET% Clean Temporary Files
+echo %WHITE%[6]%RESET% Clean Temporary ^& Junk Files
 echo %WHITE%[7]%RESET% Optimize Internet ^& DNS
 echo %WHITE%[8]%RESET% Clear Event Viewer Logs
-echo %WHITE%[9]%RESET% Disable Background Apps (RAM Optimization)
-echo %WHITE%[10]%RESET% Clear Delivery Optimization Cache
+echo %WHITE%[9]%RESET% Clear Error Logs ^& Crash Reports
+echo %WHITE%[10]%RESET% Clear GPU Cache (NVIDIA ^& AMD)
+echo %WHITE%[11]%RESET% Deep RAM Optimizer (via RAMMap)
 echo.
 echo %CYAN%----------------------------------------------------%RESET%
-echo %GREEN%[11]%RESET% %GREEN%Safe and quick cleaning (1, 5, 6, 7)%RESET%
+echo %GREEN%[12]%RESET% %GREEN%Safe and quick cleaning (1, 5, 6, 7)%RESET%
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
 set /p opt_choice=%YELLOW%Enter your choice: %RESET%
@@ -101,9 +104,10 @@ if "%opt_choice%"=="5" goto sfc
 if "%opt_choice%"=="6" goto clean
 if "%opt_choice%"=="7" goto internet
 if "%opt_choice%"=="8" goto clean_events
-if "%opt_choice%"=="9" goto disable_bg_apps
-if "%opt_choice%"=="10" goto clean_delivery
-if "%opt_choice%"=="11" goto quick_optimize
+if "%opt_choice%"=="9" goto clean_delivery
+if "%opt_choice%"=="10" goto clear_gpu_cache
+if "%opt_choice%"=="11" goto rammap_optimizer
+if "%opt_choice%"=="12" goto quick_optimize
 if "%opt_choice%"=="0" goto menu
 goto menu_optimize
 
@@ -160,6 +164,7 @@ echo %WHITE%[13]%RESET% Extract Original Windows Key (OEM)
 echo %WHITE%[14]%RESET% Context Menu Manager (Right-Click Tools)
 echo %WHITE%[15]%RESET% BSOD Log Analyzer (Blue Screen)
 echo %YELLOW%[16]%RESET% %YELLOW%Full System Backup (OS, Apps ^& Drivers)%RESET%
+echo %YELLOW%[17]%RESET% %YELLOW%Block App Internet Access%RESET%
 echo.
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
@@ -182,6 +187,7 @@ if "%adv_choice%"=="13" goto extract_oem_key
 if "%adv_choice%"=="14" goto context_menu_mgr
 if "%adv_choice%"=="15" goto bsod_analyzer
 if "%adv_choice%"=="16" goto full_system_backup
+if "%adv_choice%"=="17" goto menu_firewall_manager
 if "%adv_choice%"=="0" goto menu
 goto menu_advanced
 
@@ -365,6 +371,53 @@ if "%usr_choice%"=="11" goto user_info
 if "%usr_choice%"=="0" goto menu
 goto menu_users
 
+:menu_tweaks
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%          Windows Tweaks (Performance ^& UI)%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%[1]%RESET% Reduce Menu Show Delay (Snappy UI)
+echo %WHITE%[2]%RESET% Restore Classic Right-Click Menu (Windows 11)
+echo %WHITE%[3]%RESET% Disable Lock Screen (Fast Boot to Password)
+echo %WHITE%[4]%RESET% Disable Visual Effects (Adjust for Best Performance)
+echo %WHITE%[5]%RESET% Disable Sticky Keys (No Popups While Gaming)
+echo %WHITE%[6]%RESET% Disable Network Throttling (Lower Ping)
+echo %WHITE%[7]%RESET% Disable Bing Search in Start Menu (Fast Search)
+echo %WHITE%[8]%RESET% Disable SysMain/Superfetch (Fix 100%% Disk Usage)
+echo %WHITE%[9]%RESET% Disable Game DVR / Xbox Game Bar (Fix Stuttering)
+echo %WHITE%[10]%RESET% Disable Mouse Acceleration (Raw Aim Input for Gamers)
+echo %WHITE%[11]%RESET% Disable Hibernation (Free up C: Drive Space)
+echo %WHITE%[12]%RESET% Disable VBS / Memory Integrity (Win 11 FPS Boost)
+echo %WHITE%[13]%RESET% Enable Ultimate Performance Power Plan
+echo %WHITE%[14]%RESET% Disable P2P Windows Updates (Save Bandwidth ^& Lower Ping)
+echo %CYAN%----------------------------------------------------%RESET%
+echo %GREEN%[15]%RESET% %GREEN%Apply ALL Tweaks (Recommended for Gamers)%RESET%
+echo %RED%[16]%RESET% %RED%Restore Windows Defaults (Undo All Tweaks)%RESET%
+echo.
+echo %RED%[0]%RESET% Back to Main Menu
+echo.
+set /p tweak_choice=%YELLOW%Enter your choice: %RESET%
+
+if "%tweak_choice%"=="1" goto tweak_menu_delay
+if "%tweak_choice%"=="2" goto tweak_win11_menu
+if "%tweak_choice%"=="3" goto tweak_lock_screen
+if "%tweak_choice%"=="4" goto tweak_visuals
+if "%tweak_choice%"=="5" goto tweak_stickykeys
+if "%tweak_choice%"=="6" goto tweak_network
+if "%tweak_choice%"=="7" goto tweak_bing
+if "%tweak_choice%"=="8" goto tweak_sysmain
+if "%tweak_choice%"=="9" goto tweak_gamedvr
+if "%tweak_choice%"=="10" goto tweak_mouse
+if "%tweak_choice%"=="11" goto tweak_hibernation
+if "%tweak_choice%"=="12" goto tweak_vbs
+if "%tweak_choice%"=="13" goto tweak_power
+if "%tweak_choice%"=="14" goto tweak_p2p
+if "%tweak_choice%"=="15" goto tweak_all
+if "%tweak_choice%"=="16" goto tweak_restore
+if "%tweak_choice%"=="0" goto menu
+goto menu_tweaks
+
 :: --- FUNCTIONS ---
 
 :dism
@@ -483,19 +536,6 @@ echo %GREEN%[✓] All Event Logs Cleared Successfully!%RESET%
 pause
 goto menu_optimize
 
-:disable_bg_apps
-cls
-echo %CYAN%====================================================%RESET%
-echo %YELLOW%      Disabling Background Apps (RAM Optimization)%RESET%
-echo %CYAN%====================================================%RESET%
-echo %WHITE%Stopping unnecessary Windows apps from running...%RESET%
-echo.
-Reg Add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v GlobalUserEdge /t REG_DWORD /d 1 /f
-Reg Add "HKLM\Software\Policies\Microsoft\Windows\AppPrivacy" /v LetAppsRunInBackground /t REG_DWORD /d 2 /f
-echo %GREEN%[✓] Background Apps Disabled! Enjoy more free RAM.%RESET%
-pause
-goto menu_optimize
-
 :clean_delivery
 cls
 echo %CYAN%====================================================%RESET%
@@ -508,6 +548,163 @@ echo %GREEN%[✓] Delivery Optimization Cache Cleaned Successfully!%RESET%
 pause
 goto menu_optimize
 
+:clear_gpu_cache
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%       GPU Shader Cache Cleaner (NVIDIA ^& AMD)%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Clearing GPU cache can fix stuttering and graphical glitches.%RESET%
+echo %RED%Note:%WHITE% Games might take slightly longer to load the FIRST time after this.%RESET%
+echo.
+
+echo %YELLOW%[1] Cleaning NVIDIA Cache...%RESET%
+del /q /s /f "%LocalAppData%\NVIDIA\DXCache\*" >nul 2>&1
+del /q /s /f "%LocalAppData%\NVIDIA\GLCache\*" >nul 2>&1
+del /q /s /f "%LocalAppData%\NVIDIA Corporation\NV_Cache\*" >nul 2>&1
+del /q /s /f "%ProgramData%\NVIDIA Corporation\NV_Cache\*" >nul 2>&1
+
+echo %YELLOW%[2] Cleaning AMD Cache...%RESET%
+del /q /s /f "%LocalAppData%\AMD\DxCache\*" >nul 2>&1
+del /q /s /f "%LocalAppData%\AMD\GLCache\*" >nul 2>&1
+
+echo %YELLOW%[3] Cleaning Windows DirectX Shader Cache...%RESET%
+del /q /s /f "%LocalAppData%\D3DSCache\*" >nul 2>&1
+
+echo.
+echo %GREEN%[✓] GPU Cache Cleared Successfully!%RESET%
+echo %WHITE%(Note: Some files in use by the system were automatically skipped)%RESET%
+echo.
+pause
+goto menu_optimize
+
+:rammap_optimizer
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%     Deep RAM Optimizer (Sysinternals RAMMap)%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+if not exist "C:\Windows\rammap64.exe" (
+    echo %WHITE%RAMMap tool is not found on your system.%RESET%
+    echo %YELLOW%Downloading the latest version directly from Microsoft...%RESET%
+    
+    curl -s -L -o "C:\Windows\rammap64.exe" "https://live.sysinternals.com/rammap64.exe"
+    
+    if exist "C:\Windows\rammap64.exe" (
+        echo %GREEN%[✓] RAMMap has been downloaded from Microsoft, you are now ready.%RESET%
+    ) else (
+        echo %RED%[X] Failed to download RAMMap. Please check your internet connection.%RESET%
+        pause
+        goto menu_optimize
+    )
+    echo.
+)
+
+:rammap_optimizer
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%     Deep RAM Optimizer (Sysinternals RAMMap)%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+set "RAMMAP_DIR=C:\WinRTP"
+set "RAMMAP_EXE=%RAMMAP_DIR%\rammap64.exe"
+
+if not exist "%RAMMAP_EXE%" (
+    echo %WHITE%RAMMap tool is not found on your system.%RESET%
+    echo %YELLOW%Creating folder and downloading RAMMap...%RESET%
+
+    if not exist "%RAMMAP_DIR%" mkdir "%RAMMAP_DIR%"
+
+    curl -s -L -o "%RAMMAP_EXE%" "https://live.sysinternals.com/rammap64.exe"
+
+    if exist "%RAMMAP_EXE%" (
+        echo %GREEN%[✓] RAMMap downloaded successfully!%RESET%
+    ) else (
+        echo %RED%[X] Download failed. Check internet connection.%RESET%
+        pause
+        goto menu_optimize
+    )
+    echo.
+)
+
+:rammap_menu
+cls
+echo %WHITE%Please choose an optimization method:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo %GREEN%[1]%RESET% Empty Standby List (Frees up cached memory)
+echo %GREEN%[2]%RESET% Empty Working Sets (Forces apps to release memory)
+echo %GREEN%[3]%RESET% Do Both (Maximum RAM Cleanup)
+echo %CYAN%----------------------------------------------------%RESET%
+echo %YELLOW%[4]%RESET% %YELLOW%Enable Auto-RAM Cleanup (Runs Silently Every 1 Hour)%RESET%
+echo %RED%[5]%RESET% %RED%Disable Auto-RAM Cleanup%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo %RED%[0]%RESET% Back to Optimize Menu
+echo.
+set /p "ram_choice=%YELLOW%Enter your choice: %RESET%"
+
+if "%ram_choice%"=="0" goto menu_optimize
+
+if "%ram_choice%"=="1" (
+    echo.
+    echo %YELLOW%Emptying Standby List...%RESET%
+    "C:\WinRTP\rammap64.exe" -accepteula -Et
+    echo %GREEN%[✓] Standby List Emptied Successfully!%RESET%
+    pause
+    goto rammap_menu
+)
+
+if "%ram_choice%"=="2" (
+    echo.
+    echo %YELLOW%Emptying Working Sets...%RESET%
+    "C:\WinRTP\rammap64.exe" -accepteula -Ew
+    echo %GREEN%[✓] Working Sets Emptied Successfully!%RESET%
+    pause
+    goto rammap_menu
+)
+
+if "%ram_choice%"=="3" (
+    echo.
+    echo %YELLOW%Running full cleanup...%RESET%
+    "C:\WinRTP\rammap64.exe" -accepteula -Ew
+    "C:\WinRTP\rammap64.exe" -accepteula -Et
+    echo %GREEN%[✓] Full cleanup completed!%RESET%
+    pause
+    goto rammap_menu
+)
+
+if "%ram_choice%"=="4" (
+    echo.
+    echo %YELLOW%Creating Silent Auto-Cleaner Script...%RESET%
+    
+    echo @echo off > "C:\WinRTP\AutoRAMClean.bat"
+    echo "C:\WinRTP\rammap64.exe" -accepteula -Et >> "C:\WinRTP\AutoRAMClean.bat"
+    echo "C:\WinRTP\rammap64.exe" -accepteula -Ew >> "C:\WinRTP\AutoRAMClean.bat"
+    
+    echo %YELLOW%Scheduling Task in Windows...%RESET%
+	
+    schtasks /create /tn "WinRTP_AutoRAM" /tr "C:\WinRTP\AutoRAMClean.bat" /sc hourly /mo 1 /ru SYSTEM /rl highest /f >nul 2>&1
+    
+    echo %GREEN%[✓] Auto-RAM Cleanup Enabled Successfully!%RESET%
+    echo %WHITE%Your RAM will now be optimized automatically every hour in the background.%RESET%
+    pause
+    goto rammap_menu
+)
+
+if "%ram_choice%"=="5" (
+    echo.
+    echo %YELLOW%Stopping and Removing Auto-RAM Cleanup Task...%RESET%
+    
+    schtasks /delete /tn "WinRTP_AutoRAM" /f >nul 2>&1
+    if exist "C:\WinRTP\AutoRAMClean.bat" del /f /q "C:\WinRTP\AutoRAMClean.bat" >nul 2>&1
+    
+    echo %GREEN%[✓] Auto-RAM Cleanup Disabled Successfully!%RESET%
+    pause
+    goto rammap_menu
+)
+
+goto rammap_menu
+
 :quick_optimize
 cls
 echo %CYAN%====================================================%RESET%
@@ -516,12 +713,15 @@ echo %CYAN%====================================================%RESET%
 echo %WHITE%Please wait while we perform background repairs...%RESET%
 echo.
 DISM /Online /Cleanup-Image /RestoreHealth
+timeout /t 3 /nobreak >nul
 sfc /scannow
+timeout /t 3 /nobreak >nul
 del /q /f /s C:\Windows\Prefetch\*
 del /q /f /s C:\Windows\Temp\*
 del /q /f /s "%temp%\*"
 for /d %%p in ("%temp%\*") do rmdir /s /q "%%p"
 cleanmgr /sagerun:1
+timeout /t 3 /nobreak >nul
 ipconfig /flushdns
 ipconfig /release
 ipconfig /renew
@@ -1120,6 +1320,79 @@ echo %CYAN%====================================================%RESET%
 echo.
 pause
 goto menu_advanced
+
+:menu_firewall_manager
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%          Firewall App Blocker ^& Unblocker%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Choose an action:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo %GREEN%[1]%RESET% Block an App from Internet
+echo %GREEN%[2]%RESET% Unblock an App (Restore Internet Access)
+echo %RED%[0]%RESET% Back to Security Menu
+echo %CYAN%----------------------------------------------------%RESET%
+set /p "fw_choice=%YELLOW%Enter your choice: %RESET%"
+
+if "%fw_choice%"=="0" goto menu_security
+if "%fw_choice%"=="1" goto fw_block
+if "%fw_choice%"=="2" goto fw_unblock
+goto menu_firewall_manager
+
+:fw_block
+echo.
+echo %YELLOW%Opening file picker... Please select the program (.exe) to BLOCK.%RESET%
+:: تشغيل كود PowerShell لفتح نافذة اختيار الملفات
+set "psCommand=Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.OpenFileDialog; $f.Filter = 'Executable Files (*.exe)|*.exe'; $f.Title = 'Select the program to BLOCK'; $f.ShowHelp = $true; $f.ShowDialog() | Out-Null; $f.FileName"
+
+set "app_path="
+for /f "usebackq delims=" %%I in (`powershell -NoProfile -Command "%psCommand%"`) do set "app_path=%%I"
+
+:: التحقق من أن المستخدم لم يغلق النافذة بدون اختيار
+if "%app_path%"=="" (
+    echo %RED%[X] No file selected. Going back to menu...%RESET%
+    pause
+    goto menu_firewall_manager
+)
+
+:: استخراج اسم البرنامج فقط من المسار الكامل
+for %%F in ("%app_path%") do set "app_name=%%~nxF"
+
+echo %YELLOW%Blocking "%app_name%" in Windows Firewall...%RESET%
+:: إضافة قاعدة لمنع الاتصال الصادر والوارد
+netsh advfirewall firewall add rule name="WinRTP_Block_%app_name%" dir=out action=block program="%app_path%" >nul 2>&1
+netsh advfirewall firewall add rule name="WinRTP_Block_%app_name%" dir=in action=block program="%app_path%" >nul 2>&1
+
+echo %GREEN%[✓] Success! Internet access is permanently blocked for: %app_name%%RESET%
+pause
+goto menu_firewall_manager
+
+:fw_unblock
+echo.
+echo %YELLOW%Opening file picker... Please select the program (.exe) to UNBLOCK.%RESET%
+:: تشغيل كود PowerShell لفتح نافذة اختيار الملفات
+set "psCommand=Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.OpenFileDialog; $f.Filter = 'Executable Files (*.exe)|*.exe'; $f.Title = 'Select the program to UNBLOCK'; $f.ShowHelp = $true; $f.ShowDialog() | Out-Null; $f.FileName"
+
+set "app_path="
+for /f "usebackq delims=" %%I in (`powershell -NoProfile -Command "%psCommand%"`) do set "app_path=%%I"
+
+:: التحقق من أن المستخدم لم يغلق النافذة بدون اختيار
+if "%app_path%"=="" (
+    echo %RED%[X] No file selected. Going back to menu...%RESET%
+    pause
+    goto menu_firewall_manager
+)
+
+:: استخراج اسم البرنامج فقط من المسار الكامل
+for %%F in ("%app_path%") do set "app_name=%%~nxF"
+
+echo %YELLOW%Unblocking "%app_name%" in Windows Firewall...%RESET%
+:: حذف القاعدة التي قمنا بإنشائها مسبقاً باستخدام نفس الاسم
+netsh advfirewall firewall delete rule name="WinRTP_Block_%app_name%" >nul 2>&1
+
+echo %GREEN%[✓] Success! Internet access is restored for: %app_name%%RESET%
+pause
+goto menu_firewall_manager
 
 :winupdate
 cls
@@ -2418,6 +2691,248 @@ echo %CYAN%====================================================%RESET%
 pause
 goto menu_users
 
+:tweak_menu_delay
+echo.
+echo %YELLOW%Reducing Menu Show Delay to 10ms...%RESET%
+reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d 10 /f >nul 2>&1
+echo %GREEN%[✓] UI is now snappier!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_win11_menu
+echo.
+echo %YELLOW%Restoring Classic Right-Click Context Menu...%RESET%
+reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve >nul 2>&1
+taskkill /f /im explorer.exe >nul 2>&1
+start explorer.exe
+echo %GREEN%[✓] Classic Menu Restored!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_lock_screen
+echo.
+echo %YELLOW%Disabling Windows Lock Screen...%RESET%
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreen /t REG_DWORD /d 1 /f >nul 2>&1
+echo %GREEN%[✓] Lock screen disabled. Windows will now boot directly to the password prompt.%RESET%
+pause
+goto menu_tweaks
+
+:tweak_visuals
+echo.
+echo %YELLOW%Disabling Heavy Visual Effects (Best Performance Mode)...%RESET%
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f >nul 2>&1
+echo %GREEN%[✓] Visual effects optimized for maximum performance!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_network
+echo.
+echo %YELLOW%Disabling Network Throttling ^& Gaming Responsiveness...%RESET%
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v NetworkThrottlingIndex /t REG_DWORD /d 4294967295 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v SystemResponsiveness /t REG_DWORD /d 0 /f >nul 2>&1
+echo %GREEN%[✓] Network restrictions lifted. Ping optimized!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_bing
+echo.
+echo %YELLOW%Disabling Bing Web Search in Start Menu...%RESET%
+reg add "HKCU\Software\Policies\Microsoft\Windows\Explorer" /v DisableSearchBoxSuggestions /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /t REG_DWORD /d 0 /f >nul 2>&1
+taskkill /f /im explorer.exe >nul 2>&1
+start explorer.exe
+echo %GREEN%[✓] Local search is now blazing fast without internet results!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_sysmain
+echo.
+echo %YELLOW%Disabling SysMain (Superfetch) Service...%RESET%
+sc config "SysMain" start=disabled >nul 2>&1
+net stop "SysMain" >nul 2>&1
+echo %GREEN%[✓] SysMain Disabled. 100%% Disk Usage issues should be resolved.%RESET%
+pause
+goto menu_tweaks
+
+:tweak_gamedvr
+echo.
+echo %YELLOW%Disabling Game DVR ^& Background Recording...%RESET%
+reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v AllowGameDVR /t REG_DWORD /d 0 /f >nul 2>&1
+echo %GREEN%[✓] Game DVR Disabled. Stuttering in games should be reduced!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_mouse
+echo.
+echo %YELLOW%Disabling Mouse Acceleration (Enhance Pointer Precision)...%RESET%
+reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 0 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseThreshold1 /t REG_SZ /d 0 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseThreshold2 /t REG_SZ /d 0 /f >nul 2>&1
+echo %GREEN%[✓] Mouse Acceleration Disabled. You now have 100%% Raw Aim Input!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_hibernation
+echo.
+echo %YELLOW%Disabling Hibernation...%RESET%
+powercfg -h off >nul 2>&1
+echo %GREEN%[✓] Hibernation Disabled. Gigabytes of disk space freed up!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_vbs
+echo.
+echo %YELLOW%Disabling Virtualization-Based Security (VBS) ^& Memory Integrity...%RESET%
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f >nul 2>&1
+echo %GREEN%[✓] VBS Disabled! Expect higher FPS in Windows 11.%RESET%
+pause
+goto menu_tweaks
+
+:tweak_power
+echo.
+echo %YELLOW%Enabling Ultimate Performance Power Plan...%RESET%
+for /f "tokens=4" %%a in ('powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61') do powercfg -setactive %%a >nul 2>&1
+echo %GREEN%[✓] Ultimate Performance Mode Enabled!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_all
+echo.
+echo %YELLOW%Applying ALL Performance ^& UI Tweaks... Please wait.%RESET%
+reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d 10 /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v NetworkThrottlingIndex /t REG_DWORD /d 4294967295 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v SystemResponsiveness /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKCU\Software\Policies\Microsoft\Windows\Explorer" /v DisableSearchBoxSuggestions /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /t REG_DWORD /d 0 /f >nul 2>&1
+sc config "SysMain" start=disabled >nul 2>&1
+net stop "SysMain" >nul 2>&1
+reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v AllowGameDVR /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreen /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 0 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseThreshold1 /t REG_SZ /d 0 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseThreshold2 /t REG_SZ /d 0 /f >nul 2>&1
+powercfg -h off >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f >nul 2>&1
+for /f "tokens=4" %%a in ('powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61') do powercfg -setactive %%a >nul 2>&1
+
+echo %GREEN%[✓] ALL Recommended Tweaks Applied Successfully!%RESET%
+echo %WHITE%(Note: Please restart your PC for all changes to take full effect).%RESET%
+pause
+goto menu_tweaks
+
+:tweak_stickykeys
+echo.
+echo %YELLOW%Disabling Sticky Keys ^& Filter Keys...%RESET%
+reg add "HKCU\Control Panel\Accessibility\StickyKeys" /v Flags /t REG_SZ /d 506 /f >nul 2>&1
+reg add "HKCU\Control Panel\Accessibility\Keyboard Response" /v Flags /t REG_SZ /d 122 /f >nul 2>&1
+reg add "HKCU\Control Panel\Accessibility\ToggleKeys" /v Flags /t REG_SZ /d 58 /f >nul 2>&1
+echo %GREEN%[✓] Sticky Keys Disabled. Mash your Shift key safely!%RESET%
+pause
+goto menu_tweaks
+
+:tweak_p2p
+echo.
+echo %YELLOW%Disabling P2P Windows Updates (Delivery Optimization)...%RESET%
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v DODownloadMode /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v DODownloadMode /t REG_DWORD /d 0 /f >nul 2>&1
+echo %GREEN%[✓] P2P Updates Disabled! Windows will no longer upload updates from your PC.%RESET%
+pause
+goto menu_tweaks
+
+:tweak_all
+echo.
+echo %YELLOW%Applying ALL Performance ^& UI Tweaks... Please wait.%RESET%
+reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d 10 /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f >nul 2>&1
+reg add "HKCU\Control Panel\Accessibility\StickyKeys" /v Flags /t REG_SZ /d 506 /f >nul 2>&1
+reg add "HKCU\Control Panel\Accessibility\Keyboard Response" /v Flags /t REG_SZ /d 122 /f >nul 2>&1
+reg add "HKCU\Control Panel\Accessibility\ToggleKeys" /v Flags /t REG_SZ /d 58 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v NetworkThrottlingIndex /t REG_DWORD /d 4294967295 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v SystemResponsiveness /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v DODownloadMode /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v DODownloadMode /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKCU\Software\Policies\Microsoft\Windows\Explorer" /v DisableSearchBoxSuggestions /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /t REG_DWORD /d 0 /f >nul 2>&1
+sc config "SysMain" start=disabled >nul 2>&1
+net stop "SysMain" >nul 2>&1
+reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v AllowGameDVR /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreen /t REG_DWORD /d 1 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 0 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseThreshold1 /t REG_SZ /d 0 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseThreshold2 /t REG_SZ /d 0 /f >nul 2>&1
+powercfg -h off >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f >nul 2>&1
+for /f "tokens=4" %%a in ('powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61') do powercfg -setactive %%a >nul 2>&1
+
+echo %GREEN%[✓] ALL Recommended Tweaks Applied Successfully!%RESET%
+echo %WHITE%(Note: Please restart your PC for all changes to take full effect).%RESET%
+pause
+goto menu_tweaks
+
+:tweak_restore
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%           Restoring Windows Default Settings%RESET%
+echo %CYAN%====================================================%RESET%
+echo %WHITE%Reverting all tweaks back to their original factory state...%RESET%
+echo.
+
+reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d 400 /f >nul 2>&1
+
+reg delete "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}" /f >nul 2>&1
+
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreen /f >nul 2>&1
+
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 0 /f >nul 2>&1
+
+reg add "HKCU\Control Panel\Accessibility\StickyKeys" /v Flags /t REG_SZ /d 510 /f >nul 2>&1
+reg add "HKCU\Control Panel\Accessibility\Keyboard Response" /v Flags /t REG_SZ /d 126 /f >nul 2>&1
+reg add "HKCU\Control Panel\Accessibility\ToggleKeys" /v Flags /t REG_SZ /d 62 /f >nul 2>&1
+
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v NetworkThrottlingIndex /t REG_DWORD /d 10 /f >nul 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v SystemResponsiveness /t REG_DWORD /d 20 /f >nul 2>&1
+
+reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v DODownloadMode /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v DODownloadMode /f >nul 2>&1
+
+reg delete "HKCU\Software\Policies\Microsoft\Windows\Explorer" /v DisableSearchBoxSuggestions /f >nul 2>&1
+reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /f >nul 2>&1
+
+sc config "SysMain" start=auto >nul 2>&1
+net start "SysMain" >nul 2>&1
+
+reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d 1 /f >nul 2>&1
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v AllowGameDVR /f >nul 2>&1
+
+reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 1 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseThreshold1 /t REG_SZ /d 6 /f >nul 2>&1
+reg add "HKCU\Control Panel\Mouse" /v MouseThreshold2 /t REG_SZ /d 10 /f >nul 2>&1
+
+powercfg -h on >nul 2>&1
+
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 1 /f >nul 2>&1
+
+powercfg -setactive 381b4222-f694-41f0-9685-ff5bb260df2e >nul 2>&1
+
+echo %WHITE%Removing Ultimate Performance profiles...%RESET%
+for /f "tokens=4" %%i in ('powercfg -list ^| findstr /i "Ultimate"') do (
+    powercfg -delete %%i >nul 2>&1
+)
+
+taskkill /f /im explorer.exe >nul 2>&1
+start explorer.exe
+
+echo.
+echo %GREEN%[✓] All Windows Defaults Restored Successfully!%RESET%
+echo %WHITE%(Note: Please restart your PC to ensure all services return to normal).%RESET%
+pause
+goto menu_tweaks
+
 :about
 cls
 
@@ -2429,7 +2944,7 @@ echo.
 echo %WHITE%Developer:%RESET% Hesham Taha
 echo %WHITE%YouTube:%RESET% Hesham Taha
 echo %WHITE%Facebook:%RESET% Hesham Taha Official
-echo %WHITE%Version:%RESET% 1.4
+echo %WHITE%Version:%RESET% 1.5
 echo.
 
 echo %YELLOW%Opening links...%RESET%
@@ -2453,7 +2968,7 @@ exit /b
 :AUTO_UPDATE
 setlocal EnableDelayedExpansion
 
-set CURRENT_VERSION=1.4
+set CURRENT_VERSION=1.5
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
 
