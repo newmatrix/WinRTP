@@ -153,18 +153,19 @@ echo %RED%[2]%RESET% %RED%Restore Balanced Mode%RESET%
 echo %WHITE%[3]%RESET% Schedule Auto Shutdown           
 echo %WHITE%[4]%RESET% Cancel Auto Shutdown             
 echo %WHITE%[5]%RESET% Restart to BIOS/UEFI            
-echo %WHITE%[6]%RESET% Restart to Safe Mode             
-echo %WHITE%[7]%RESET% Debloat Windows (Remove Junk)
-echo %WHITE%[8]%RESET% Show WI-FI Passwords
-echo %RED%[9]%RESET% %RED%Disable Windows Update%RESET%
-echo %GREEN%[10]%RESET% %GREEN%Enable Windows Update%RESET%
-echo %WHITE%[11]%RESET% Change Internet DNS (Gaming)
-echo %WHITE%[12]%RESET% Clean Gamers Cache (Steam, EA..)
-echo %WHITE%[13]%RESET% Extract Original Windows Key (OEM)
-echo %WHITE%[14]%RESET% Context Menu Manager (Right-Click Tools)
-echo %WHITE%[15]%RESET% BSOD Log Analyzer (Blue Screen)
-echo %YELLOW%[16]%RESET% %YELLOW%Full System Backup (OS, Apps ^& Drivers)%RESET%
-echo %YELLOW%[17]%RESET% %YELLOW%Block App Internet Access%RESET%
+echo %RED%[6]%RESET% %RED%Restart to Safe Mode %RESET%
+echo %GREEN%[7]%RESET% %GREEN%Back to Normal Windows %RESET%          
+echo %WHITE%[8]%RESET% Debloat Windows (Remove Junk)
+echo %WHITE%[9]%RESET% Show WI-FI Passwords
+echo %RED%[10]%RESET% %RED%Disable Windows Update%RESET%
+echo %GREEN%[11]%RESET% %GREEN%Enable Windows Update%RESET%
+echo %WHITE%[12]%RESET% Change Internet DNS (Gaming)
+echo %WHITE%[13]%RESET% Clean Gamers Cache (Steam, EA..)
+echo %WHITE%[14]%RESET% Extract Original Windows Key (OEM)
+echo %WHITE%[15]%RESET% Context Menu Manager (Right-Click Tools)
+echo %WHITE%[16]%RESET% BSOD Log Analyzer (Blue Screen)
+echo %YELLOW%[17]%RESET% %YELLOW%Full System Backup (OS, Apps ^& Drivers)%RESET%
+echo %YELLOW%[18]%RESET% %YELLOW%Block App Internet Access%RESET%
 echo.
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
@@ -177,17 +178,18 @@ if "%adv_choice%"=="3" goto shutdown
 if "%adv_choice%"=="4" goto cancelshutdown
 if "%adv_choice%"=="5" goto bios
 if "%adv_choice%"=="6" goto safemode
-if "%adv_choice%"=="7" goto debloat
-if "%adv_choice%"=="8" goto wifi_pwd
-if "%adv_choice%"=="9" goto disable_updates
-if "%adv_choice%"=="10" goto enable_updates
-if "%adv_choice%"=="11" goto change_dns
-if "%adv_choice%"=="12" goto clean_gamers_cache
-if "%adv_choice%"=="13" goto extract_oem_key
-if "%adv_choice%"=="14" goto context_menu_mgr
-if "%adv_choice%"=="15" goto bsod_analyzer
-if "%adv_choice%"=="16" goto full_system_backup
-if "%adv_choice%"=="17" goto menu_firewall_manager
+if "%adv_choice%"=="7" goto normalmode
+if "%adv_choice%"=="8" goto debloat
+if "%adv_choice%"=="9" goto wifi_pwd
+if "%adv_choice%"=="10" goto disable_updates
+if "%adv_choice%"=="11" goto enable_updates
+if "%adv_choice%"=="12" goto change_dns
+if "%adv_choice%"=="13" goto clean_gamers_cache
+if "%adv_choice%"=="14" goto extract_oem_key
+if "%adv_choice%"=="15" goto context_menu_mgr
+if "%adv_choice%"=="16" goto bsod_analyzer
+if "%adv_choice%"=="17" goto full_system_backup
+if "%adv_choice%"=="18" goto menu_firewall_manager
 if "%adv_choice%"=="0" goto menu
 goto menu_advanced
 
@@ -1101,6 +1103,21 @@ echo.
 pause
 bcdedit /set {current} safeboot minimal >nul 2>&1
 shutdown /r /t 5
+goto menu_advanced
+
+:normalmode
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%            Boot into Normal Mode%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%Windows will boot normally after the restart.%RESET%
+echo.
+pause
+
+bcdedit /deletevalue {current} safeboot >nul 2>&1
+shutdown /r /t 5
+
 goto menu_advanced
 
 :debloat
@@ -2798,32 +2815,6 @@ echo %GREEN%[✓] Ultimate Performance Mode Enabled!%RESET%
 pause
 goto menu_tweaks
 
-:tweak_all
-echo.
-echo %YELLOW%Applying ALL Performance ^& UI Tweaks... Please wait.%RESET%
-reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d 10 /f >nul 2>&1
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f >nul 2>&1
-reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v NetworkThrottlingIndex /t REG_DWORD /d 4294967295 /f >nul 2>&1
-reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v SystemResponsiveness /t REG_DWORD /d 0 /f >nul 2>&1
-reg add "HKCU\Software\Policies\Microsoft\Windows\Explorer" /v DisableSearchBoxSuggestions /t REG_DWORD /d 1 /f >nul 2>&1
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /t REG_DWORD /d 0 /f >nul 2>&1
-sc config "SysMain" start=disabled >nul 2>&1
-net stop "SysMain" >nul 2>&1
-reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d 0 /f >nul 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v AllowGameDVR /t REG_DWORD /d 0 /f >nul 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreen /t REG_DWORD /d 1 /f >nul 2>&1
-reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 0 /f >nul 2>&1
-reg add "HKCU\Control Panel\Mouse" /v MouseThreshold1 /t REG_SZ /d 0 /f >nul 2>&1
-reg add "HKCU\Control Panel\Mouse" /v MouseThreshold2 /t REG_SZ /d 0 /f >nul 2>&1
-powercfg -h off >nul 2>&1
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f >nul 2>&1
-for /f "tokens=4" %%a in ('powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61') do powercfg -setactive %%a >nul 2>&1
-
-echo %GREEN%[✓] ALL Recommended Tweaks Applied Successfully!%RESET%
-echo %WHITE%(Note: Please restart your PC for all changes to take full effect).%RESET%
-pause
-goto menu_tweaks
-
 :tweak_stickykeys
 echo.
 echo %YELLOW%Disabling Sticky Keys ^& Filter Keys...%RESET%
@@ -2847,26 +2838,27 @@ goto menu_tweaks
 echo.
 echo %YELLOW%Applying ALL Performance ^& UI Tweaks... Please wait.%RESET%
 reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d 10 /f >nul 2>&1
+reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve >nul 2>&1
+taskkill /f /im explorer.exe >nul 2>&1
+start explorer.exe
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreen /t REG_DWORD /d 1 /f >nul 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f >nul 2>&1
-reg add "HKCU\Control Panel\Accessibility\StickyKeys" /v Flags /t REG_SZ /d 506 /f >nul 2>&1
-reg add "HKCU\Control Panel\Accessibility\Keyboard Response" /v Flags /t REG_SZ /d 122 /f >nul 2>&1
-reg add "HKCU\Control Panel\Accessibility\ToggleKeys" /v Flags /t REG_SZ /d 58 /f >nul 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v NetworkThrottlingIndex /t REG_DWORD /d 4294967295 /f >nul 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v SystemResponsiveness /t REG_DWORD /d 0 /f >nul 2>&1
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v DODownloadMode /t REG_DWORD /d 0 /f >nul 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v DODownloadMode /t REG_DWORD /d 0 /f >nul 2>&1
 reg add "HKCU\Software\Policies\Microsoft\Windows\Explorer" /v DisableSearchBoxSuggestions /t REG_DWORD /d 1 /f >nul 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /t REG_DWORD /d 0 /f >nul 2>&1
+taskkill /f /im explorer.exe >nul 2>&1
+start explorer.exe
 sc config "SysMain" start=disabled >nul 2>&1
 net stop "SysMain" >nul 2>&1
 reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d 0 /f >nul 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v AllowGameDVR /t REG_DWORD /d 0 /f >nul 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreen /t REG_DWORD /d 1 /f >nul 2>&1
 reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 0 /f >nul 2>&1
 reg add "HKCU\Control Panel\Mouse" /v MouseThreshold1 /t REG_SZ /d 0 /f >nul 2>&1
 reg add "HKCU\Control Panel\Mouse" /v MouseThreshold2 /t REG_SZ /d 0 /f >nul 2>&1
 powercfg -h off >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f >nul 2>&1
 for /f "tokens=4" %%a in ('powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61') do powercfg -setactive %%a >nul 2>&1
 
 echo %GREEN%[✓] ALL Recommended Tweaks Applied Successfully!%RESET%
