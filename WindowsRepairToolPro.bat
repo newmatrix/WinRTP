@@ -586,29 +586,6 @@ echo %YELLOW%     Deep RAM Optimizer (Sysinternals RAMMap)%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 
-if not exist "C:\Windows\rammap64.exe" (
-    echo %WHITE%RAMMap tool is not found on your system.%RESET%
-    echo %YELLOW%Downloading the latest version directly from Microsoft...%RESET%
-    
-    curl -s -L -o "C:\Windows\rammap64.exe" "https://live.sysinternals.com/rammap64.exe"
-    
-    if exist "C:\Windows\rammap64.exe" (
-        echo %GREEN%[✓] RAMMap has been downloaded from Microsoft, you are now ready.%RESET%
-    ) else (
-        echo %RED%[X] Failed to download RAMMap. Please check your internet connection.%RESET%
-        pause
-        goto menu_optimize
-    )
-    echo.
-)
-
-:rammap_optimizer
-cls
-echo %CYAN%====================================================%RESET%
-echo %YELLOW%     Deep RAM Optimizer (Sysinternals RAMMap)%RESET%
-echo %CYAN%====================================================%RESET%
-echo.
-
 set "RAMMAP_DIR=C:\WinRTP"
 set "RAMMAP_EXE=%RAMMAP_DIR%\rammap64.exe"
 
@@ -812,7 +789,8 @@ echo %RED%[0]%RESET% %WHITE%Cancel and Back to Menu%RESET%
 echo.
 set /p "defrag_drv=%YELLOW%Your Choice: %RESET%"
 if "%defrag_drv%"=="" goto menu_disk
-if "%chk_drv%"=="0" goto menu_disk
+if "%defrag_drv%"=="0" goto menu_disk
+set "defrag_drv=%defrag_drv::=%"
 
 echo.
 echo %YELLOW%Optimizing Drive %defrag_drv%: ... Please wait.%RESET%
@@ -977,6 +955,7 @@ pause
 goto menu_disk
 
 :winget_update
+call :ensure_winget
 set "w_choice="
 cls
 echo %CYAN%====================================================%RESET%
@@ -1006,13 +985,14 @@ if "%w_choice%"=="1" (
     pause
     goto winget_update
 )
-if "%w_choice%"=="2" (
-    set /p app_ref=%YELLOW%Enter App ID or Name: %RESET%
-    winget upgrade --id "%app_ref%" --include-unknown || winget upgrade --name "%app_ref%" --include-unknown
-    pause
-    goto winget_update
-)
+if "%w_choice%"=="2" goto winget_update_specific
 if "%w_choice%"=="0" goto menu_advanced
+goto winget_update
+
+:winget_update_specific
+set /p app_ref=%YELLOW%Enter App ID or Name: %RESET%
+winget upgrade --id "%app_ref%" --include-unknown || winget upgrade --name "%app_ref%" --include-unknown
+pause
 goto winget_update
 
 :ultimate_perf
@@ -1021,10 +1001,18 @@ echo %CYAN%====================================================%RESET%
 echo %YELLOW%         Enabling Ultimate Performance Mode%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 > temp.txt
-for /f "tokens=4" %%i in ('findstr /i "GUID" temp.txt') do set GUID=%%i
+set "GUID="
+for /f "delims=" %%i in ('powershell -NoProfile -Command "(powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 | Select-String -Pattern '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}').Matches.Value"') do set "GUID=%%i"
+
+if "%GUID%"=="" (
+    echo %RED%[X] Failed to create the power scheme.%RESET%
+    pause
+    goto menu_advanced
+)
+
 powercfg /setactive %GUID% >nul 2>&1
-del temp.txt >nul 2>&1
+if not exist "C:\WinRTP" mkdir "C:\WinRTP" >nul 2>&1
+echo %GUID%>> "C:\WinRTP\UltimateGUIDs.txt"
 
 echo %GREEN%[✓] Ultimate Performance Mode Enabled Successfully!%RESET%
 echo %WHITE%Active GUID: %GUID%%RESET%
@@ -1042,8 +1030,11 @@ echo %WHITE%Activating Balanced Mode...%RESET%
 powercfg -setactive 381b4222-f694-41f0-9685-ff5bb260df2e >nul 2>&1
 
 echo %WHITE%Removing Ultimate Performance profiles...%RESET%
-for /f "tokens=4" %%i in ('powercfg -list ^| findstr /i "Ultimate"') do (
-    powercfg -delete %%i >nul 2>&1
+if exist "C:\WinRTP\UltimateGUIDs.txt" (
+    for /f "delims=" %%i in (C:\WinRTP\UltimateGUIDs.txt) do (
+        powercfg -delete %%i >nul 2>&1
+    )
+    del /q "C:\WinRTP\UltimateGUIDs.txt" >nul 2>&1
 )
 
 echo.
@@ -1359,24 +1350,20 @@ goto menu_firewall_manager
 :fw_block
 echo.
 echo %YELLOW%Opening file picker... Please select the program (.exe) to BLOCK.%RESET%
-:: تشغيل كود PowerShell لفتح نافذة اختيار الملفات
 set "psCommand=Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.OpenFileDialog; $f.Filter = 'Executable Files (*.exe)|*.exe'; $f.Title = 'Select the program to BLOCK'; $f.ShowHelp = $true; $f.ShowDialog() | Out-Null; $f.FileName"
 
 set "app_path="
 for /f "usebackq delims=" %%I in (`powershell -NoProfile -Command "%psCommand%"`) do set "app_path=%%I"
 
-:: التحقق من أن المستخدم لم يغلق النافذة بدون اختيار
 if "%app_path%"=="" (
     echo %RED%[X] No file selected. Going back to menu...%RESET%
     pause
     goto menu_firewall_manager
 )
 
-:: استخراج اسم البرنامج فقط من المسار الكامل
 for %%F in ("%app_path%") do set "app_name=%%~nxF"
 
 echo %YELLOW%Blocking "%app_name%" in Windows Firewall...%RESET%
-:: إضافة قاعدة لمنع الاتصال الصادر والوارد
 netsh advfirewall firewall add rule name="WinRTP_Block_%app_name%" dir=out action=block program="%app_path%" >nul 2>&1
 netsh advfirewall firewall add rule name="WinRTP_Block_%app_name%" dir=in action=block program="%app_path%" >nul 2>&1
 
@@ -1387,24 +1374,20 @@ goto menu_firewall_manager
 :fw_unblock
 echo.
 echo %YELLOW%Opening file picker... Please select the program (.exe) to UNBLOCK.%RESET%
-:: تشغيل كود PowerShell لفتح نافذة اختيار الملفات
 set "psCommand=Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.OpenFileDialog; $f.Filter = 'Executable Files (*.exe)|*.exe'; $f.Title = 'Select the program to UNBLOCK'; $f.ShowHelp = $true; $f.ShowDialog() | Out-Null; $f.FileName"
 
 set "app_path="
 for /f "usebackq delims=" %%I in (`powershell -NoProfile -Command "%psCommand%"`) do set "app_path=%%I"
 
-:: التحقق من أن المستخدم لم يغلق النافذة بدون اختيار
 if "%app_path%"=="" (
     echo %RED%[X] No file selected. Going back to menu...%RESET%
     pause
     goto menu_firewall_manager
 )
 
-:: استخراج اسم البرنامج فقط من المسار الكامل
 for %%F in ("%app_path%") do set "app_name=%%~nxF"
 
 echo %YELLOW%Unblocking "%app_name%" in Windows Firewall...%RESET%
-:: حذف القاعدة التي قمنا بإنشائها مسبقاً باستخدام نفس الاسم
 netsh advfirewall firewall delete rule name="WinRTP_Block_%app_name%" >nul 2>&1
 
 echo %GREEN%[✓] Success! Internet access is restored for: %app_name%%RESET%
@@ -1938,10 +1921,7 @@ goto change_dns
 :set_cloudflare
 echo.
 echo %YELLOW%Applying Cloudflare DNS...%RESET%
-netsh interface ip set dns name="Wi-Fi" source=static address=1.1.1.1 >nul 2>&1
-netsh interface ip add dns name="Wi-Fi" addr=1.0.0.1 index=2 >nul 2>&1
-netsh interface ip set dns name="Ethernet" source=static address=1.1.1.1 >nul 2>&1
-netsh interface ip add dns name="Ethernet" addr=1.0.0.1 index=2 >nul 2>&1
+powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up'} | Set-DnsClientServerAddress -ServerAddresses ('1.1.1.1','1.0.0.1')" >nul 2>&1
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[✓] Cloudflare DNS Applied Successfully!%RESET%
@@ -1951,10 +1931,7 @@ goto change_dns
 :set_google
 echo.
 echo %YELLOW%Applying Google DNS...%RESET%
-netsh interface ip set dns name="Wi-Fi" source=static address=8.8.8.8 >nul 2>&1
-netsh interface ip add dns name="Wi-Fi" addr=8.8.4.4 index=2 >nul 2>&1
-netsh interface ip set dns name="Ethernet" source=static address=8.8.8.8 >nul 2>&1
-netsh interface ip add dns name="Ethernet" addr=8.8.4.4 index=2 >nul 2>&1
+powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up'} | Set-DnsClientServerAddress -ServerAddresses ('8.8.8.8','8.8.4.4')" >nul 2>&1
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[✓] Google DNS Applied Successfully!%RESET%
@@ -1964,10 +1941,7 @@ goto change_dns
 :set_quad9
 echo.
 echo %YELLOW%Applying Quad9 Secure DNS...%RESET%
-netsh interface ip set dns name="Wi-Fi" source=static address=9.9.9.9 >nul 2>&1
-netsh interface ip add dns name="Wi-Fi" addr=149.112.112.112 index=2 >nul 2>&1
-netsh interface ip set dns name="Ethernet" source=static address=9.9.9.9 >nul 2>&1
-netsh interface ip add dns name="Ethernet" addr=149.112.112.112 index=2 >nul 2>&1
+powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up'} | Set-DnsClientServerAddress -ServerAddresses ('9.9.9.9','149.112.112.112')" >nul 2>&1
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[✓] Quad9 Secure DNS Applied Successfully!%RESET%
@@ -1977,10 +1951,7 @@ goto change_dns
 :set_adguard
 echo.
 echo %YELLOW%Applying AdGuard DNS (Ad-Block)...%RESET%
-netsh interface ip set dns name="Wi-Fi" source=static address=94.140.14.14 >nul 2>&1
-netsh interface ip add dns name="Wi-Fi" addr=94.140.15.15 index=2 >nul 2>&1
-netsh interface ip set dns name="Ethernet" source=static address=94.140.14.14 >nul 2>&1
-netsh interface ip add dns name="Ethernet" addr=94.140.15.15 index=2 >nul 2>&1
+powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up'} | Set-DnsClientServerAddress -ServerAddresses ('94.140.14.14','94.140.15.15')" >nul 2>&1
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[✓] AdGuard DNS Applied! Ads will be blocked.%RESET%
@@ -1990,8 +1961,7 @@ goto change_dns
 :set_default
 echo.
 echo %YELLOW%Restoring Default DNS Settings (DHCP)...%RESET%
-netsh interface ip set dns name="Wi-Fi" source=dhcp >nul 2>&1
-netsh interface ip set dns name="Ethernet" source=dhcp >nul 2>&1
+powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up'} | Set-DnsClientServerAddress -ResetServerAddresses" >nul 2>&1
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[✓] DNS Restored to Default Successfully!%RESET%
@@ -2019,6 +1989,8 @@ echo.
 echo %CYAN%----------------------------------------------------%RESET%
 echo %GREEN%[S]%RESET% %CYAN%Search ^& Install Custom App (Write App Name)%RESET%
 echo %YELLOW%[A] Install ALL Basic Apps (4, 7, 11, 12, 16)%RESET%
+echo %CYAN%[B] Backup Installed Apps List (Export)%RESET%
+echo %CYAN%[R] Restore Apps From Backup (Import)%RESET%
 echo %RED%[0] Back to Main Menu%RESET%
 echo.
 echo %CYAN%----------------------------------------------------%RESET%
@@ -2027,6 +1999,8 @@ set /p "app_ch=%YELLOW%Choose Option Number: %RESET%"
 if "%app_ch%"=="0" goto menu
 if /i "%app_ch%"=="a" goto install_all_apps
 if /i "%app_ch%"=="s" goto search_install_app
+if /i "%app_ch%"=="b" goto backup_apps_list
+if /i "%app_ch%"=="r" goto restore_apps_list
 if "%app_ch%"=="1" goto apps_updater_wizard
 if "%app_ch%"=="2" goto apps_uninstaller_wizard
 if "%app_ch%"=="3" goto install_core_runtimes
@@ -2046,7 +2020,96 @@ if "%app_ch%"=="15" set "app_id=OBSProject.OBSStudio" & goto install_silent
 if "%app_ch%"=="16" set "app_id=VideoLAN.VLC" & goto install_silent
 goto menu_apps
 
+:backup_apps_list
+call :ensure_winget
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%          Backing Up Installed Apps List%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%Enter the full path where you want to save the backup file.%RESET%
+echo %WHITE%Example: %CYAN%D:\%RESET%
+echo %WHITE%Leave empty to use the default location.%RESET%
+echo.
+set /p "backup_path=%YELLOW%Save Path: %RESET%"
+
+if "%backup_path%"=="" set "backup_path=C:\WinRTP\apps_backup.json"
+
+if "%backup_path:~-1%"==":" set "backup_path=%backup_path%\"
+
+if "%backup_path:~-1%"=="\" (
+    set "backup_path=%backup_path%apps_backup.json"
+) else (
+    echo %backup_path%| findstr /i /e "\.json" >nul
+    if errorlevel 1 set "backup_path=%backup_path%\apps_backup.json"
+)
+
+for %%F in ("%backup_path%") do set "backup_dir=%%~dpF"
+if not exist "%backup_dir%" mkdir "%backup_dir%" >nul 2>&1
+
+echo.
+echo %YELLOW%Exporting your installed apps list, please wait...%RESET%
+winget export -o "%backup_path%" --accept-source-agreements >nul 2>&1
+
+if exist "%backup_path%" (
+    echo.
+    echo %GREEN%[✓] Backup saved successfully to:%RESET%
+    echo %WHITE%%backup_path%%RESET%
+) else (
+    echo.
+    echo %RED%[X] Backup failed. Please check the path and your internet connection.%RESET%
+)
+echo.
+pause
+goto menu_apps
+
+:restore_apps_list
+call :ensure_winget
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%          Restoring Apps From Backup%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%Enter the full path of the backup file to restore from.%RESET%
+echo %WHITE%Example: %CYAN%D:\Backups\apps_backup.json%RESET%
+echo %WHITE%Leave empty to use the default location.%RESET%
+echo.
+set /p "restore_path=%YELLOW%Backup File Path: %RESET%"
+
+if "%restore_path%"=="" set "restore_path=C:\WinRTP\apps_backup.json"
+
+if "%restore_path:~-1%"==":" set "restore_path=%restore_path%\"
+
+if "%restore_path:~-1%"=="\" (
+    set "restore_path=%restore_path%apps_backup.json"
+) else (
+    echo %restore_path%| findstr /i /e "\.json" >nul
+    if errorlevel 1 set "restore_path=%restore_path%\apps_backup.json"
+)
+
+if not exist "%restore_path%" (
+    echo.
+    echo %RED%[X] No backup file found at:%RESET%
+    echo %WHITE%%restore_path%%RESET%
+    echo.
+    pause
+    goto menu_apps
+)
+
+echo.
+echo %YELLOW%Installing all apps from your backup list...%RESET%
+echo %WHITE%This may take a while depending on how many apps you have.%RESET%
+echo.
+winget import -i "%restore_path%" --accept-source-agreements --accept-package-agreements
+
+echo.
+echo %GREEN%[✓] Restore process completed!%RESET%
+echo %WHITE%Please check above for any apps that failed to install.%RESET%
+pause
+goto menu_apps
+
 :install_core_runtimes
+call :ensure_winget
 cls
 echo %CYAN%====================================================%RESET%
 echo %YELLOW%      Installing ALL Core ^& Legacy Runtimes%RESET%
@@ -2069,6 +2132,7 @@ pause
 goto menu_apps
 
 :install_silent
+call :ensure_winget
 echo.
 echo %YELLOW%Installing %app_id% Silently... Please wait...%RESET%
 winget install --id "%app_id%" --silent --accept-source-agreements --accept-package-agreements
@@ -2083,6 +2147,7 @@ pause
 goto menu_apps
 
 :install_all_apps
+call :ensure_winget
 cls
 echo %YELLOW%Installing All Basic Apps (Chrome, IDM, VLC, WinRAR, 7-Zip)...%RESET%
 echo %WHITE%This will take a few minutes, please don't close the window...%RESET%
@@ -2098,6 +2163,7 @@ goto menu_apps
 
 
 :apps_uninstaller_wizard
+call :ensure_winget
 cls
 echo %CYAN%====================================================%RESET%
 echo %RED%             Applications Silent Uninstaller%RESET%
@@ -2139,6 +2205,7 @@ goto menu_apps
 
 
 :apps_updater_wizard
+call :ensure_winget
 cls
 echo %CYAN%====================================================%RESET%
 echo %GREEN%             Applications Updater Wizard%RESET%
@@ -2170,30 +2237,33 @@ if "%up_choice%"=="1" (
     goto menu_apps
 )
 
-if "%up_choice%"=="2" (
+if "%up_choice%"=="2" goto apps_updater_single
+goto apps_updater_wizard
+
+:apps_updater_single
+echo.
+echo %WHITE%Please copy and paste the %GREEN%ID%WHITE% of the app you want to update from the list above.%RESET%
+echo %WHITE%Example: %CYAN%Google.Chrome%RESET%
+echo.
+set /p "single_up_id=%YELLOW%Enter App ID: %RESET%"
+
+if "%single_up_id%"=="" goto apps_updater_wizard
+
+echo.
+echo %YELLOW%Updating %single_up_id% Silently...%RESET%
+winget upgrade --id "%single_up_id%" --silent --accept-source-agreements --accept-package-agreements
+if %errorlevel% equ 0 (
     echo.
-    echo %WHITE%Please copy and paste the %GREEN%ID%WHITE% of the app you want to update from the list above.%RESET%
-    echo %WHITE%Example: %CYAN%Google.Chrome%RESET%
+    echo %GREEN%[✓] %single_up_id% Updated Successfully!%RESET%
+) else (
     echo.
-    set /p "single_up_id=%YELLOW%Enter App ID: %RESET%"
-    
-    if "%single_up_id%"=="" goto apps_updater_wizard
-    
-    echo.
-    echo %YELLOW%Updating %single_up_id% Silently...%RESET%
-    winget upgrade --id "%single_up_id%" --silent --accept-source-agreements --accept-package-agreements
-    if %errorlevel% equ 0 (
-        echo.
-        echo %GREEN%[✓] %single_up_id% Updated Successfully!%RESET%
-    ) else (
-        echo.
-        echo %RED%[X] Failed to update. Please check if the ID is correct.%RESET%
-    )
-    pause
+    echo %RED%[X] Failed to update. Please check if the ID is correct.%RESET%
 )
+pause
 goto apps_updater_wizard
 
 :search_install_app
+call :ensure_winget
 cls
 echo %CYAN%====================================================%RESET%
 echo %GREEN%          Search ^& Install Custom Application%RESET%
@@ -2810,7 +2880,13 @@ goto menu_tweaks
 :tweak_power
 echo.
 echo %YELLOW%Enabling Ultimate Performance Power Plan...%RESET%
-for /f "tokens=4" %%a in ('powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61') do powercfg -setactive %%a >nul 2>&1
+set "GUID="
+for /f "delims=" %%a in ('powershell -NoProfile -Command "(powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 | Select-String -Pattern '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}').Matches.Value"') do set "GUID=%%a"
+if not "%GUID%"=="" (
+    powercfg -setactive %GUID% >nul 2>&1
+    if not exist "C:\WinRTP" mkdir "C:\WinRTP" >nul 2>&1
+    echo %GUID%>> "C:\WinRTP\UltimateGUIDs.txt"
+)
 echo %GREEN%[✓] Ultimate Performance Mode Enabled!%RESET%
 pause
 goto menu_tweaks
@@ -2858,8 +2934,13 @@ reg add "HKCU\Control Panel\Mouse" /v MouseThreshold1 /t REG_SZ /d 0 /f >nul 2>&
 reg add "HKCU\Control Panel\Mouse" /v MouseThreshold2 /t REG_SZ /d 0 /f >nul 2>&1
 powercfg -h off >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f >nul 2>&1
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f >nul 2>&1
-for /f "tokens=4" %%a in ('powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61') do powercfg -setactive %%a >nul 2>&1
+set "GUID="
+for /f "delims=" %%a in ('powershell -NoProfile -Command "(powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 | Select-String -Pattern '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}').Matches.Value"') do set "GUID=%%a"
+if not "%GUID%"=="" (
+    powercfg -setactive %GUID% >nul 2>&1
+    if not exist "C:\WinRTP" mkdir "C:\WinRTP" >nul 2>&1
+    echo %GUID%>> "C:\WinRTP\UltimateGUIDs.txt"
+)
 
 echo %GREEN%[✓] ALL Recommended Tweaks Applied Successfully!%RESET%
 echo %WHITE%(Note: Please restart your PC for all changes to take full effect).%RESET%
@@ -2912,8 +2993,11 @@ reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorE
 powercfg -setactive 381b4222-f694-41f0-9685-ff5bb260df2e >nul 2>&1
 
 echo %WHITE%Removing Ultimate Performance profiles...%RESET%
-for /f "tokens=4" %%i in ('powercfg -list ^| findstr /i "Ultimate"') do (
-    powercfg -delete %%i >nul 2>&1
+if exist "C:\WinRTP\UltimateGUIDs.txt" (
+    for /f "delims=" %%i in (C:\WinRTP\UltimateGUIDs.txt) do (
+        powercfg -delete %%i >nul 2>&1
+    )
+    del /q "C:\WinRTP\UltimateGUIDs.txt" >nul 2>&1
 )
 
 taskkill /f /im explorer.exe >nul 2>&1
@@ -2957,16 +3041,38 @@ net user | findstr /V "Command The"
 echo.
 exit /b
 
+:ensure_winget
+where winget >nul 2>&1
+if %errorlevel% equ 0 goto :eof
+
+echo %YELLOW%Winget (App Installer) is not found on this system.%RESET%
+echo %YELLOW%Attempting to install it automatically, please wait...%RESET%
+
+powershell -NoProfile -Command "try { Invoke-WebRequest -Uri 'https://aka.ms/getwinget' -OutFile \"$env:TEMP\AppInstaller.msixbundle\"; Add-AppxPackage -Path \"$env:TEMP\AppInstaller.msixbundle\" } catch { exit 1 }"
+
+where winget >nul 2>&1
+if %errorlevel% neq 0 (
+    echo %RED%[X] Failed to install Winget automatically.%RESET%
+    echo %WHITE%Please install "App Installer" manually from the Microsoft Store, then try again.%RESET%
+    pause
+    goto menu
+) else (
+    echo %GREEN%[✓] Winget installed successfully!%RESET%
+)
+goto :eof
+
 :AUTO_UPDATE
 setlocal EnableDelayedExpansion
 
 set CURRENT_VERSION=1.5
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
+set CHECKSUM_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Checksum.txt
 
 set TEMP_VERSION=%temp%\Version.txt
 set NEW_FILE=%temp%\WindowsRepairToolPro_New.bat
 set UPDATER=%temp%\Updater.bat
+set TEMP_CHECKSUM=%temp%\Checksum.txt
 
 if exist "%TEMP_VERSION%" del "%TEMP_VERSION%" >nul 2>&1
 
@@ -2990,6 +3096,22 @@ if exist "%TEMP_VERSION%" (
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%TOOL_URL%', '%NEW_FILE%')" >nul 2>&1
 
     if exist "%NEW_FILE%" (
+
+        powershell -Command "(New-Object Net.WebClient).DownloadFile('%CHECKSUM_URL%', '%TEMP_CHECKSUM%')" >nul 2>&1
+
+        set EXPECTED_HASH=
+        if exist "%TEMP_CHECKSUM%" (
+            for /f "delims=" %%h in ('type "%TEMP_CHECKSUM%"') do set EXPECTED_HASH=%%h
+        )
+        set EXPECTED_HASH=!EXPECTED_HASH: =!
+
+        for /f "delims=" %%h in ('powershell -NoProfile -Command "(Get-FileHash '%NEW_FILE%' -Algorithm SHA256).Hash"') do set ACTUAL_HASH=%%h
+
+        if not "!EXPECTED_HASH!"=="" if /i not "!ACTUAL_HASH!"=="!EXPECTED_HASH!" (
+            del "%NEW_FILE%" >nul 2>&1
+            endlocal
+            exit /b
+        )
 
         (
         echo @echo off
