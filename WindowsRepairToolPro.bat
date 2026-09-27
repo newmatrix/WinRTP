@@ -32,7 +32,7 @@ call :AUTO_UPDATE
 :menu
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%            Windows Repair Tool Pro v1.5%RESET%
+echo %GREEN%            Windows Repair Tool Pro v1.6%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %GREEN%[0]%RESET% %GREEN%Create Restore Point%RESET%
@@ -3020,7 +3020,7 @@ echo.
 echo %WHITE%Developer:%RESET% Hesham Taha
 echo %WHITE%YouTube:%RESET% Hesham Taha
 echo %WHITE%Facebook:%RESET% Hesham Taha Official
-echo %WHITE%Version:%RESET% 1.5
+echo %WHITE%Version:%RESET% 1.6
 echo.
 
 echo %YELLOW%Opening links...%RESET%
@@ -3064,7 +3064,7 @@ goto :eof
 :AUTO_UPDATE
 setlocal EnableDelayedExpansion
 
-set CURRENT_VERSION=1.5
+set CURRENT_VERSION=1.6
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
 
