@@ -32,7 +32,7 @@ call :AUTO_UPDATE
 :menu
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%            Windows Repair Tool Pro v1.6%RESET%
+echo %GREEN%            Windows Repair Tool Pro v1.5%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %GREEN%[0]%RESET% %GREEN%Create Restore Point%RESET%
@@ -3020,7 +3020,7 @@ echo.
 echo %WHITE%Developer:%RESET% Hesham Taha
 echo %WHITE%YouTube:%RESET% Hesham Taha
 echo %WHITE%Facebook:%RESET% Hesham Taha Official
-echo %WHITE%Version:%RESET% 1.6
+echo %WHITE%Version:%RESET% 1.5
 echo.
 
 echo %YELLOW%Opening links...%RESET%
@@ -3064,15 +3064,13 @@ goto :eof
 :AUTO_UPDATE
 setlocal EnableDelayedExpansion
 
-set CURRENT_VERSION=1.6
+set CURRENT_VERSION=1.5
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
-set CHECKSUM_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Checksum.txt
 
 set TEMP_VERSION=%temp%\Version.txt
 set NEW_FILE=%temp%\WindowsRepairToolPro_New.bat
 set UPDATER=%temp%\Updater.bat
-set TEMP_CHECKSUM=%temp%\Checksum.txt
 
 if exist "%TEMP_VERSION%" del "%TEMP_VERSION%" >nul 2>&1
 
@@ -3096,22 +3094,6 @@ if exist "%TEMP_VERSION%" (
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%TOOL_URL%', '%NEW_FILE%')" >nul 2>&1
 
     if exist "%NEW_FILE%" (
-
-        powershell -Command "(New-Object Net.WebClient).DownloadFile('%CHECKSUM_URL%', '%TEMP_CHECKSUM%')" >nul 2>&1
-
-        set EXPECTED_HASH=
-        if exist "%TEMP_CHECKSUM%" (
-            for /f "delims=" %%h in ('type "%TEMP_CHECKSUM%"') do set EXPECTED_HASH=%%h
-        )
-        set EXPECTED_HASH=!EXPECTED_HASH: =!
-
-        for /f "delims=" %%h in ('powershell -NoProfile -Command "(Get-FileHash '%NEW_FILE%' -Algorithm SHA256).Hash"') do set ACTUAL_HASH=%%h
-
-        if not "!EXPECTED_HASH!"=="" if /i not "!ACTUAL_HASH!"=="!EXPECTED_HASH!" (
-            del "%NEW_FILE%" >nul 2>&1
-            endlocal
-            exit /b
-        )
 
         (
         echo @echo off
