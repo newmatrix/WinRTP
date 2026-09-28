@@ -456,18 +456,6 @@ Windows Repair Tool Pro عبارة عن Batch Tool تنفذ العديد من أ
 
 ---
 
-## 📸 Screenshot
-
-ضع Screenshot للأداة في:
-
-```text
-assets/WinRTP-Screenshot.png
-```
-
-وسيظهر تلقائيًا في أعلى صفحة الـREADME.
-
----
-
 ## 👨‍💻 المطور
 
 **Hesham Taha**  
