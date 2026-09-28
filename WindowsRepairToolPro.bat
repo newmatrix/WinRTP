@@ -1659,6 +1659,7 @@ echo %YELLOW%                Resetting Hosts File%RESET%
 echo %CYAN%====================================================%RESET%
 echo %WHITE%Fixes internet redirects caused by malware or bad configs.%RESET%
 echo.
+copy "%windir%\System32\drivers\etc\hosts" "%windir%\System32\drivers\etc\hosts.WinRTP.bak"
 echo # Copyright (c) 1993-2009 Microsoft Corp. > %windir%\System32\drivers\etc\hosts
 echo # This is a default HOSTS file. >> %windir%\System32\drivers\etc\hosts
 echo 127.0.0.1 localhost >> %windir%\System32\drivers\etc\hosts
