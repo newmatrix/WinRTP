@@ -26,6 +26,12 @@ if %errorLevel% neq 0 (
 )
 
 :: ====================================================
+:: WINDOW TRANSPARENCY (optional)
+:: ====================================================
+set WRT_ALPHA=230
+powershell -NoProfile -Command "$a=[int]$env:WRT_ALPHA; if($a -lt 76 -or $a -gt 255){$a=230}; Add-Type -Namespace Win -Name Api -MemberDefinition '[DllImport(\"kernel32.dll\")] public static extern IntPtr GetConsoleWindow(); [DllImport(\"user32.dll\")] public static extern int GetWindowLong(IntPtr h,int i); [DllImport(\"user32.dll\")] public static extern int SetWindowLong(IntPtr h,int i,int v); [DllImport(\"user32.dll\")] public static extern bool SetLayeredWindowAttributes(IntPtr h,uint k,byte a,uint f);'; $h=[Win.Api]::GetConsoleWindow(); if($h -ne [IntPtr]::Zero){$s=[Win.Api]::GetWindowLong($h,-20); [Win.Api]::SetWindowLong($h,-20,($s -bor 0x80000))|Out-Null; [Win.Api]::SetLayeredWindowAttributes($h,0,[byte]$a,2)|Out-Null}" >nul 2>&1
+
+:: ====================================================
 :: MAIN MENU
 :: ====================================================
 call :AUTO_UPDATE
@@ -964,7 +970,7 @@ echo %CYAN%====================================================%RESET%
 echo.
 echo %YELLOW%Checking for available updates... Please wait.%RESET%
 echo.
-winget upgrade
+winget upgrade --source winget
 if %errorlevel% neq 0 (
     echo.
     echo %GREEN%[✓] All your programs are up to date!%RESET%
@@ -981,7 +987,7 @@ echo %WHITE%----------------------------------------------------%RESET%
 echo.
 set /p w_choice=%YELLOW%Enter choice: %RESET%
 if "%w_choice%"=="1" (
-    winget upgrade --all --include-unknown
+    winget upgrade --all --include-unknown --source winget
     pause
     goto winget_update
 )
@@ -991,7 +997,7 @@ goto winget_update
 
 :winget_update_specific
 set /p app_ref=%YELLOW%Enter App ID or Name: %RESET%
-winget upgrade --id "%app_ref%" --include-unknown || winget upgrade --name "%app_ref%" --include-unknown
+winget upgrade --id "%app_ref%" --include-unknown --source winget || winget upgrade --name "%app_ref%" --include-unknown --source winget
 pause
 goto winget_update
 
@@ -2120,14 +2126,17 @@ echo.
 echo %RED%[!] Please wait, this might take up to 10 minutes...%RESET%
 echo.
 
-for %%r in (Microsoft.VCRedist.2015+.x64 Microsoft.VCRedist.2015+.x86 Microsoft.VCRedist.2013.x64 Microsoft.VCRedist.2013.x86 Microsoft.VCRedist.2012.x64 Microsoft.VCRedist.2012.x86 Microsoft.VCRedist.2010.x64 Microsoft.VCRedist.2010.x86 Microsoft.DirectX Microsoft.DotNet.DesktopRuntime.8 Microsoft.EdgeWebView2Runtime Microsoft.XNAFramework Oracle.JavaRuntimeEnvironment) do (
-    echo %YELLOW%Installing: %%r...%RESET%
-    winget install --id "%%r" --silent --accept-source-agreements --accept-package-agreements >nul 2>&1
-)
+set "fail_count=0"
+for %%r in (Microsoft.VCRedist.2015+.x64 Microsoft.VCRedist.2015+.x86 Microsoft.VCRedist.2013.x64 Microsoft.VCRedist.2013.x86 Microsoft.VCRedist.2012.x64 Microsoft.VCRedist.2012.x86 Microsoft.VCRedist.2010.x64 Microsoft.VCRedist.2010.x86 Microsoft.DirectX Microsoft.DotNet.DesktopRuntime.8 Microsoft.EdgeWebView2Runtime Microsoft.XNARedist Oracle.JavaRuntimeEnvironment) do call :install_pkg %%r
 
 echo.
-echo %GREEN%[✓] All Core and Legacy Runtimes Installed Successfully!%RESET%
-echo %WHITE%Your PC is now fully optimized for all games and heavy software.%RESET%
+if %fail_count% equ 0 (
+    echo %GREEN%[OK] All Core and Legacy Runtimes Installed Successfully!%RESET%
+    echo %WHITE%Your PC is now ready for most games and heavy software.%RESET%
+) else (
+    echo %YELLOW%[!] Finished, but some packages failed to install. Failed count: %fail_count%%RESET%
+    echo %WHITE%Check your internet connection and try again.%RESET%
+)
 pause
 goto menu_apps
 
@@ -2135,7 +2144,7 @@ goto menu_apps
 call :ensure_winget
 echo.
 echo %YELLOW%Installing %app_id% Silently... Please wait...%RESET%
-winget install --id "%app_id%" --silent --accept-source-agreements --accept-package-agreements
+winget install --id "%app_id%" --silent --accept-source-agreements --accept-package-agreements --source winget
 if %errorlevel% equ 0 (
     echo.
     echo %GREEN%[✓] Installed Successfully!%RESET%
@@ -2152,12 +2161,16 @@ cls
 echo %YELLOW%Installing All Basic Apps (Chrome, IDM, VLC, WinRAR, 7-Zip)...%RESET%
 echo %WHITE%This will take a few minutes, please don't close the window...%RESET%
 echo.
-for %%g in (Google.Chrome Tonec.InternetDownloadManager VideoLAN.VLC RARLab.WinRAR 7zip.7zip) do (
-    echo %YELLOW%Installing: %%g...%RESET%
-    winget install --id "%%g" --silent --accept-source-agreements --accept-package-agreements >nul 2>&1
-)
+set "fail_count=0"
+for %%g in (Google.Chrome Tonec.InternetDownloadManager VideoLAN.VLC RARLab.WinRAR 7zip.7zip) do call :install_pkg %%g
+
 echo.
-echo %GREEN%[✓] All Basic Apps Installed Successfully!%RESET%
+if %fail_count% equ 0 (
+    echo %GREEN%[OK] All Basic Apps Installed Successfully!%RESET%
+) else (
+    echo %YELLOW%[!] Finished, but some apps failed to install. Failed count: %fail_count%%RESET%
+    echo %WHITE%Check your internet connection and try again.%RESET%
+)
 pause
 goto menu_apps
 
@@ -2214,7 +2227,7 @@ echo.
 echo %YELLOW%Checking for available updates... Please wait...%RESET%
 echo.
 
-winget upgrade
+winget upgrade --source winget
 echo.
 echo %CYAN%====================================================%RESET%
 echo %GREEN%[1]%RESET% Update ALL Apps Automatically
@@ -2230,7 +2243,7 @@ if "%up_choice%"=="" goto menu_apps
 if "%up_choice%"=="1" (
     echo.
     echo %YELLOW%Updating ALL applications silently...%RESET%
-    winget upgrade --all --silent --accept-source-agreements --accept-package-agreements
+    winget upgrade --all --silent --accept-source-agreements --accept-package-agreements --source winget
     echo.
     echo %GREEN%[✓] Bulk Update Process Completed!%RESET%
     pause
@@ -2251,7 +2264,7 @@ if "%single_up_id%"=="" goto apps_updater_wizard
 
 echo.
 echo %YELLOW%Updating %single_up_id% Silently...%RESET%
-winget upgrade --id "%single_up_id%" --silent --accept-source-agreements --accept-package-agreements
+winget upgrade --id "%single_up_id%" --silent --accept-source-agreements --accept-package-agreements --source winget
 if %errorlevel% equ 0 (
     echo.
     echo %GREEN%[✓] %single_up_id% Updated Successfully!%RESET%
@@ -2278,7 +2291,7 @@ echo %YELLOW%Searching for "%custom_app%" in Microsoft Database...%RESET%
 echo %CYAN%----------------------------------------------------%RESET%
 echo.
 
-winget search "%custom_app%"
+winget search "%custom_app%" --source winget
 if %errorlevel% neq 0 (
     echo.
     echo %RED%[X] No applications found with the name "%custom_app%".%RESET%
@@ -2301,7 +2314,7 @@ if "%app_id_choice%"=="" goto menu_apps
 
 echo.
 echo %YELLOW%Installing %app_id_choice% Silently... Please wait...%RESET%
-winget install --id "%app_id_choice%" --silent --accept-source-agreements --accept-package-agreements
+winget install --id "%app_id_choice%" --silent --accept-source-agreements --accept-package-agreements --source winget
 
 if %errorlevel% equ 0 (
     echo.
@@ -3048,7 +3061,14 @@ if %errorlevel% equ 0 goto :eof
 echo %YELLOW%Winget (App Installer) is not found on this system.%RESET%
 echo %YELLOW%Attempting to install it automatically, please wait...%RESET%
 
-powershell -NoProfile -Command "try { Invoke-WebRequest -Uri 'https://aka.ms/getwinget' -OutFile \"$env:TEMP\AppInstaller.msixbundle\"; Add-AppxPackage -Path \"$env:TEMP\AppInstaller.msixbundle\" } catch { exit 1 }"
+echo %WHITE%Installing dependencies (1/3): VCLibs...%RESET%
+powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx' -OutFile '%temp%\VCLibs.appx'; Add-AppxPackage -Path '%temp%\VCLibs.appx'" >nul 2>&1
+
+echo %WHITE%Installing dependencies (2/3): UI.Xaml...%RESET%
+powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/microsoft/microsoft-ui-xaml/releases/download/v2.8.6/Microsoft.UI.Xaml.2.8.x64.appx' -OutFile '%temp%\UIXaml.appx'; Add-AppxPackage -Path '%temp%\UIXaml.appx'" >nul 2>&1
+
+echo %WHITE%Installing App Installer (3/3)...%RESET%
+powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/microsoft/winget-cli/releases/download/v1.7.11132/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle' -OutFile '%temp%\AppInstaller.msixbundle'; Add-AppxPackage -Path '%temp%\AppInstaller.msixbundle'" >nul 2>&1
 
 where winget >nul 2>&1
 if %errorlevel% neq 0 (
@@ -3059,6 +3079,17 @@ if %errorlevel% neq 0 (
 ) else (
     echo %GREEN%[✓] Winget installed successfully!%RESET%
 )
+goto :eof
+
+:install_pkg
+echo %YELLOW%Installing: %~1...%RESET%
+winget install --id "%~1" --silent --accept-source-agreements --accept-package-agreements --source winget >nul 2>&1
+set "pkg_rc=%errorlevel%"
+if "%pkg_rc%"=="0" goto :eof
+if "%pkg_rc%"=="-1978335135" goto :eof
+if "%pkg_rc%"=="-1978335189" goto :eof
+set /a fail_count+=1
+echo %RED%    [X] Failed: %~1%RESET%
 goto :eof
 
 :AUTO_UPDATE
