@@ -1,11 +1,6 @@
 <img width="977" height="509" alt="Untitled" src="https://github.com/user-attachments/assets/51a4e159-b16f-4a45-89cc-0424a4c96b28" />
 <div align="center">
 
-
-<p align="center">
-  <img src="assets/WinRTP-Screenshot.png" alt="Windows Repair Tool Pro - WinRTP" width="900">
-</p>
-
 <h1 align="center">🛠️ Windows Repair Tool Pro</h1>
 
 <p align="center">
