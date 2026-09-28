@@ -1,5 +1,6 @@
-<img width="979" height="392" alt="image" src="https://github.com/user-attachments/assets/37517d5e-ace8-4eb1-88e2-0bce463422bc" />
+<img width="977" height="509" alt="Untitled" src="https://github.com/user-attachments/assets/51a4e159-b16f-4a45-89cc-0424a4c96b28" />
 <div align="center">
+
 
 # 🛠️ Windows Repair Tool Pro
 ### أداة صيانة وتحسين وإصلاح الويندوز الشاملة
