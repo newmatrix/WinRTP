@@ -1,4 +1,4 @@
-<img width="977" height="509" alt="Untitled" src="https://github.com/user-attachments/assets/51a4e159-b16f-4a45-89cc-0424a4c96b28" />
+<img width="975" height="619" alt="Screenshot 2026-09-29 103443 copy" src="https://github.com/user-attachments/assets/065dd97c-088c-4926-a846-653e4a459d81" />
 <div align="center">
 
 <h1 align="center">🛠️ Windows Repair Tool Pro</h1>
