@@ -614,39 +614,30 @@ echo %WHITE%WinRTP will check Windows system files first.%RESET%
 echo %WHITE%Repair will only start if problems are detected.%RESET%
 echo.
 
-set "SFC_OUTPUT=%TEMP%\WinRTP_SFC_Verify.txt"
+set "CBS_LOG=%windir%\Logs\CBS\CBS.log"
+set "CBS_START=0"
 
-if exist "%SFC_OUTPUT%" del /f /q "%SFC_OUTPUT%" >nul 2>&1
+if exist "%CBS_LOG%" (
+    for %%A in ("%CBS_LOG%") do set "CBS_START=%%~zA"
+)
 
 echo %CYAN%[1/2] Checking Windows system files...%RESET%
 echo %WHITE%No changes will be made during this scan.%RESET%
-echo %WHITE%Please wait...%RESET%
 echo.
 
-sfc /verifyonly > "%SFC_OUTPUT%" 2>&1
-
-cls
-echo %CYAN%====================================================%RESET%
-echo %YELLOW%          Smart SFC Check ^& Repair%RESET%
-echo %CYAN%====================================================%RESET%
-echo.
-echo %CYAN%[1/2] SFC VerifyOnly Result:%RESET%
-echo.
-
-type "%SFC_OUTPUT%"
+sfc /verifyonly
 
 echo.
 echo %WHITE%Analyzing scan result...%RESET%
 echo.
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
-"$text=Get-Content -LiteralPath $env:SFC_OUTPUT -Raw -ErrorAction SilentlyContinue; ^
-if($text -match 'Windows Resource Protection did not find any integrity violations'){exit 10}else{exit 20}"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:windir+'\Logs\CBS\CBS.log'; $start=[Int64]%CBS_START%; try { $fs=[IO.File]::Open($p,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite); if($fs.Length -lt $start){$fs.Dispose(); exit 30}; [void]$fs.Seek($start,[IO.SeekOrigin]::Begin); $sr=[IO.StreamReader]::new($fs,[Text.Encoding]::UTF8,$true); $t=$sr.ReadToEnd(); $sr.Dispose(); if(($t -match '\[SR\].*Repairing corrupted file') -or ($t -match '\[SR\].*Cannot repair member file') -or ($t -match '\[SR\].*Repaired file')){exit 20}; if($t -match '\[SR\].*Verify complete'){exit 10}; exit 30 } catch { exit 30 }"
 
 set "SFC_STATE=%ERRORLEVEL%"
 
 if "%SFC_STATE%"=="10" goto smart_sfc_healthy
-goto smart_sfc_repair
+if "%SFC_STATE%"=="20" goto smart_sfc_repair
+goto smart_sfc_unknown
 
 :smart_sfc_healthy
 echo %CYAN%====================================================%RESET%
@@ -656,36 +647,45 @@ echo.
 echo %GREEN%[OK] No integrity violations were detected.%RESET%
 echo %WHITE%SFC /Scannow is not required.%RESET%
 echo.
-
-if exist "%SFC_OUTPUT%" del /f /q "%SFC_OUTPUT%" >nul 2>&1
-
 pause
 goto menu_optimize
 
 :smart_sfc_repair
 echo %CYAN%====================================================%RESET%
-echo %YELLOW%          System File Repair Required%RESET%
+echo %YELLOW%          Integrity Violations Detected%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %YELLOW%[!] The verification result was not clean.%RESET%
-echo %WHITE%WinRTP will now run SFC /Scannow automatically.%RESET%
+echo %YELLOW%[!] Problems were detected in Windows system files.%RESET%
+echo %WHITE%WinRTP will now start the repair automatically.%RESET%
 echo.
 echo %CYAN%[2/2] Running SFC /Scannow...%RESET%
 echo %WHITE%Please wait. This process may take several minutes.%RESET%
 echo.
 
-if exist "%SFC_OUTPUT%" del /f /q "%SFC_OUTPUT%" >nul 2>&1
-
 sfc /scannow
 
 echo.
 echo %CYAN%====================================================%RESET%
-echo %GREEN%              SFC Repair Process Finished%RESET%
+echo %GREEN%              SFC Repair Finished%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %WHITE%Review the SFC result above for the final repair status.%RESET%
+echo %GREEN%[OK] SFC repair process has finished.%RESET%
+echo %WHITE%Review the result above for repair details.%RESET%
 echo.
+pause
+goto menu_optimize
 
+:smart_sfc_unknown
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%            Unable To Determine SFC Status%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %YELLOW%[!] WinRTP could not determine the scan result.%RESET%
+echo %WHITE%SFC /Scannow was NOT started automatically for safety.%RESET%
+echo.
+echo %WHITE%CBS Log:%RESET%
+echo %CYAN%C:\Windows\Logs\CBS\CBS.log%RESET%
+echo.
 pause
 goto menu_optimize
 
