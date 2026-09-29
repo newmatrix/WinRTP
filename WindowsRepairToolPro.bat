@@ -631,7 +631,7 @@ echo.
 echo %WHITE%Analyzing scan result...%RESET%
 echo.
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:windir+'\Logs\CBS\CBS.log'; $start=[Int64]%CBS_START%; try { $fs=[IO.File]::Open($p,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite); if($fs.Length -lt $start){$fs.Dispose(); exit 30}; [void]$fs.Seek($start,[IO.SeekOrigin]::Begin); $sr=[IO.StreamReader]::new($fs,[Text.Encoding]::UTF8,$true); $t=$sr.ReadToEnd(); $sr.Dispose(); $i=$t.LastIndexOf('[SR] Beginning Verify and Repair transaction'); if($i -ge 0){$t=$t.Substring($i)}; if(($t -match '\[SR\].*Repairing corrupted file') -or ($t -match '\[SR\].*Cannot repair member file')){exit 20}; if($t -match '\[SR\].*Verify complete'){exit 10}; exit 30 } catch { exit 30 }"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:windir+'\Logs\CBS\CBS.log'; $start=[Int64]%CBS_START%; try { $fs=[IO.File]::Open($p,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite); if($fs.Length -lt $start){$fs.Dispose(); exit 30}; [void]$fs.Seek($start,[IO.SeekOrigin]::Begin); $sr=[IO.StreamReader]::new($fs,[Text.Encoding]::UTF8,$true); $t=$sr.ReadToEnd(); $sr.Dispose(); if(($t -match '\[SR\].*Repairing corrupted file') -or ($t -match '\[SR\].*Cannot repair member file') -or ($t -match '\[SR\].*Repaired file')){exit 20}; if($t -match '\[SR\].*Verify complete'){exit 10}; exit 30 } catch { exit 30 }"
 
 set "SFC_STATE=%ERRORLEVEL%"
 
@@ -978,7 +978,7 @@ if exist "%Q_CBS_LOG%" (
 
 sfc /verifyonly
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:windir+'\Logs\CBS\CBS.log'; $start=[Int64]%Q_CBS_START%; try { $fs=[IO.File]::Open($p,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite); if($fs.Length -lt $start){$fs.Dispose(); exit 30}; [void]$fs.Seek($start,[IO.SeekOrigin]::Begin); $sr=[IO.StreamReader]::new($fs,[Text.Encoding]::UTF8,$true); $t=$sr.ReadToEnd(); $sr.Dispose(); $i=$t.LastIndexOf('[SR] Beginning Verify and Repair transaction'); if($i -ge 0){$t=$t.Substring($i)}; if(($t -match '\[SR\].*Repairing corrupted file') -or ($t -match '\[SR\].*Cannot repair member file')){exit 20}; if($t -match '\[SR\].*Verify complete'){exit 10}; exit 30 } catch { exit 30 }"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:windir+'\Logs\CBS\CBS.log'; $start=[Int64]%Q_CBS_START%; try { $fs=[IO.File]::Open($p,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite); if($fs.Length -lt $start){$fs.Dispose(); exit 30}; [void]$fs.Seek($start,[IO.SeekOrigin]::Begin); $sr=[IO.StreamReader]::new($fs,[Text.Encoding]::UTF8,$true); $t=$sr.ReadToEnd(); $sr.Dispose(); if(($t -match '\[SR\].*Repairing corrupted file') -or ($t -match '\[SR\].*Cannot repair member file') -or ($t -match '\[SR\].*Repaired file')){exit 20}; if($t -match '\[SR\].*Verify complete'){exit 10}; exit 30 } catch { exit 30 }"
 
 set "Q_SFC_STATE=%ERRORLEVEL%"
 
