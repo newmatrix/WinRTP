@@ -607,19 +607,12 @@ goto menu_optimize
 :sfc
 cls
 echo %CYAN%====================================================%RESET%
-echo %YELLOW%          Smart SFC Check ^& Repair%RESET%
+echo %YELLOW%            Smart SFC Check ^& Repair%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%WinRTP will check Windows system files first.%RESET%
 echo %WHITE%Repair will only start if problems are detected.%RESET%
 echo.
-
-set "CBS_LOG=%windir%\Logs\CBS\CBS.log"
-set "CBS_START=0"
-
-if exist "%CBS_LOG%" (
-    for %%A in ("%CBS_LOG%") do set "CBS_START=%%~zA"
-)
 
 echo %CYAN%[1/2] Checking Windows system files...%RESET%
 echo %WHITE%No changes will be made during this scan.%RESET%
@@ -631,13 +624,19 @@ echo.
 echo %WHITE%Analyzing scan result...%RESET%
 echo.
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:windir+'\Logs\CBS\CBS.log'; $start=[Int64]%CBS_START%; try { $fs=[IO.File]::Open($p,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite); if($fs.Length -lt $start){$fs.Dispose(); exit 30}; [void]$fs.Seek($start,[IO.SeekOrigin]::Begin); $sr=[IO.StreamReader]::new($fs,[Text.Encoding]::UTF8,$true); $t=$sr.ReadToEnd(); $sr.Dispose(); if(($t -match '\[SR\].*Repairing corrupted file') -or ($t -match '\[SR\].*Cannot repair member file') -or ($t -match '\[SR\].*Repaired file')){exit 20}; if($t -match '\[SR\].*Verify complete'){exit 10}; exit 30 } catch { exit 30 }"
+set "SFC_STATE=30"
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -TypeDefinition 'using System; using System.Text; using System.Runtime.InteropServices; public static class WinRTPConsole { [StructLayout(LayoutKind.Sequential)] public struct COORD { public short X; public short Y; } [StructLayout(LayoutKind.Sequential)] public struct SMALL_RECT { public short Left; public short Top; public short Right; public short Bottom; } [StructLayout(LayoutKind.Sequential)] public struct INFO { public COORD dwSize; public COORD dwCursorPosition; public short wAttributes; public SMALL_RECT srWindow; public COORD dwMaximumWindowSize; } [DllImport(\"kernel32.dll\")] public static extern IntPtr GetStdHandle(int n); [DllImport(\"kernel32.dll\")] public static extern bool GetConsoleScreenBufferInfo(IntPtr h, out INFO i); [DllImport(\"kernel32.dll\", CharSet=CharSet.Unicode)] public static extern bool ReadConsoleOutputCharacter(IntPtr h, StringBuilder b, uint len, COORD c, out uint n); }'; $h=[WinRTPConsole]::GetStdHandle(-11); $i=New-Object WinRTPConsole+INFO; if(-not [WinRTPConsole]::GetConsoleScreenBufferInfo($h,[ref]$i)){exit 30}; $w=[int]$i.dwSize.X; $y=[int]$i.dwCursorPosition.Y; $start=[Math]::Max(0,$y-40); $len=($y-$start+1)*$w; $b=New-Object System.Text.StringBuilder $len; $c=New-Object WinRTPConsole+COORD; $c.X=0; $c.Y=[int16]$start; [uint32]$read=0; if(-not [WinRTPConsole]::ReadConsoleOutputCharacter($h,$b,[uint32]$len,$c,[ref]$read)){exit 30}; $t=$b.ToString(); if($t -match 'Windows Resource Protection did not find any integrity violations'){exit 10}else{exit 20}"
 
 set "SFC_STATE=%ERRORLEVEL%"
 
+echo.
+echo %WHITE%Analyzing scan result...%RESET%
+echo.
+
 if "%SFC_STATE%"=="10" goto smart_sfc_healthy
-if "%SFC_STATE%"=="20" goto smart_sfc_repair
-goto smart_sfc_unknown
+goto smart_sfc_repair
+
 
 :smart_sfc_healthy
 echo %CYAN%====================================================%RESET%
@@ -650,13 +649,14 @@ echo.
 pause
 goto menu_optimize
 
+
 :smart_sfc_repair
 echo %CYAN%====================================================%RESET%
 echo %YELLOW%          Integrity Violations Detected%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %YELLOW%[!] Problems were detected in Windows system files.%RESET%
-echo %WHITE%WinRTP will now start the repair automatically.%RESET%
+echo %YELLOW%[!] The verification result was not clean.%RESET%
+echo %WHITE%WinRTP will now start SFC /Scannow automatically.%RESET%
 echo.
 echo %CYAN%[2/2] Running SFC /Scannow...%RESET%
 echo %WHITE%Please wait. This process may take several minutes.%RESET%
@@ -666,25 +666,10 @@ sfc /scannow
 
 echo.
 echo %CYAN%====================================================%RESET%
-echo %GREEN%              SFC Repair Finished%RESET%
+echo %GREEN%              SFC /Scannow Finished%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-echo %GREEN%[OK] SFC repair process has finished.%RESET%
-echo %WHITE%Review the result above for repair details.%RESET%
-echo.
-pause
-goto menu_optimize
-
-:smart_sfc_unknown
-echo %CYAN%====================================================%RESET%
-echo %YELLOW%            Unable To Determine SFC Status%RESET%
-echo %CYAN%====================================================%RESET%
-echo.
-echo %YELLOW%[!] WinRTP could not determine the scan result.%RESET%
-echo %WHITE%SFC /Scannow was NOT started automatically for safety.%RESET%
-echo.
-echo %WHITE%CBS Log:%RESET%
-echo %CYAN%C:\Windows\Logs\CBS\CBS.log%RESET%
+echo %WHITE%Review the Windows Resource Protection result shown above.%RESET%
 echo.
 pause
 goto menu_optimize
@@ -969,38 +954,52 @@ echo %YELLOW%            [2/3] Checking System Files%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 
-set "Q_CBS_LOG=%windir%\Logs\CBS\CBS.log"
-set "Q_CBS_START=0"
-
-if exist "%Q_CBS_LOG%" (
-    for %%A in ("%Q_CBS_LOG%") do set "Q_CBS_START=%%~zA"
-)
+echo %WHITE%Checking Windows system files...%RESET%
+echo.
 
 sfc /verifyonly
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:windir+'\Logs\CBS\CBS.log'; $start=[Int64]%Q_CBS_START%; try { $fs=[IO.File]::Open($p,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite); if($fs.Length -lt $start){$fs.Dispose(); exit 30}; [void]$fs.Seek($start,[IO.SeekOrigin]::Begin); $sr=[IO.StreamReader]::new($fs,[Text.Encoding]::UTF8,$true); $t=$sr.ReadToEnd(); $sr.Dispose(); if(($t -match '\[SR\].*Repairing corrupted file') -or ($t -match '\[SR\].*Cannot repair member file') -or ($t -match '\[SR\].*Repaired file')){exit 20}; if($t -match '\[SR\].*Verify complete'){exit 10}; exit 30 } catch { exit 30 }"
+echo.
+echo %WHITE%Analyzing SFC result...%RESET%
+echo.
+
+set "Q_SFC_STATE=30"
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -TypeDefinition 'using System; using System.Text; using System.Runtime.InteropServices; public static class WinRTPConsole { [StructLayout(LayoutKind.Sequential)] public struct COORD { public short X; public short Y; } [StructLayout(LayoutKind.Sequential)] public struct SMALL_RECT { public short Left; public short Top; public short Right; public short Bottom; } [StructLayout(LayoutKind.Sequential)] public struct INFO { public COORD dwSize; public COORD dwCursorPosition; public short wAttributes; public SMALL_RECT srWindow; public COORD dwMaximumWindowSize; } [DllImport(\"kernel32.dll\")] public static extern IntPtr GetStdHandle(int n); [DllImport(\"kernel32.dll\")] public static extern bool GetConsoleScreenBufferInfo(IntPtr h, out INFO i); [DllImport(\"kernel32.dll\", CharSet=CharSet.Unicode)] public static extern bool ReadConsoleOutputCharacter(IntPtr h, StringBuilder b, uint len, COORD c, out uint n); }'; $h=[WinRTPConsole]::GetStdHandle(-11); $i=New-Object WinRTPConsole+INFO; if(-not [WinRTPConsole]::GetConsoleScreenBufferInfo($h,[ref]$i)){exit 30}; $w=[int]$i.dwSize.X; $y=[int]$i.dwCursorPosition.Y; $start=[Math]::Max(0,$y-40); $len=($y-$start+1)*$w; $b=New-Object System.Text.StringBuilder $len; $c=New-Object WinRTPConsole+COORD; $c.X=0; $c.Y=[int16]$start; [uint32]$read=0; if(-not [WinRTPConsole]::ReadConsoleOutputCharacter($h,$b,[uint32]$len,$c,[ref]$read)){exit 30}; $t=$b.ToString(); if($t -match 'Windows Resource Protection did not find any integrity violations'){exit 10}else{exit 20}"
 
 set "Q_SFC_STATE=%ERRORLEVEL%"
 
-if "%Q_SFC_STATE%"=="10" (
-    echo.
-    echo %GREEN%[OK] No integrity violations were detected.%RESET%
-)
+if "%Q_SFC_STATE%"=="10" goto q_sfc_healthy
+goto q_sfc_repair
 
-if "%Q_SFC_STATE%"=="20" (
-    echo.
-    echo %YELLOW%[!] Problems detected in system files. Repairing...%RESET%
-    echo.
-    sfc /scannow
-    echo.
-    echo %GREEN%[OK] SFC repair finished.%RESET%
-)
 
-if "%Q_SFC_STATE%"=="30" (
-    echo.
-    echo %YELLOW%[!] Could not determine SFC status. Skipping repair for safety.%RESET%
-)
+:q_sfc_healthy
+echo.
+echo %GREEN%[OK] No integrity violations were detected.%RESET%
+echo %WHITE%SFC /Scannow is not required.%RESET%
+echo.
+goto q_after_sfc
 
+
+:q_sfc_repair
+echo.
+echo %YELLOW%[!] System file problems were detected.%RESET%
+echo %WHITE%WinRTP will now run SFC /Scannow automatically.%RESET%
+echo.
+echo %CYAN%Running SFC /Scannow...%RESET%
+echo %WHITE%Please wait. This process may take several minutes.%RESET%
+echo.
+
+sfc /scannow
+
+echo.
+echo %GREEN%[OK] SFC /Scannow finished.%RESET%
+echo %WHITE%Review the Windows Resource Protection result shown above.%RESET%
+echo.
+goto q_after_sfc
+
+
+:q_after_sfc
 echo.
 
 echo %CYAN%====================================================%RESET%
