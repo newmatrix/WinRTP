@@ -38,7 +38,7 @@ call :AUTO_UPDATE
 :menu
 cls
 echo %CYAN%====================================================%RESET%
-echo %GREEN%            Windows Repair Tool Pro v1.6%RESET%
+echo %GREEN%            Windows Repair Tool Pro v1.7%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %GREEN%[0]%RESET% %GREEN%Create Restore Point%RESET%
@@ -52,6 +52,7 @@ echo %WHITE%[7]%RESET% Silent Apps Installer (Winget)
 echo %WHITE%[8]%RESET% Windows Maintenance Tools
 echo %WHITE%[9]%RESET% User Accounts Manager
 echo %WHITE%[10]%RESET% Windows Tweaks (Performance ^& UI)
+echo %WHITE%[11]%RESET% Windows ^& Office Licensing %YELLOW%[NEW]%RESET%
 echo.
 echo %WHITE%[A]%RESET% About
 echo %RED%[E]%RESET% Exit
@@ -70,6 +71,7 @@ if "%choice%"=="7" goto menu_apps
 if "%choice%"=="8" goto menu_maintenance
 if "%choice%"=="9" goto menu_users
 if "%choice%"=="10" goto menu_tweaks
+if "%choice%"=="11" goto menu_windows_office
 
 if /i "%choice%"=="a" goto about
 if /i "%choice%"=="e" exit
@@ -213,6 +215,7 @@ echo %WHITE%[5]%RESET% Fix Audio Services
 echo %WHITE%[6]%RESET% Fix Bluetooth Services
 echo %WHITE%[7]%RESET% Fix Printer ^& Spooler
 echo %WHITE%[8]%RESET% Restart Core Services
+echo %WHITE%[9]%RESET% Windows Services Diagnostic
 echo.
 echo %RED%[0]%RESET% Back to Main Menu
 echo.
@@ -227,6 +230,7 @@ if "%rep_choice%"=="5" goto fix_audio
 if "%rep_choice%"=="6" goto fix_bluetooth
 if "%rep_choice%"=="7" goto fix_printer
 if "%rep_choice%"=="8" goto restart_services
+if "%rep_choice%"=="9" goto services_diagnostic
 if "%rep_choice%"=="0" goto menu
 goto menu_repair
 
@@ -426,6 +430,39 @@ if "%tweak_choice%"=="16" goto tweak_restore
 if "%tweak_choice%"=="0" goto menu
 goto menu_tweaks
 
+:menu_windows_office
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%              Windows ^& Office Licensing%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %CYAN%[ WINDOWS ]%RESET%
+echo %WHITE%[1]%RESET% Activate Windows with a Product Key
+echo %WHITE%[2]%RESET% Change Windows Edition
+echo %RED%[3]%RESET% %RED%Remove Installed Windows Product Key%RESET%
+echo.
+echo %CYAN%[ OFFICE ]%RESET%
+echo %WHITE%[4]%RESET% Activate Office with a Volume License Key
+echo %WHITE%[5]%RESET% Change Office License Type / Edition
+echo %RED%[6]%RESET% %RED%Remove Detected Office Product Key(s)%RESET%
+echo %RED%[7]%RESET% %RED%Uninstall Microsoft Office Completely%RESET%
+echo.
+echo %RED%[0]%RESET% Back to Main Menu
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+set "wo_choice="
+set /p "wo_choice=%YELLOW%Enter your choice: %RESET%"
+
+if "%wo_choice%"=="1" goto wo_win_activate
+if "%wo_choice%"=="2" goto wo_win_convert
+if "%wo_choice%"=="3" goto wo_win_remove_key
+if "%wo_choice%"=="4" goto wo_office_activate
+if "%wo_choice%"=="5" goto wo_office_convert
+if "%wo_choice%"=="6" goto wo_office_remove_key
+if "%wo_choice%"=="7" goto wo_office_uninstall
+if "%wo_choice%"=="0" goto menu
+goto menu_windows_office
+
 :: --- FUNCTIONS ---
 
 :dism
@@ -607,7 +644,7 @@ goto menu_optimize
 :sfc
 cls
 echo %CYAN%====================================================%RESET%
-echo %YELLOW%            Smart SFC Check ^& Repair%RESET%
+echo %YELLOW%             Smart SFC Check ^& Repair%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%WinRTP will check Windows system files first.%RESET%
@@ -619,10 +656,6 @@ echo %WHITE%No changes will be made during this scan.%RESET%
 echo.
 
 sfc /verifyonly
-
-echo.
-echo %WHITE%Analyzing scan result...%RESET%
-echo.
 
 set "SFC_STATE=30"
 
@@ -1883,6 +1916,33 @@ net start Winmgmt >nul 2>&1
 
 echo %GREEN%[OK] Core Windows Services Restarted Successfully!%RESET%
 echo.
+pause
+goto menu_repair
+
+:services_diagnostic
+cls
+echo %CYAN%====================================================%RESET%
+echo %YELLOW%          Windows Services Diagnostic%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+echo %WHITE%Checking important Windows services...%RESET%
+echo %WHITE%No changes will be made to your system.%RESET%
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$names=@('RpcSs','DcomLaunch','RpcEptMapper','EventLog','PlugPlay','Power','Schedule','ProfSvc','Winmgmt','CryptSvc','Dhcp','Dnscache','BITS','wuauserv','TrustedInstaller','WinDefend','mpssvc','Spooler','WlanSvc','bthserv'); $ok=0;$warn=0;$idle=0;$missing=0; Write-Host ('{0,-24} {1,-12} {2,-10} {3}' -f 'SERVICE','STATUS','STARTUP','RESULT') -ForegroundColor Cyan; Write-Host ('-'*68) -ForegroundColor DarkGray; foreach($n in $names){ $s=Get-CimInstance Win32_Service -Filter ('Name='''+$n+'''') -ErrorAction SilentlyContinue; if(-not $s){Write-Host ('{0,-24} {1,-12} {2,-10} {3}' -f $n,'N/A','N/A','Not Installed') -ForegroundColor DarkGray; $missing++; continue}; if($s.State -eq 'Running'){Write-Host ('{0,-24} {1,-12} {2,-10} {3}' -f $n,$s.State,$s.StartMode,'OK') -ForegroundColor Green; $ok++} elseif($s.StartMode -eq 'Disabled'){Write-Host ('{0,-24} {1,-12} {2,-10} {3}' -f $n,$s.State,$s.StartMode,'ATTENTION') -ForegroundColor Red; $warn++} elseif($s.StartMode -eq 'Auto'){Write-Host ('{0,-24} {1,-12} {2,-10} {3}' -f $n,$s.State,$s.StartMode,'ATTENTION') -ForegroundColor Red; $warn++} else {Write-Host ('{0,-24} {1,-12} {2,-10} {3}' -f $n,$s.State,$s.StartMode,'IDLE') -ForegroundColor Yellow; $idle++}}; Write-Host ''; Write-Host '============================================================' -ForegroundColor Cyan; Write-Host ('Running / OK : '+$ok) -ForegroundColor Green; Write-Host ('Idle / Manual: '+$idle) -ForegroundColor Yellow; Write-Host ('Needs Attention: '+$warn) -ForegroundColor Red; Write-Host ('Not Available : '+$missing) -ForegroundColor DarkGray; Write-Host '============================================================' -ForegroundColor Cyan"
+
+echo.
+echo %WHITE%Status Guide:%RESET%
+echo %GREEN%[OK]%RESET%      Service is currently running.
+echo %YELLOW%[IDLE]%RESET%    Manual service is stopped and may start when needed.
+echo %RED%[ATTENTION]%RESET% Automatic service is stopped or service is disabled.
+echo %WHITE%[N/A]%RESET%     Service is not installed or not available on this PC.
+echo.
+echo %YELLOW%Note:%RESET% %WHITE%Some Manual services normally stay stopped until Windows needs them.%RESET%
+echo.
+
 pause
 goto menu_repair
 
@@ -3349,6 +3409,1331 @@ echo %WHITE%(Note: Please restart your PC to ensure all services return to norma
 pause
 goto menu_tweaks
 
+
+:wo_win_activate
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%                 Activate Windows%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+call :wo_show_windows_summary
+
+echo.
+set "WO_WINKEY="
+set /p "WO_WINKEY=%YELLOW%Enter your Windows product key (B=Back): %RESET%"
+
+if /i "%WO_WINKEY%"=="B" goto menu_windows_office
+if not defined WO_WINKEY goto menu_windows_office
+
+echo.
+choice /c YN /n /m "Activate Windows now? (Y=Activate / N=Cancel): "
+
+if errorlevel 2 goto wo_win_cancel_activation
+
+echo.
+echo %YELLOW%Installing Windows product key...%RESET%
+echo.
+
+<nul set /p "=%GREEN%"
+cscript //nologo "%windir%\system32\slmgr.vbs" /ipk %WO_WINKEY%
+set "WO_IPK_RESULT=%ERRORLEVEL%"
+<nul set /p "=%RESET%"
+
+if not "%WO_IPK_RESULT%"=="0" (
+    echo.
+    echo %RED%[X] Windows rejected the product key.%RESET%
+    echo %YELLOW%The key may be invalid or not compatible with this Windows edition.%RESET%
+    echo.
+    set "WO_WINKEY="
+    pause
+    goto menu_windows_office
+)
+
+echo %YELLOW%Activating Windows...%RESET%
+echo.
+
+cscript //nologo "%windir%\system32\slmgr.vbs" /ato
+set "WO_ATO_RESULT=%ERRORLEVEL%"
+
+
+if not "%WO_ATO_RESULT%"=="0" (
+    echo %RED%[X] Windows activation did not complete successfully.%RESET%
+    echo %YELLOW%The product key is installed, but Windows could not activate it.%RESET%
+    echo.
+) else (
+    echo %GREEN%[OK] Windows activation command completed.%RESET%
+    echo.
+)
+
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Updated Windows License Details:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+call :wo_show_windows_summary
+
+set "WO_WINKEY="
+set "WO_IPK_RESULT="
+set "WO_ATO_RESULT="
+
+echo.
+pause
+goto menu_windows_office
+
+
+:wo_win_cancel_activation
+echo.
+echo %YELLOW%Activation cancelled.%RESET%
+echo %WHITE%The existing Windows key/license was not changed.%RESET%
+
+set "WO_WINKEY="
+
+echo.
+pause
+goto menu_windows_office
+
+:wo_win_convert
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%              Change Windows Edition%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+call :wo_show_current_edition
+
+set "WO_BEFORE_SKU=%WO_CURRENT_SKU%"
+set "WO_BEFORE_NAME=%WO_CURRENT_NAME%"
+
+echo.
+
+set "WO_TARGETS_FILE=%TEMP%\WinRTP_windows_targets_%RANDOM%.txt"
+set "WO_TARGET_COUNT=0"
+set "WO_TARGET_ID="
+set "WO_TARGET_NAME="
+set "WO_WINKEY="
+
+dism /online /Get-TargetEditions > "%WO_TARGETS_FILE%" 2>&1
+
+echo %CYAN%Available Target Editions:%RESET%
+echo.
+
+for /f "tokens=4" %%E in ('findstr /i /c:"Target Edition :" "%WO_TARGETS_FILE%"') do call :wo_add_target %%E
+
+del /q "%WO_TARGETS_FILE%" >nul 2>&1
+
+if "%WO_TARGET_COUNT%"=="0" (
+    echo %YELLOW%[!] No built-in target editions with official public keys were found.%RESET%
+)
+
+echo.
+echo %YELLOW%[C]%RESET% Use Custom Product Key
+echo %RED%[0]%RESET% Back
+echo.
+
+set "WO_TARGET_CHOICE="
+set /p "WO_TARGET_CHOICE=%YELLOW%Choose target number or C: %RESET%"
+
+if /i "%WO_TARGET_CHOICE%"=="C" goto wo_custom_edition_key
+if "%WO_TARGET_CHOICE%"=="0" goto menu_windows_office
+
+call set "WO_TARGET_ID=%%WO_OPTION_%WO_TARGET_CHOICE%_ID%%"
+call set "WO_TARGET_NAME=%%WO_OPTION_%WO_TARGET_CHOICE%_NAME%%"
+call set "WO_WINKEY=%%WO_OPTION_%WO_TARGET_CHOICE%_KEY%%"
+
+if not defined WO_WINKEY goto wo_invalid_target
+
+echo.
+echo %WHITE%Selected Target:%RESET% %GREEN%%WO_TARGET_NAME%%RESET%
+echo.
+echo %YELLOW%The matching Microsoft public KMS client key will be applied automatically.%RESET%
+echo.
+
+choice /c YN /n /m "Apply this edition change now? (Y/N): "
+
+if errorlevel 2 goto wo_conversion_cancelled
+
+echo.
+echo %YELLOW%Starting Windows edition change...%RESET%
+echo.
+
+changepk.exe /ProductKey %WO_WINKEY%
+set "WO_CHANGE_RESULT=%ERRORLEVEL%"
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Edition after the attempt:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+
+call :wo_show_current_edition
+
+if /i "%WO_CURRENT_SKU%"=="%WO_TARGET_ID%" (
+    echo %GREEN%[OK] Windows edition changed successfully.%RESET%
+	echo.
+    echo %WHITE%Previous Edition:%RESET% %WO_BEFORE_NAME%
+    echo %WHITE%New Edition:%RESET% %GREEN%%WO_CURRENT_NAME%%RESET%
+) else (
+    if not "%WO_CHANGE_RESULT%"=="0" (
+        echo.
+        echo %RED%[X] The product key is not compatible with this edition change.%RESET%
+        echo %WHITE%Windows remains on:%RESET% %GREEN%%WO_BEFORE_NAME%%RESET%
+    ) else (
+        echo.
+        echo %YELLOW%[!] The Windows edition has not changed yet.%RESET%
+        echo %YELLOW%A restart may be required to complete the edition change.%RESET%
+        echo %WHITE%Current Edition:%RESET% %GREEN%%WO_CURRENT_NAME%%RESET%
+    )
+)
+
+echo.
+call :wo_show_windows_summary
+
+set "WO_WINKEY="
+set "WO_TARGET_ID="
+set "WO_TARGET_NAME="
+set "WO_TARGET_CHOICE="
+set "WO_CHANGE_RESULT="
+set "WO_BEFORE_SKU="
+set "WO_BEFORE_NAME="
+
+echo.
+pause
+goto menu_windows_office
+
+:wo_custom_edition_key
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%             Custom Windows Product Key%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+call :wo_show_current_edition
+
+echo.
+echo %WHITE%Enter your own Windows product key.%RESET%
+echo %YELLOW%Windows will determine whether the key supports an edition change.%RESET%
+echo.
+
+set "WO_CUSTOM_KEY="
+set /p "WO_CUSTOM_KEY=%YELLOW%Product Key (B=Back): %RESET%"
+
+if not defined WO_CUSTOM_KEY goto wo_win_convert
+
+powershell.exe -NoProfile -Command "$k=$env:WO_CUSTOM_KEY; if($k -ieq 'B'){exit 2}; if($k -match '^[A-Za-z0-9]{5}(-[A-Za-z0-9]{5}){4}$'){exit 0}; exit 1" >nul 2>&1
+set "WO_CUSTOM_CHECK=%ERRORLEVEL%"
+
+if "%WO_CUSTOM_CHECK%"=="2" (
+    set "WO_CUSTOM_KEY="
+    set "WO_CUSTOM_CHECK="
+    goto wo_win_convert
+)
+
+if not "%WO_CUSTOM_CHECK%"=="0" (
+    echo.
+    echo %RED%[X] Invalid product key format.%RESET%
+    echo %YELLOW%Expected: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX%RESET%
+    echo.
+    set "WO_CUSTOM_KEY="
+    set "WO_CUSTOM_CHECK="
+    pause
+    goto wo_custom_edition_key
+)
+
+set "WO_CUSTOM_CHECK="
+
+echo.
+echo %WHITE%The product key format is correct.%RESET%
+echo %YELLOW%Windows will decide whether the key is valid and compatible with this edition.%RESET%
+echo.
+
+choice /c YN /n /m "Apply this product key and attempt edition change? (Y/N): "
+
+if errorlevel 2 (
+    set "WO_CUSTOM_KEY="
+    goto wo_win_convert
+)
+
+echo.
+echo %YELLOW%Applying custom Windows product key...%RESET%
+echo.
+
+changepk.exe /ProductKey %WO_CUSTOM_KEY%
+set "WO_CHANGE_RESULT=%ERRORLEVEL%"
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Windows Edition After The Attempt:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+call :wo_show_current_edition
+
+if /i not "%WO_CURRENT_SKU%"=="%WO_BEFORE_SKU%" (
+    echo %GREEN%[OK] Windows edition changed successfully.%RESET%
+    echo.
+    echo %WHITE%Previous Edition:%RESET% %WO_BEFORE_NAME%
+    echo %WHITE%New Edition:%RESET% %GREEN%%WO_CURRENT_NAME%%RESET%
+) else (
+    if not "%WO_CHANGE_RESULT%"=="0" (
+        echo %RED%[X] The product key is not compatible with the current Windows edition.%RESET%
+		echo.
+        echo %WHITE%No edition change was made.%RESET%
+        echo %WHITE%Windows remains on:%RESET% %GREEN%%WO_BEFORE_NAME%%RESET%
+    ) else (
+        echo.
+        echo %YELLOW%[!] The Windows edition has not changed yet.%RESET%
+        echo %YELLOW%A restart may be required to complete the edition change.%RESET%
+        echo %WHITE%Current Edition:%RESET% %GREEN%%WO_CURRENT_NAME%%RESET%
+    )
+)
+
+echo.
+call :wo_show_windows_summary
+
+set "WO_CUSTOM_KEY="
+set "WO_CHANGE_RESULT="
+set "WO_BEFORE_SKU="
+set "WO_BEFORE_NAME="
+
+echo.
+pause
+goto menu_windows_office
+
+:wo_invalid_target
+echo.
+echo %RED%[X] Invalid choice. No key was applied.%RESET%
+
+set "WO_TARGET_ID="
+set "WO_WINKEY="
+set "WO_TARGET_NAME="
+set "WO_TARGET_CHOICE="
+
+echo.
+pause
+goto menu_windows_office
+
+
+:wo_conversion_cancelled
+echo.
+echo %YELLOW%Edition change cancelled. No key was applied.%RESET%
+
+set "WO_TARGET_ID="
+set "WO_WINKEY="
+set "WO_TARGET_NAME="
+set "WO_TARGET_CHOICE="
+
+echo.
+pause
+goto menu_windows_office
+
+:wo_add_target
+set "WO_CANDIDATE_ID=%~1"
+
+call :wo_map_target
+
+if not defined WO_WINKEY exit /b
+
+if /i "%WO_CURRENT_SKU:~0,4%"=="Core" if not "%WO_CANDIDATE_ID%"=="ProfessionalEducation" if not "%WO_CANDIDATE_ID%"=="ProfessionalEducationN" if not "%WO_CANDIDATE_ID%"=="Education" if not "%WO_CANDIDATE_ID%"=="EducationN" exit /b
+
+set /a WO_TARGET_COUNT+=1
+
+call set "WO_OPTION_%WO_TARGET_COUNT%_ID=%WO_CANDIDATE_ID%"
+call set "WO_OPTION_%WO_TARGET_COUNT%_NAME=%WO_TARGET_NAME%"
+call set "WO_OPTION_%WO_TARGET_COUNT%_KEY=%WO_WINKEY%"
+
+echo %WHITE%[%WO_TARGET_COUNT%]%RESET% %WO_TARGET_NAME%
+
+exit /b
+
+:wo_map_target
+set "WO_TARGET_NAME="
+set "WO_WINKEY="
+
+if /i "%WO_CANDIDATE_ID%"=="Professional" set "WO_TARGET_NAME=Windows Pro"
+if /i "%WO_CANDIDATE_ID%"=="Professional" set "WO_WINKEY=W269N-WFGWX-YVC9B-4J6C9-T83GX"
+
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalN" set "WO_TARGET_NAME=Windows Pro N"
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalN" set "WO_WINKEY=MH37W-N47XK-V7XM9-C7227-GCQG9"
+
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalWorkstation" set "WO_TARGET_NAME=Windows Pro for Workstations"
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalWorkstation" set "WO_WINKEY=NRG8B-VKK3Q-CXVCJ-9G2XF-6Q84J"
+
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalWorkstationN" set "WO_TARGET_NAME=Windows Pro for Workstations N"
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalWorkstationN" set "WO_WINKEY=9FNHH-K3HBT-3W4TD-6383H-6XYWF"
+
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalEducation" set "WO_TARGET_NAME=Windows Pro Education"
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalEducation" set "WO_WINKEY=6TP4R-GNPTD-KYYHQ-7B7DP-J447Y"
+
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalEducationN" set "WO_TARGET_NAME=Windows Pro Education N"
+if /i "%WO_CANDIDATE_ID%"=="ProfessionalEducationN" set "WO_WINKEY=YVWGF-BXNMC-HTQYQ-CPQ99-66QFC"
+
+if /i "%WO_CANDIDATE_ID%"=="Education" set "WO_TARGET_NAME=Windows Education"
+if /i "%WO_CANDIDATE_ID%"=="Education" set "WO_WINKEY=NW6C2-QMPVW-D7KKK-3GKT6-VCFB2"
+
+if /i "%WO_CANDIDATE_ID%"=="EducationN" set "WO_TARGET_NAME=Windows Education N"
+if /i "%WO_CANDIDATE_ID%"=="EducationN" set "WO_WINKEY=2WH4N-8QGBV-H22JP-CT43Q-MDWWJ"
+
+if /i "%WO_CANDIDATE_ID%"=="Enterprise" set "WO_TARGET_NAME=Windows Enterprise"
+if /i "%WO_CANDIDATE_ID%"=="Enterprise" set "WO_WINKEY=NPPR9-FWDCX-D2C8J-H872K-2YT43"
+
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseN" set "WO_TARGET_NAME=Windows Enterprise N"
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseN" set "WO_WINKEY=DPH2V-TTNVB-4X9Q3-TJR4H-KHJW4"
+
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseG" set "WO_TARGET_NAME=Windows Enterprise G"
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseG" set "WO_WINKEY=YYVX9-NTFWV-6MDM3-9PT4T-4M68B"
+
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseGN" set "WO_TARGET_NAME=Windows Enterprise G N"
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseGN" set "WO_WINKEY=44RPN-FTY23-9VTTB-MP9BX-T84FV"
+
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseS" set "WO_TARGET_NAME=Windows Enterprise LTSC"
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseS" set "WO_WINKEY=M7XTQ-FN8P6-TTKYV-9D4CC-J462D"
+
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseSN" set "WO_TARGET_NAME=Windows Enterprise N LTSC"
+if /i "%WO_CANDIDATE_ID%"=="EnterpriseSN" set "WO_WINKEY=92NFX-8DJQP-P6BBQ-THF9C-7CG2H"
+
+exit /b
+
+:wo_office_convert
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%        Change Office License Type / Edition%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+set "WO_OFFICE_PRODUCT_IDS="
+
+for /f "tokens=2,*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Inventory\Office\16.0" /v OfficeProductReleaseIds 2^>nul ^| findstr /i "OfficeProductReleaseIds"') do (
+    set "WO_OFFICE_PRODUCT_IDS=%%B"
+)
+
+if not defined WO_OFFICE_PRODUCT_IDS (
+    for /f "tokens=2,*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration" /v ProductReleaseIds 2^>nul ^| findstr /i "ProductReleaseIds"') do (
+        set "WO_OFFICE_PRODUCT_IDS=%%B"
+    )
+)
+
+if not defined WO_OFFICE_PRODUCT_IDS (
+    echo %RED%[X] Could not detect a supported Click-to-Run Office installation.%RESET%
+    echo.
+    echo %YELLOW%This feature currently supports Click-to-Run Office installations only.%RESET%
+    echo.
+    pause
+    goto menu_windows_office
+)
+
+echo %GREEN%[OK] Microsoft Office installation detected.%RESET%
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Detected Office Product ID(s):%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+echo %GREEN%%WO_OFFICE_PRODUCT_IDS%%RESET%
+echo.
+
+set "WO_OFFICE_LICENSE_TYPE=Unknown"
+set "WO_OFFICE_HAS_VOLUME="
+set "WO_OFFICE_HAS_RETAIL="
+
+echo(%WO_OFFICE_PRODUCT_IDS%| findstr /i "Volume" >nul && set "WO_OFFICE_HAS_VOLUME=1"
+echo(%WO_OFFICE_PRODUCT_IDS%| findstr /i "Retail" >nul && set "WO_OFFICE_HAS_RETAIL=1"
+
+if defined WO_OFFICE_HAS_VOLUME set "WO_OFFICE_LICENSE_TYPE=Volume"
+if defined WO_OFFICE_HAS_RETAIL set "WO_OFFICE_LICENSE_TYPE=Retail"
+
+if defined WO_OFFICE_HAS_VOLUME if defined WO_OFFICE_HAS_RETAIL set "WO_OFFICE_LICENSE_TYPE=Mixed"
+
+echo %WHITE%Detected License Type:%RESET% %GREEN%%WO_OFFICE_LICENSE_TYPE%%RESET%
+echo.
+
+call :wo_build_office_conversion_list
+
+if "%WO_OFFICE_MATCH_COUNT%"=="0" (
+    echo %YELLOW%[!] No direct Retail/Volume conversion is configured for the detected Office products.%RESET%
+    echo.
+    echo %WHITE%Detected Product IDs:%RESET%
+    echo %GREEN%%WO_OFFICE_PRODUCT_IDS%%RESET%
+    echo.
+    echo %RED%[0]%RESET% Back
+    echo.
+    pause
+    goto menu_windows_office
+)
+
+echo %CYAN%Available Conversion(s):%RESET%
+echo.
+
+for /l %%N in (1,1,%WO_OFFICE_MATCH_COUNT%) do call :wo_print_office_conversion %%N
+
+echo.
+echo %RED%[0]%RESET% Back
+echo.
+
+set "WO_OFFICE_CONVERT_CHOICE="
+set /p "WO_OFFICE_CONVERT_CHOICE=%YELLOW%Choose an option: %RESET%"
+
+if "%WO_OFFICE_CONVERT_CHOICE%"=="0" goto menu_windows_office
+
+set "WO_OFFICE_VALID_CHOICE="
+
+for /l %%N in (1,1,%WO_OFFICE_MATCH_COUNT%) do (
+    if "%WO_OFFICE_CONVERT_CHOICE%"=="%%N" set "WO_OFFICE_VALID_CHOICE=1"
+)
+
+if not defined WO_OFFICE_VALID_CHOICE goto wo_office_convert
+
+call :wo_select_office_conversion "%WO_OFFICE_CONVERT_CHOICE%"
+
+if not defined WO_OFFICE_TARGET_ID goto wo_office_convert
+
+goto wo_office_convert_confirm
+
+:wo_office_convert_confirm
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%           Office Conversion Confirmation%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %WHITE%Current Product:%RESET% %GREEN%%WO_OFFICE_SOURCE_ID%%RESET%
+echo %WHITE%Target Product:%RESET% %GREEN%%WO_OFFICE_TARGET_ID%%RESET%
+echo.
+
+echo %YELLOW%No changes have been made yet.%RESET%
+echo.
+
+choice /c YN /n /m "Start Office conversion now? (Y/N): "
+
+if errorlevel 2 goto wo_office_convert
+if errorlevel 1 goto wo_office_convert_prepare
+
+:wo_office_convert_prepare
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%            Preparing Office Conversion%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %WHITE%Current Product:%RESET% %GREEN%%WO_OFFICE_SOURCE_ID%%RESET%
+echo %WHITE%Target Product:%RESET% %GREEN%%WO_OFFICE_TARGET_ID%%RESET%
+set "WO_OFFICE_PLATFORM="
+set "WO_OFFICE_ARCH="
+
+for /f "tokens=2,*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration" /v Platform 2^>nul ^| findstr /i "Platform"') do (
+    set "WO_OFFICE_PLATFORM=%%B"
+)
+
+if /i "%WO_OFFICE_PLATFORM%"=="x64" set "WO_OFFICE_ARCH=64"
+if /i "%WO_OFFICE_PLATFORM%"=="x86" set "WO_OFFICE_ARCH=32"
+
+if not defined WO_OFFICE_ARCH (
+    echo.
+    echo %RED%[X] Could not detect the installed Office architecture.%RESET%
+    echo.
+    pause
+    goto wo_office_convert
+)
+
+echo %WHITE%Office Architecture:%RESET% %GREEN%%WO_OFFICE_ARCH%-bit%RESET%
+echo.
+set "WO_OFFICE_EXCLUDE_LIST="
+
+echo(%WO_OFFICE_SOURCE_ID%| findstr /i /b "ProPlus" >nul
+if errorlevel 1 goto wo_office_build_xml
+set "WO_OFFICE_ROOT="
+
+if "%WO_OFFICE_ARCH%"=="64" if exist "%ProgramFiles%\Microsoft Office\root\Office16" set "WO_OFFICE_ROOT=%ProgramFiles%\Microsoft Office\root\Office16"
+if "%WO_OFFICE_ARCH%"=="32" if exist "%ProgramFiles(x86)%\Microsoft Office\root\Office16" set "WO_OFFICE_ROOT=%ProgramFiles(x86)%\Microsoft Office\root\Office16"
+if not defined WO_OFFICE_ROOT if exist "%ProgramFiles%\Microsoft Office\root\Office16" set "WO_OFFICE_ROOT=%ProgramFiles%\Microsoft Office\root\Office16"
+
+if not defined WO_OFFICE_ROOT (
+    echo.
+    echo %RED%[X] Could not locate the installed Office applications.%RESET%
+    echo.
+    pause
+    goto wo_office_convert
+)
+
+set "WO_HAS_WORD="
+set "WO_HAS_EXCEL="
+set "WO_HAS_POWERPOINT="
+set "WO_HAS_OUTLOOK="
+set "WO_HAS_ACCESS="
+set "WO_HAS_ONENOTE="
+set "WO_HAS_PUBLISHER="
+set "WO_HAS_LYNC="
+
+if exist "%WO_OFFICE_ROOT%\WINWORD.EXE" set "WO_HAS_WORD=1"
+if exist "%WO_OFFICE_ROOT%\EXCEL.EXE" set "WO_HAS_EXCEL=1"
+if exist "%WO_OFFICE_ROOT%\POWERPNT.EXE" set "WO_HAS_POWERPOINT=1"
+if exist "%WO_OFFICE_ROOT%\OUTLOOK.EXE" set "WO_HAS_OUTLOOK=1"
+if exist "%WO_OFFICE_ROOT%\MSACCESS.EXE" set "WO_HAS_ACCESS=1"
+if exist "%WO_OFFICE_ROOT%\ONENOTE.EXE" set "WO_HAS_ONENOTE=1"
+if exist "%WO_OFFICE_ROOT%\MSPUB.EXE" set "WO_HAS_PUBLISHER=1"
+if exist "%WO_OFFICE_ROOT%\LYNC.EXE" set "WO_HAS_LYNC=1"
+
+set "WO_OFFICE_EXCLUDE_LIST="
+
+if not defined WO_HAS_WORD set "WO_OFFICE_EXCLUDE_LIST=%WO_OFFICE_EXCLUDE_LIST% Word"
+if not defined WO_HAS_EXCEL set "WO_OFFICE_EXCLUDE_LIST=%WO_OFFICE_EXCLUDE_LIST% Excel"
+if not defined WO_HAS_POWERPOINT set "WO_OFFICE_EXCLUDE_LIST=%WO_OFFICE_EXCLUDE_LIST% PowerPoint"
+if not defined WO_HAS_OUTLOOK set "WO_OFFICE_EXCLUDE_LIST=%WO_OFFICE_EXCLUDE_LIST% Outlook"
+if not defined WO_HAS_ACCESS set "WO_OFFICE_EXCLUDE_LIST=%WO_OFFICE_EXCLUDE_LIST% Access"
+if not defined WO_HAS_ONENOTE set "WO_OFFICE_EXCLUDE_LIST=%WO_OFFICE_EXCLUDE_LIST% OneNote"
+if not defined WO_HAS_PUBLISHER set "WO_OFFICE_EXCLUDE_LIST=%WO_OFFICE_EXCLUDE_LIST% Publisher"
+if not defined WO_HAS_LYNC set "WO_OFFICE_EXCLUDE_LIST=%WO_OFFICE_EXCLUDE_LIST% Lync"
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Installed Office Apps Before Conversion:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+if defined WO_HAS_WORD echo %GREEN%[OK]%RESET% Word
+if defined WO_HAS_EXCEL echo %GREEN%[OK]%RESET% Excel
+if defined WO_HAS_POWERPOINT echo %GREEN%[OK]%RESET% PowerPoint
+if defined WO_HAS_OUTLOOK echo %GREEN%[OK]%RESET% Outlook
+if defined WO_HAS_ACCESS echo %GREEN%[OK]%RESET% Access
+if defined WO_HAS_ONENOTE echo %GREEN%[OK]%RESET% OneNote
+if defined WO_HAS_PUBLISHER echo %GREEN%[OK]%RESET% Publisher
+if defined WO_HAS_LYNC echo %GREEN%[OK]%RESET% Skype for Business
+
+echo.
+echo %CYAN%Apps that will NOT be installed:%RESET%
+echo.
+
+if defined WO_OFFICE_EXCLUDE_LIST (
+    for %%A in (%WO_OFFICE_EXCLUDE_LIST%) do echo %YELLOW%[-]%RESET% %%A
+) else (
+    echo %YELLOW%None%RESET%
+)
+
+echo.
+:wo_office_build_xml
+set "WO_OFFICE_XML=%TEMP%\WinRTP_Office_Convert_%RANDOM%.xml"
+
+(
+echo ^<Configuration^>
+echo   ^<Add OfficeClientEdition="%WO_OFFICE_ARCH%" Channel="%WO_OFFICE_TARGET_CHANNEL%" AllowCdnFallback="TRUE"^>
+echo     ^<Product ID="%WO_OFFICE_TARGET_ID%"^>
+echo       ^<Language ID="MatchInstalled" TargetProduct="%WO_OFFICE_SOURCE_ID%" /^>
+) > "%WO_OFFICE_XML%"
+
+if defined WO_OFFICE_EXCLUDE_LIST (
+    for %%A in (%WO_OFFICE_EXCLUDE_LIST%) do (
+        >> "%WO_OFFICE_XML%" echo       ^<ExcludeApp ID="%%A" /^>
+    )
+)
+
+(
+echo     ^</Product^>
+echo   ^</Add^>
+echo   ^<Remove All="FALSE"^>
+echo     ^<Product ID="%WO_OFFICE_SOURCE_ID%" /^>
+echo   ^</Remove^>
+echo   ^<Display Level="Full" AcceptEULA="TRUE" /^>
+echo ^</Configuration^>
+) >> "%WO_OFFICE_XML%"
+
+echo %GREEN%[OK] Office conversion configuration created.%RESET%
+echo.
+echo %WHITE%Configuration File:%RESET%
+echo %GREEN%%WO_OFFICE_XML%%RESET%
+echo.
+set "WO_ODT_DIR=%TEMP%\WinRTP_ODT_%RANDOM%"
+set "WO_ODT_PACKAGE=%WO_ODT_DIR%\OfficeDeploymentTool.exe"
+set "WO_ODT_SETUP=%WO_ODT_DIR%\setup.exe"
+
+if not exist "%WO_ODT_DIR%" mkdir "%WO_ODT_DIR%"
+where winget >nul 2>&1
+
+if errorlevel 1 (
+    echo.
+    echo %RED%[X] Windows Package Manager ^(winget^) was not found.%RESET%
+    echo %YELLOW%Office Deployment Tool could not be downloaded automatically.%RESET%
+    echo.
+	
+	call :wo_cleanup_office_temp
+	
+    pause
+    goto wo_office_convert
+)
+
+echo.
+echo %YELLOW%Downloading the latest Office Deployment Tool from Microsoft...%RESET%
+echo.
+
+winget download --id Microsoft.OfficeDeploymentTool --exact --download-directory "%WO_ODT_DIR%" --accept-package-agreements --accept-source-agreements --disable-interactivity
+
+if errorlevel 1 (
+    echo.
+    echo %RED%[X] Failed to download Office Deployment Tool.%RESET%
+    echo.
+
+    call :wo_cleanup_office_temp
+
+    pause
+    goto wo_office_convert
+)
+
+set "WO_ODT_PACKAGE="
+
+for /f "delims=" %%F in ('dir /b /a-d "%WO_ODT_DIR%\Office Deployment Tool_*.exe" 2^>nul') do (
+    set "WO_ODT_PACKAGE=%WO_ODT_DIR%\%%F"
+)
+
+if not defined WO_ODT_PACKAGE (
+    echo.
+    echo %RED%[X] Office Deployment Tool package was not found after download.%RESET%
+    echo.
+
+    call :wo_cleanup_office_temp
+
+    pause
+    goto wo_office_convert
+)
+
+echo.
+echo %GREEN%[OK] Office Deployment Tool downloaded successfully.%RESET%
+echo.
+echo %YELLOW%Extracting Office Deployment Tool...%RESET%
+echo.
+
+"%WO_ODT_PACKAGE%" /quiet /passive /extract:"%WO_ODT_DIR%"
+
+if not exist "%WO_ODT_SETUP%" (
+    echo.
+    echo %RED%[X] Failed to extract Office Deployment Tool.%RESET%
+    echo %YELLOW%setup.exe was not found after extraction.%RESET%
+    echo.
+
+    call :wo_cleanup_office_temp
+
+    pause
+    goto wo_office_convert
+)
+
+echo %GREEN%[OK] Office Deployment Tool extracted successfully.%RESET%
+echo.
+echo %WHITE%Setup File:%RESET%
+echo %GREEN%%WO_ODT_SETUP%%RESET%
+echo.
+echo.
+
+echo %YELLOW%Starting Office conversion...%RESET%
+echo.
+echo %WHITE%Please keep this window open until the process finishes.%RESET%
+echo.
+
+"%WO_ODT_SETUP%" /configure "%WO_OFFICE_XML%"
+set "WO_ODT_RESULT=%ERRORLEVEL%"
+
+echo.
+
+if not "%WO_ODT_RESULT%"=="0" (
+    echo %RED%[X] Office Deployment Tool returned an error.%RESET%
+    echo %WHITE%Exit Code:%RESET% %WO_ODT_RESULT%
+    echo.
+) else (
+    echo %GREEN%[OK] Office Deployment Tool finished the configuration process.%RESET%
+    echo.
+)
+echo.
+
+call :wo_cleanup_office_temp
+
+pause
+goto wo_office_convert
+
+:wo_office_uninstall
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%          Uninstall Microsoft Office Completely%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+set "WO_UNINSTALL_PRODUCT_IDS="
+
+for /f "tokens=2,*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Inventory\Office\16.0" /v OfficeProductReleaseIds 2^>nul ^| findstr /i "OfficeProductReleaseIds"') do (
+    set "WO_UNINSTALL_PRODUCT_IDS=%%B"
+)
+
+if not defined WO_UNINSTALL_PRODUCT_IDS (
+    for /f "tokens=2,*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration" /v ProductReleaseIds 2^>nul ^| findstr /i "ProductReleaseIds"') do (
+        set "WO_UNINSTALL_PRODUCT_IDS=%%B"
+    )
+)
+
+if not defined WO_UNINSTALL_PRODUCT_IDS (
+    echo %YELLOW%[!] No supported Click-to-Run Office installation was detected.%RESET%
+    echo.
+    pause
+    goto menu_windows_office
+)
+
+echo %GREEN%[OK] Microsoft Office installation detected.%RESET%
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Detected Office Product ID(s):%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+echo %GREEN%%WO_UNINSTALL_PRODUCT_IDS%%RESET%
+echo.
+
+echo %RED%WARNING:%RESET%
+echo %WHITE%This option will completely remove Microsoft Office Click-to-Run products.%RESET%
+echo %WHITE%This may also remove installed Project and Visio Click-to-Run products.%RESET%
+echo.
+echo %YELLOW%Your personal documents will not be intentionally deleted.%RESET%
+echo.
+
+choice /c YN /n /m "Continue with complete Office removal? (Y/N): "
+
+if errorlevel 2 goto menu_windows_office
+if errorlevel 1 goto wo_office_uninstall_prepare
+
+
+:wo_office_uninstall_prepare
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%             Preparing Office Removal%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+echo %WHITE%Detected Product(s):%RESET%
+echo %GREEN%%WO_UNINSTALL_PRODUCT_IDS%%RESET%
+echo.
+
+set "WO_UNINSTALL_XML=%TEMP%\WinRTP_Office_Uninstall_%RANDOM%.xml"
+
+(
+echo ^<Configuration^>
+echo   ^<Remove All="TRUE" /^>
+echo ^</Configuration^>
+) > "%WO_UNINSTALL_XML%"
+
+echo %GREEN%[OK] Office removal configuration created.%RESET%
+echo.
+echo %WHITE%Configuration File:%RESET%
+echo %GREEN%%WO_UNINSTALL_XML%%RESET%
+echo.
+
+set "WO_UNINSTALL_ODT_DIR=%TEMP%\WinRTP_ODT_Uninstall_%RANDOM%"
+set "WO_UNINSTALL_ODT_PACKAGE="
+set "WO_UNINSTALL_ODT_SETUP=%WO_UNINSTALL_ODT_DIR%\setup.exe"
+
+if not exist "%WO_UNINSTALL_ODT_DIR%" mkdir "%WO_UNINSTALL_ODT_DIR%"
+
+where winget >nul 2>&1
+
+if errorlevel 1 (
+    echo.
+    echo %RED%[X] Windows Package Manager ^(winget^) was not found.%RESET%
+    echo %YELLOW%Office Deployment Tool could not be downloaded automatically.%RESET%
+    echo.
+
+    call :wo_cleanup_office_temp
+
+    pause
+    goto menu_windows_office
+)
+
+echo %YELLOW%Downloading the latest Office Deployment Tool from Microsoft...%RESET%
+echo.
+
+winget download --id Microsoft.OfficeDeploymentTool --exact --download-directory "%WO_UNINSTALL_ODT_DIR%" --accept-package-agreements --accept-source-agreements --disable-interactivity
+
+if errorlevel 1 (
+    echo.
+    echo %RED%[X] Failed to download Office Deployment Tool.%RESET%
+    echo.
+
+    call :wo_cleanup_office_temp
+
+    pause
+    goto menu_windows_office
+)
+
+for /f "delims=" %%F in ('dir /b /a-d "%WO_UNINSTALL_ODT_DIR%\Office Deployment Tool_*.exe" 2^>nul') do (
+    set "WO_UNINSTALL_ODT_PACKAGE=%WO_UNINSTALL_ODT_DIR%\%%F"
+)
+
+if not defined WO_UNINSTALL_ODT_PACKAGE (
+    echo.
+    echo %RED%[X] Office Deployment Tool package was not found after download.%RESET%
+    echo.
+
+    call :wo_cleanup_office_temp
+
+    pause
+    goto menu_windows_office
+)
+
+echo.
+echo %GREEN%[OK] Office Deployment Tool downloaded successfully.%RESET%
+echo.
+echo %YELLOW%Extracting Office Deployment Tool...%RESET%
+echo.
+
+"%WO_UNINSTALL_ODT_PACKAGE%" /quiet /passive /extract:"%WO_UNINSTALL_ODT_DIR%"
+
+if not exist "%WO_UNINSTALL_ODT_SETUP%" (
+    echo.
+    echo %RED%[X] Failed to extract Office Deployment Tool.%RESET%
+    echo %YELLOW%setup.exe was not found after extraction.%RESET%
+    echo.
+
+    call :wo_cleanup_office_temp
+
+    pause
+    goto menu_windows_office
+)
+
+echo %GREEN%[OK] Office Deployment Tool extracted successfully.%RESET%
+echo.
+echo %WHITE%Setup File:%RESET%
+echo %GREEN%%WO_UNINSTALL_ODT_SETUP%%RESET%
+echo.
+
+echo.
+
+echo.
+echo %RED%Starting complete Microsoft Office removal...%RESET%
+echo.
+echo %WHITE%Please keep this window open until the process finishes.%RESET%
+echo.
+
+pushd "%WO_UNINSTALL_ODT_DIR%"
+setup.exe /configure "%WO_UNINSTALL_XML%"
+set "WO_UNINSTALL_RESULT=%ERRORLEVEL%"
+popd
+
+echo.
+
+if not "%WO_UNINSTALL_RESULT%"=="0" (
+    echo %RED%[X] Office Deployment Tool returned an error during removal.%RESET%
+    echo %WHITE%Exit Code:%RESET% %WO_UNINSTALL_RESULT%
+    echo.
+) else (
+    echo %GREEN%[OK] Office Deployment Tool finished the removal process.%RESET%
+    echo.
+)
+
+call :wo_cleanup_office_temp
+
+pause
+goto menu_windows_office
+
+:wo_cleanup_office_temp
+
+if defined WO_OFFICE_XML if exist "%WO_OFFICE_XML%" (
+    del /q "%WO_OFFICE_XML%" >nul 2>&1
+)
+
+if defined WO_ODT_DIR if exist "%WO_ODT_DIR%" (
+    rd /s /q "%WO_ODT_DIR%" >nul 2>&1
+)
+
+if defined WO_UNINSTALL_XML if exist "%WO_UNINSTALL_XML%" (
+    del /q "%WO_UNINSTALL_XML%" >nul 2>&1
+)
+
+if defined WO_UNINSTALL_ODT_DIR if exist "%WO_UNINSTALL_ODT_DIR%" (
+    rd /s /q "%WO_UNINSTALL_ODT_DIR%" >nul 2>&1
+)
+
+set "WO_OFFICE_XML="
+set "WO_ODT_DIR="
+set "WO_ODT_PACKAGE="
+set "WO_ODT_SETUP="
+
+set "WO_UNINSTALL_XML="
+set "WO_UNINSTALL_ODT_DIR="
+set "WO_UNINSTALL_ODT_PACKAGE="
+set "WO_UNINSTALL_ODT_SETUP="
+
+exit /b
+
+:wo_build_office_conversion_list
+
+for /l %%N in (1,1,50) do (
+    set "WO_MAP_SRC_%%N="
+    set "WO_MAP_TGT_%%N="
+    set "WO_MAP_NAME_%%N="
+    set "WO_MAP_CHANNEL_%%N="
+)
+
+set /a WO_OFFICE_MATCH_COUNT=0
+
+for %%I in (%WO_OFFICE_PRODUCT_IDS:,= %) do call :wo_register_office_conversion "%%~I"
+
+exit /b
+
+:wo_add_office_conversion
+
+set /a WO_OFFICE_MATCH_COUNT+=1
+
+set "WO_MAP_SRC_%WO_OFFICE_MATCH_COUNT%=%~1"
+set "WO_MAP_TGT_%WO_OFFICE_MATCH_COUNT%=%~2"
+set "WO_MAP_NAME_%WO_OFFICE_MATCH_COUNT%=%~3"
+set "WO_MAP_CHANNEL_%WO_OFFICE_MATCH_COUNT%=%~4"
+
+exit /b
+
+:wo_register_office_conversion
+
+set "WO_MAP_TEST_ID=%~1"
+
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "ProPlus2019" "Office 2019 Professional Plus" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Access2019" "Access 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Excel2019" "Excel 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Outlook2019" "Outlook 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "PowerPoint2019" "PowerPoint 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "ProjectPro2019" "Project Professional 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "ProjectStd2019" "Project Standard 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Publisher2019" "Publisher 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "VisioPro2019" "Visio Professional 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "VisioStd2019" "Visio Standard 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Word2019" "Word 2019" "PerpetualVL2019"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "SkypeforBusiness2019" "Skype for Business 2019" "PerpetualVL2019"
+
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "ProPlus2021" "Office 2021 Professional Plus" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Access2021" "Access 2021" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Excel2021" "Excel 2021" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Outlook2021" "Outlook 2021" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "PowerPoint2021" "PowerPoint 2021" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "ProjectPro2021" "Project Professional 2021" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "ProjectStd2021" "Project Standard 2021" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Publisher2021" "Publisher 2021" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "VisioPro2021" "Visio Professional 2021" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "VisioStd2021" "Visio Standard 2021" "PerpetualVL2021"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Word2021" "Word 2021" "PerpetualVL2021"
+
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "ProPlus2024" "Office 2024 Professional Plus" "PerpetualVL2024"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Access2024" "Access 2024" "PerpetualVL2024"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Excel2024" "Excel 2024" "PerpetualVL2024"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Outlook2024" "Outlook 2024" "PerpetualVL2024"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "PowerPoint2024" "PowerPoint 2024" "PerpetualVL2024"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "ProjectPro2024" "Project Professional 2024" "PerpetualVL2024"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "ProjectStd2024" "Project Standard 2024" "PerpetualVL2024"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "VisioPro2024" "Visio Professional 2024" "PerpetualVL2024"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "VisioStd2024" "Visio Standard 2024" "PerpetualVL2024"
+call :wo_match_office_pair "%WO_MAP_TEST_ID%" "Word2024" "Word 2024" "PerpetualVL2024"
+
+exit /b
+
+
+:wo_match_office_pair
+
+if /i "%~1"=="%~2Volume" (
+    call :wo_add_office_conversion "%~1" "%~2Retail" "%~3 Retail" "Current"
+)
+
+if /i "%~1"=="%~2Retail" (
+    call :wo_add_office_conversion "%~1" "%~2Volume" "%~3 Volume" "%~4"
+)
+
+exit /b
+
+:wo_print_office_conversion
+
+set "WO_MAP_PRINT_NAME="
+call set "WO_MAP_PRINT_NAME=%%WO_MAP_NAME_%~1%%"
+
+echo %WHITE%[%~1]%RESET% %WO_MAP_PRINT_NAME%
+
+exit /b
+
+:wo_select_office_conversion
+
+set "WO_OFFICE_SOURCE_ID="
+set "WO_OFFICE_TARGET_ID="
+set "WO_OFFICE_TARGET_NAME="
+set "WO_OFFICE_TARGET_CHANNEL="
+
+call set "WO_OFFICE_SOURCE_ID=%%WO_MAP_SRC_%~1%%"
+call set "WO_OFFICE_TARGET_ID=%%WO_MAP_TGT_%~1%%"
+call set "WO_OFFICE_TARGET_NAME=%%WO_MAP_NAME_%~1%%"
+call set "WO_OFFICE_TARGET_CHANNEL=%%WO_MAP_CHANNEL_%~1%%"
+
+exit /b
+
+:wo_office_activate
+cls
+echo %CYAN%====================================================%RESET%
+echo %GREEN%             Activate Microsoft Office%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+call :wo_find_ospp
+
+if not defined WO_OSPP goto wo_no_ospp
+
+echo %GREEN%[OK] Office licensing script found:%RESET%
+echo %WHITE%"%WO_OSPP%"%RESET%
+echo.
+
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Detected Installed Office License Details:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+cscript //nologo "%WO_OSPP%" /dstatus
+
+echo.
+echo %WHITE%OSPP.VBS applies to supported volume-licensed Office versions.%RESET%
+echo %YELLOW%Microsoft 365 Apps/subscription activation is not handled by OSPP.VBS.%RESET%
+echo.
+
+set "WO_OFFICEKEY="
+set /p "WO_OFFICEKEY=%YELLOW%Enter your Office volume-license key (B=Back): %RESET%"
+
+if /i "%WO_OFFICEKEY%"=="B" goto menu_windows_office
+if not defined WO_OFFICEKEY goto menu_windows_office
+
+echo.
+echo %YELLOW%Installing Office product key...%RESET%
+echo.
+
+cscript //nologo "%WO_OSPP%" /inpkey:%WO_OFFICEKEY%
+
+echo.
+
+choice /c YN /n /m "Activate Office now? (Y=Activate / N=Cancel): "
+
+if errorlevel 2 goto wo_office_cancel_activation
+
+echo.
+echo %YELLOW%Activating Microsoft Office...%RESET%
+echo.
+
+cscript //nologo "%WO_OSPP%" /act
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Updated Office License Details:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+cscript //nologo "%WO_OSPP%" /dstatus
+
+set "WO_OFFICEKEY="
+
+echo.
+pause
+goto menu_windows_office
+
+
+:wo_office_cancel_activation
+echo.
+
+choice /c YN /n /m "Confirm cancel and remove the just-entered Office key? (Y/N): "
+
+if errorlevel 2 goto wo_office_cancel_declined
+
+set "WO_LAST5=%WO_OFFICEKEY:~-5%"
+
+echo.
+echo %YELLOW%Removing Office key ending in %WO_LAST5%...%RESET%
+echo.
+
+cscript //nologo "%WO_OSPP%" /unpkey:%WO_LAST5%
+
+echo.
+echo %GREEN%The just-entered Office key was removed locally.%RESET%
+echo.
+echo %WHITE%Current Office License Status:%RESET%
+echo.
+
+cscript //nologo "%WO_OSPP%" /dstatus
+
+set "WO_OFFICEKEY="
+set "WO_LAST5="
+
+echo.
+pause
+goto menu_windows_office
+
+
+:wo_office_cancel_declined
+echo.
+echo %YELLOW%Removal declined.%RESET%
+echo %WHITE%The key remains installed; activation was not attempted.%RESET%
+echo.
+
+cscript //nologo "%WO_OSPP%" /dstatus
+
+set "WO_OFFICEKEY="
+
+echo.
+pause
+goto menu_windows_office
+
+:wo_win_remove_key
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%         Remove Installed Windows Product Key%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+call :wo_show_windows_summary
+
+echo.
+echo %YELLOW%WARNING:%RESET%
+echo %WHITE%This removes the installed Windows product key locally.%RESET%
+echo %WHITE%A digital license may still activate Windows automatically.%RESET%
+echo.
+
+choice /c YN /n /m "Remove the installed Windows key now? (Y/N): "
+
+if errorlevel 2 goto menu_windows_office
+
+echo.
+echo %YELLOW%Removing Windows product key...%RESET%
+echo.
+
+cscript //nologo "%windir%\system32\slmgr.vbs" /upk
+
+echo.
+cscript //nologo "%windir%\system32\slmgr.vbs" /cpky
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Windows License Status After Removal:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+call :wo_show_windows_summary
+
+echo.
+pause
+goto menu_windows_office
+
+:wo_office_remove_key
+cls
+echo %CYAN%====================================================%RESET%
+echo %RED%         Remove Detected Office Product Keys%RESET%
+echo %CYAN%====================================================%RESET%
+echo.
+
+call :wo_find_ospp
+
+if not defined WO_OSPP goto wo_no_ospp
+
+echo %WHITE%Current Office Licenses and Installed Key Suffixes:%RESET%
+echo.
+
+cscript //nologo "%WO_OSPP%" /dstatus
+
+echo.
+echo %RED%WARNING:%RESET%
+echo %WHITE%This attempts to remove all detected Office volume-license keys locally.%RESET%
+echo %WHITE%It does NOT revoke the license from Microsoft or your organization.%RESET%
+echo.
+
+choice /c YN /n /m "Remove detected Office key(s) now? (Y/N): "
+
+if errorlevel 2 goto menu_windows_office
+
+set "WO_FOUND_OFFICE_KEY="
+
+for /f "tokens=8" %%K in ('cscript //nologo "%WO_OSPP%" /dstatus ^| findstr /i /c:"Last 5 characters of installed product key:"') do (
+    set "WO_FOUND_OFFICE_KEY=1"
+    echo.
+    echo Removing detected Office key ending in %%K...
+    cscript //nologo "%WO_OSPP%" /unpkey:%%K
+)
+
+if not defined WO_FOUND_OFFICE_KEY (
+    echo.
+    echo %YELLOW%No matching installed Office key suffix was detected by OSPP.VBS.%RESET%
+)
+
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %WHITE%Office License Status After Removal Attempt:%RESET%
+echo %CYAN%----------------------------------------------------%RESET%
+echo.
+
+cscript //nologo "%WO_OSPP%" /dstatus
+
+echo.
+pause
+goto menu_windows_office
+
+:wo_no_ospp
+echo.
+echo %RED%[X] Could not find OSPP.VBS in common Office installation folders.%RESET%
+echo.
+echo %WHITE%The OSPP route is for supported volume-licensed Office versions.%RESET%
+echo %YELLOW%Microsoft 365 Apps/subscription activation is managed in the Office app.%RESET%
+echo.
+
+pause
+goto menu_windows_office
+
+:wo_find_ospp
+set "WO_OSPP="
+
+if exist "%ProgramFiles%\Microsoft Office\root\Office16\OSPP.VBS" set "WO_OSPP=%ProgramFiles%\Microsoft Office\root\Office16\OSPP.VBS"
+
+if not defined WO_OSPP if exist "%ProgramFiles(x86)%\Microsoft Office\root\Office16\OSPP.VBS" set "WO_OSPP=%ProgramFiles(x86)%\Microsoft Office\root\Office16\OSPP.VBS"
+
+if not defined WO_OSPP if exist "%ProgramFiles%\Microsoft Office\Office16\OSPP.VBS" set "WO_OSPP=%ProgramFiles%\Microsoft Office\Office16\OSPP.VBS"
+
+if not defined WO_OSPP if exist "%ProgramFiles(x86)%\Microsoft Office\Office16\OSPP.VBS" set "WO_OSPP=%ProgramFiles(x86)%\Microsoft Office\Office16\OSPP.VBS"
+
+if not defined WO_OSPP if exist "%ProgramFiles%\Microsoft Office\Office15\OSPP.VBS" set "WO_OSPP=%ProgramFiles%\Microsoft Office\Office15\OSPP.VBS"
+
+if not defined WO_OSPP if exist "%ProgramFiles(x86)%\Microsoft Office\Office15\OSPP.VBS" set "WO_OSPP=%ProgramFiles(x86)%\Microsoft Office\Office15\OSPP.VBS"
+
+exit /b
+
+:wo_show_current_edition
+set "WO_CURRENT_SKU="
+set "WO_CURRENT_NAME="
+
+for /f "tokens=3" %%E in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v EditionID ^| findstr /i "EditionID"') do set "WO_CURRENT_SKU=%%E"
+
+set "WO_CURRENT_NAME=%WO_CURRENT_SKU%"
+
+if /i "%WO_CURRENT_SKU%"=="Core" set "WO_CURRENT_NAME=Home"
+if /i "%WO_CURRENT_SKU%"=="CoreSingleLanguage" set "WO_CURRENT_NAME=Home Single Language"
+if /i "%WO_CURRENT_SKU%"=="CoreCountrySpecific" set "WO_CURRENT_NAME=Home China"
+
+if /i "%WO_CURRENT_SKU%"=="Professional" set "WO_CURRENT_NAME=Pro"
+if /i "%WO_CURRENT_SKU%"=="ProfessionalN" set "WO_CURRENT_NAME=Pro N"
+
+if /i "%WO_CURRENT_SKU%"=="ProfessionalEducation" set "WO_CURRENT_NAME=Pro Education"
+if /i "%WO_CURRENT_SKU%"=="ProfessionalEducationN" set "WO_CURRENT_NAME=Pro Education N"
+
+if /i "%WO_CURRENT_SKU%"=="ProfessionalWorkstation" set "WO_CURRENT_NAME=Pro for Workstations"
+if /i "%WO_CURRENT_SKU%"=="ProfessionalWorkstationN" set "WO_CURRENT_NAME=Pro for Workstations N"
+
+if /i "%WO_CURRENT_SKU%"=="Enterprise" set "WO_CURRENT_NAME=Enterprise"
+if /i "%WO_CURRENT_SKU%"=="EnterpriseN" set "WO_CURRENT_NAME=Enterprise N"
+
+if /i "%WO_CURRENT_SKU%"=="EnterpriseS" set "WO_CURRENT_NAME=Enterprise LTSC"
+if /i "%WO_CURRENT_SKU%"=="EnterpriseSN" set "WO_CURRENT_NAME=Enterprise N LTSC"
+
+if /i "%WO_CURRENT_SKU%"=="Education" set "WO_CURRENT_NAME=Education"
+if /i "%WO_CURRENT_SKU%"=="EducationN" set "WO_CURRENT_NAME=Education N"
+
+if not defined WO_CURRENT_NAME set "WO_CURRENT_NAME=Unknown"
+
+echo %WHITE%Current Edition:%RESET% %GREEN%%WO_CURRENT_NAME%%RESET%
+
+exit /b
+
+:wo_show_windows_summary
+cscript //nologo "%windir%\system32\slmgr.vbs" /dlv | findstr /i /c:"Name:" /c:"Description:" /c:"Product Key Channel:" /c:"License Status:"
+
+if errorlevel 1 (
+    echo %YELLOW%Windows license summary unavailable.%RESET%
+    echo %WHITE%Check Settings ^> System ^> Activation.%RESET%
+)
+
+exit /b
+
 :about
 cls
 
@@ -3360,7 +4745,7 @@ echo.
 echo %WHITE%Developer:%RESET% Hesham Taha
 echo %WHITE%YouTube:%RESET% Hesham Taha
 echo %WHITE%Facebook:%RESET% Hesham Taha Official
-echo %WHITE%Version:%RESET% 1.6
+echo %WHITE%Version:%RESET% 1.7
 echo.
 
 echo %YELLOW%Opening links...%RESET%
@@ -3422,7 +4807,7 @@ goto :eof
 :AUTO_UPDATE
 setlocal EnableDelayedExpansion
 
-set CURRENT_VERSION=1.6
+set CURRENT_VERSION=1.7
 set VERSION_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/Version.txt
 set TOOL_URL=https://raw.githubusercontent.com/newmatrix/WinRTP/main/WindowsRepairToolPro.bat
 
