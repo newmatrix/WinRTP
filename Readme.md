@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/Version-1.6-blue?style=flat-square">
+  <img alt="Version" src="https://img.shields.io/badge/Version-1.7-blue?style=flat-square">
   <img alt="Windows" src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6?style=flat-square&logo=windows11&logoColor=white">
   <img alt="Batch" src="https://img.shields.io/badge/Batch%20%2B%20PowerShell-Tool-4D4D4D?style=flat-square">
   <img alt="Administrator" src="https://img.shields.io/badge/Admin-Required-orange?style=flat-square">
@@ -48,6 +48,7 @@
 | 🔧 **Maintenance Tools** | تشغيل مجموعة كبيرة من أدوات Windows الإدارية والتشخيصية |
 | 👤 **User Accounts** | إنشاء وإدارة وتعديل حسابات Windows المحلية |
 | 🎮 **Windows Tweaks** | إعدادات اختيارية للأداء والألعاب والواجهة وبعض مكونات Windows |
+| 🔑 **Windows & Office** | تفعيل Windows وOffice، تغيير Windows Edition، إدارة المفاتيح وتحويل Office بين Retail وVolume |
 
 ---
 
@@ -334,6 +335,60 @@
 
 </details>
 
+<details>
+<summary><strong>🔑 1️⃣1️⃣ Windows & Office — التفعيل وإدارة التراخيص</strong></summary>
+
+<br>
+
+قسم مخصص لإدارة تراخيص وإصدارات **Windows وMicrosoft Office** من داخل WinRTP.
+
+### 🪟 Windows
+
+- تفعيل Windows باستخدام **Product Key** يملكه المستخدم.
+- اكتشاف إصدار Windows الحالي قبل تنفيذ العملية.
+- تغيير **Windows Edition** إلى الإصدارات المدعومة.
+- استخدام مفاتيح Microsoft العامة الخاصة بتغيير Edition عند الحاجة.
+- إزالة مفتاح Windows المثبت من الجهاز.
+- عرض حالة الترخيص ومعلومات التنشيط.
+
+### 📦 Microsoft Office
+
+- اكتشاف نسخة **Microsoft Office Click-to-Run** المثبتة.
+- اكتشاف **Product ID** ونوع الترخيص الحالي **Retail أو Volume**.
+- تفعيل Office باستخدام **Volume License Key** صالح.
+- إزالة مفاتيح Office المكتشفة من الجهاز.
+- تحويل إصدارات Office المدعومة بين **Retail وVolume**.
+- إزالة Microsoft Office Click-to-Run بالكامل باستخدام **Office Deployment Tool** الرسمي من Microsoft.
+
+### 🔄 تحويل Office بين Retail وVolume
+
+تدعم الأداة التحويل المباشر للإصدارات والمنتجات التي يتوفر لها Retail/Volume counterpart مطابق ضمن:
+
+- **Office 2019**
+- **Office 2021**
+- **Office 2024**
+- تطبيقات Office المنفردة المدعومة مثل Word وExcel وPowerPoint وOutlook وAccess.
+- إصدارات Project وVisio المدعومة.
+
+عند تحويل **Office Professional Plus**، تقوم WinRTP باكتشاف تطبيقات Office المثبتة فعليًا قبل التحويل وتحاول الحفاظ على نفس مجموعة التطبيقات بدل تثبيت مكونات إضافية غير موجودة.
+
+تم اختبار **Office 2024 Professional Plus** عمليًا في الاتجاهين:
+
+- **Retail → Volume**
+- **Volume → Retail**
+
+### 🗑️ إزالة Office بالكامل
+
+يوفر القسم خيارًا لإزالة منتجات **Microsoft Office Click-to-Run** بالكامل عند الحاجة باستخدام Office Deployment Tool.
+
+> [!CAUTION]
+> خيار الإزالة الكاملة قد يشمل منتجات Click-to-Run أخرى مثبتة مثل **Project وVisio**. احتفظ بنسخة من ملفاتك المهمة وتأكد من اختيار العملية المناسبة قبل المتابعة.
+
+> [!IMPORTANT]
+> WinRTP لا تمنح المستخدم ترخيص Windows أو Office. التفعيل يحتاج إلى **Product Key أو Volume License صالح**، وتحويل نوع الترخيص لا يعني تفعيل المنتج تلقائيًا.
+
+</details>
+
 ---
 
 ## 🛟 Backup & Recovery
@@ -359,10 +414,10 @@
 4. اختر **Run as administrator**.
 5. ستفتح القائمة الرئيسية للأداة.
 
-### الطريقة الثانية — Clone للمشروع
+### الطريقة الثانية — استخدام Powershell
 
 ```bash
-git clone https://github.com/newmatrix/WinRTP.git
+irm https://raw.githubusercontent.com/newmatrix/WinRTP/main/run.ps1 | iex
 ```
 
 بعد ذلك شغّل ملف الأداة بصلاحيات Administrator.
