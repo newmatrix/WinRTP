@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شرح أداة Windows Repair Tool Pro</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .header-desc {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+            justify-content: center;
+        }
+        .tab-btn {
+            background-color: #edf2f7;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        .tab-btn:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-2px);
+        }
+        .tab-btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        .tab-content {
+            display: none;
+            padding: 25px;
+            background: #fafbfc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            animation: fadeEffect 0.5s;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeEffect {
+            from {opacity: 0; transform: translateY(10px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        h2 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: var(--card-bg);
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+        li:hover {
+            transform: translateX(-5px);
+            border-color: var(--secondary-color);
+        }
+        strong {
+            color: var(--primary-color);
+            font-size: 1.1em;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .badge {
+            background-color: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>دليل أداة Windows Repair Tool Pro</h1>
+    <div class="header-desc">
+        تم تطوير هذه الأداة بواسطة Hesham Taha لتقديم صيانة شاملة وإصلاح وتحسين لنظام التشغيل Windows[cite: 1, 232].
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'optimize')">تحسين النظام (Optimize OS)</button>
+        <button class="tab-btn" onclick="openTab(event, 'disk')">أدوات القرص (Disk Tools)</button>
+        <button class="tab-btn" onclick="openTab(event, 'advanced')">أدوات متقدمة (Advanced Tools)</button>
+        <button class="tab-btn" onclick="openTab(event, 'repair')">إصلاح النظام (Repair OS)</button>
+        <button class="tab-btn" onclick="openTab(event, 'security')">الأمان (Security)</button>
+        <button class="tab-btn" onclick="openTab(event, 'drivers')">التعريفات (Drivers)</button>
+        <button class="tab-btn" onclick="openTab(event, 'apps')">مثبت التطبيقات (Apps Installer)</button>
+        <button class="tab-btn" onclick="openTab(event, 'users')">المستخدمين (User Accounts)</button>
+    </div>
+
+    <div id="optimize" class="tab-content active">
+        <h2>تحسين النظام وتحديثه</h2>
+        <ul>
+            <li><strong>Run DISM RestoreHealth:</strong> تقوم بفحص صحة صورة النظام وإصلاح الملفات التالفة باستخدام أداة DISM[cite: 4, 25].</li>
+            <li><strong>Component Store Cleanup:</strong> تنظيف عميق لمخزن مكونات ويندوز لتوفير مساحة في القرص[cite: 4, 26].</li>
+            <li><strong>Clean Old Windows Updates:</strong> حذف ملفات التحديثات القديمة ومجلد Windows.old لتوفير مساحات كبيرة[cite: 4, 27].</li>
+            <li><strong>Clean Crash Dumps Files:</strong> مسح ملفات تقارير الأخطاء والانهيارات (Minidump)[cite: 4, 29].</li>
+            <li><strong>Run SFC Scan:</strong> فحص وإصلاح ملفات النظام الأساسية التالفة باستخدام أمر sfc /scannow[cite: 4, 30].</li>
+            <li><strong>Clean Temporary Files:</strong> إفراغ مجلدات Temp و Prefetch من الملفات المؤقتة لتسريع الجهاز[cite: 4, 31].</li>
+            <li><strong>Optimize Internet & DNS:</strong> تفريغ الـ DNS وإعادة تعيين محولات الشبكة لتسريع وحل مشاكل الإنترنت[cite: 4, 32].</li>
+            <li><strong>Clear Event Viewer Logs:</strong> مسح سجلات أحداث نظام ويندوز لتوفير المساحة[cite: 4, 33].</li>
+            <li><strong>Disable Background Apps:</strong> إيقاف تشغيل التطبيقات في الخلفية لتوفير استهلاك الذاكرة العشوائية (RAM)[cite: 4, 34, 35].</li>
+            <li><strong>Clear Delivery Optimization Cache:</strong> مسح ذاكرة التخزين المؤقت لملفات التحديثات المشتركة[cite: 4, 36].</li>
+            <li><strong>Safe and quick cleaning:</strong> خيار يقوم بتنظيف وإصلاح سريع يشمل أهم الخيارات (SFC, Temp, DNS) بضغطة واحدة[cite: 5, 37].</li>
+        </ul>
+    </div>
+
+    <div id="disk" class="tab-content">
+        <h2>إدارة وأدوات الأقراص الصلبة</h2>
+        <ul>
+            <li><strong>Schedule CHKDSK Scan:</strong> جدولة فحص القرص الصلب لإصلاح الأخطاء (يعمل فورا للأقراص الفرعية أو عند إعادة التشغيل لقرص النظام C)[cite: 7, 38, 41].</li>
+            <li><strong>Stop Scheduled CHKDSK Scan:</strong> إلغاء الفحص المجدول للقرص قبل إعادة التشغيل[cite: 7, 43, 46].</li>
+            <li><strong>Smart Disk Optimization:</strong> تحسين ذكي للأقراص، يقوم بعمل (Defrag) لأقراص HDD و (TRIM) لأقراص SSD[cite: 7, 48].</li>
+            <li><strong>Check Disk Health:</strong> فحص الحالة الفيزيائية للقرص (S.M.A.R.T) لمعرفة ما إذا كان سليماً أم معرضاً للتلف[cite: 7, 52, 53].</li>
+            <li><strong>View Disk Storage Information:</strong> عرض تفاصيل السعة والمساحة الحرة لجميع الأقراص[cite: 7, 55].</li>
+            <li><strong>Secure Wipe Free Space:</strong> كتابة بيانات عشوائية فوق المساحة الفارغة لمنع استعادة الملفات المحذوفة نهائياً (لا يمسح ملفاتك الحالية)[cite: 7, 56, 60].</li>
+            <li><strong>Disk Speed Test:</strong> اختبار أداء وسرعة القراءة والكتابة للقرص[cite: 7, 61, 63].</li>
+            <li><strong>USB/Drive Virus Rescue:</strong> إظهار الملفات المخفية بسبب الفيروسات وإزالة خصائص النظام عنها لاستعادتها[cite: 7, 64, 66].</li>
+            <li><strong>USB Write Protection Fixer:</strong> إصلاح مشكلة "القرص محمي ضد الكتابة" للفلاشات وكروت الميموري[cite: 7, 68, 70].</li>
+        </ul>
+    </div>
+
+    <div id="advanced" class="tab-content">
+        <h2>الأدوات المتقدمة وإعدادات النظام</h2>
+        <ul>
+            <li><strong>Enable Ultimate Performance:</strong> تفعيل خيار الأداء الأقصى المخفي في ويندوز للحصول على أعلى كفاءة[cite: 9, 75].</li>
+            <li><strong>Restore Balanced Mode:</strong> العودة لوضع الطاقة المتوازن وحذف ملفات الأداء الأقصى[cite: 9, 77].</li>
+            <li><strong>Schedule / Cancel Auto Shutdown:</strong> جدولة إيقاف تشغيل الكمبيوتر بعد عدد معين من الدقائق، أو إلغائها[cite: 9, 79, 80].</li>
+            <li><strong>Restart to BIOS/UEFI / Safe Mode:</strong> إعادة التشغيل مباشرة للدخول إلى شاشة البيوس أو الوضع الآمن[cite: 9, 81, 83].</li>
+            <li><strong>Debloat Windows:</strong> إزالة تطبيقات ويندوز الافتراضية غير الضرورية (مثل Bing, Zune, Skype)[cite: 9, 85].</li>
+            <li><strong>Show WI-FI Passwords:</strong> استخراج وعرض كلمات مرور شبكات الواي فاي المحفوظة مسبقاً على الجهاز[cite: 9, 87].</li>
+            <li><strong>Disable / Enable Windows Update:</strong> إيقاف خدمات تحديث ويندوز بشكل جذري لمنع التحديثات التلقائية، أو إعادة تفعيلها[cite: 10, 89, 91].</li>
+            <li><strong>Change Internet DNS (Gaming):</strong> تغيير خوادم DNS (مثل Cloudflare, Google, AdGuard) لتحسين السرعة أو حجب الإعلانات[cite: 10, 167, 169, 173].</li>
+            <li><strong>Clean Gamers Cache:</strong> مسح ملفات التخزين المؤقت لمنصات الألعاب (Steam, EA, Epic Games, Discord)[cite: 10, 93].</li>
+            <li><strong>Extract Original Windows Key:</strong> استخراج مفتاح الويندوز الأصلي (OEM) المدمج باللوحة الأم وحفظه في ملف[cite: 10, 95].</li>
+            <li><strong>Context Menu Manager:</strong> إضافة أداة "Take Ownership" لقائمة الزر الأيمن للماوس للحصول على صلاحيات التعديل على ملفات النظام المحمية[cite: 10, 97, 98].</li>
+            <li><strong>BSOD Log Analyzer:</strong> فحص وتحليل سجلات النظام لمعرفة أسباب ظهور الشاشة الزرقاء (Blue Screen)[cite: 10, 101].</li>
+            <li><strong>Full System Backup:</strong> أخذ نسخة احتياطية كاملة (Image) للنظام والتطبيقات والتعريفات لحفظها على قرص آخر[cite: 10, 103, 105].</li>
+        </ul>
+    </div>
+
+    <div id="repair" class="tab-content">
+        <h2>إصلاح أخطاء نظام التشغيل</h2>
+        <ul>
+            <li><strong>Deep Repair Windows Update:</strong> إيقاف وتنظيف عميق لمجلدات التحديثات التالفة لإصلاح مشاكل تعليق التحديث[cite: 12, 110].</li>
+            <li><strong>Repair Store & Default Apps:</strong> إعادة تعيين متجر مايكروسوفت وإعادة تسجيل تطبيقات ويندوز الافتراضية[cite: 12, 112].</li>
+            <li><strong>Rebuild Icons & Thumbnails:</strong> مسح وإعادة بناء ذاكرة التخزين المؤقت للأيقونات المصغرة لإصلاح الأشكال التالفة[cite: 12, 114].</li>
+            <li><strong>Fix Taskbar, Search & Explorer:</strong> إعادة تشغيل متصفح الملفات وإصلاح مشاكل توقف شريط المهام والبحث السريع[cite: 12, 116].</li>
+            <li><strong>Fix Audio Services:</strong> إعادة تشغيل خدمات الصوت الخاصة بويندوز لحل مشاكل انقطاع الصوت[cite: 12, 118].</li>
+            <li><strong>Fix Bluetooth Services:</strong> إعادة تشغيل الخدمات الداعمة للبلوتوث لإصلاح مشاكل الاقتران[cite: 12, 120].</li>
+            <li><strong>Fix Printer & Spooler:</strong> مسح مهام الطباعة العالقة وإعادة تشغيل خدمة الطباعة (Spooler)[cite: 12, 122].</li>
+            <li><strong>Restart Core Services:</strong> إعادة تشغيل الخدمات الأساسية الهامة لويندوز بنقرة واحدة[cite: 12, 124].</li>
+        </ul>
+    </div>
+
+    <div id="security" class="tab-content">
+        <h2>الأمان والخصوصية (Windows Defender)</h2>
+        <ul>
+            <li><strong>Quick / Full Virus Scan:</strong> إجراء فحص سريع أو عميق للبحث عن الفيروسات والملفات الضارة باستخدام Windows Defender[cite: 14, 126, 127].</li>
+            <li><strong>Offline Virus Scan:</strong> إعادة تشغيل الجهاز وعمل فحص قبل إقلاع النظام، وهو مفيد لحذف الفيروسات العنيدة (Rootkits/Trojans)[cite: 14, 129].</li>
+            <li><strong>Clear Defender History:</strong> مسح سجل الحماية وإشعارات التهديدات القديمة التي تستمر بالظهور كخلل[cite: 14, 131].</li>
+            <li><strong>Deep Repair Windows Defender:</strong> إزالة القيود المفروضة من الفيروسات على Defender، وإعادة تسجيل خدماته وتحديثه[cite: 14, 132, 133].</li>
+            <li><strong>Reset Windows Firewall:</strong> إعادة تعيين جدار الحماية (Firewall) إلى الإعدادات الافتراضية[cite: 14, 137].</li>
+            <li><strong>Reset Hosts File:</strong> استعادة ملف Hosts الأصلي لحل مشاكل تحويل الروابط المزعجة الناتجة عن البرمجيات الخبيثة[cite: 14, 138].</li>
+            <li><strong>Disable / Enable Windows Telemetry:</strong> إيقاف (أو تفعيل) خدمات تتبع البيانات وإرسالها لمايكروسوفت (لتعزيز الخصوصية)[cite: 14, 140, 141].</li>
+        </ul>
+    </div>
+
+    <div id="drivers" class="tab-content">
+        <h2>إدارة تعريفات الأجهزة</h2>
+        <ul>
+            <li><strong>Check & Install Driver Updates:</strong> فحص سيرفرات مايكروسوفت لتحديث تعريفات النظام الأساسية وتثبيتها[cite: 16, 142, 147].</li>
+            <li><strong>Backup All Installed Drivers:</strong> إنشاء مجلد احتياطي يحتوي على جميع التعريفات المثبتة حالياً على الجهاز لاستخدامها لاحقاً (مثلاً بعد الفورمات)[cite: 16, 150, 153].</li>
+            <li><strong>Restore Drivers From Backup:</strong> استعادة وتثبيت التعريفات من النسخة الاحتياطية المحفوظة مسبقاً بصمت[cite: 16, 155, 157].</li>
+            <li><strong>Uninstall Specific Driver:</strong> إزالة تعريف معين نهائياً من جذور النظام بواسطة اسم الملف (oem.inf)[cite: 16, 160, 163].</li>
+        </ul>
+    </div>
+
+    <div id="apps" class="tab-content">
+        <h2>تثبيت التطبيقات وإدارتها (Winget)</h2>
+        <ul>
+            <li><strong>Update / Uninstall Installed Programs:</strong> معالجات تفاعلية لتحديث كافة التطبيقات أو حذف تطبيق محدد بصمت من الجذور[cite: 176, 187, 190].</li>
+            <li><strong>Install ALL Core Runtimes:</strong> تثبيت صامت لكافة الحزم والبرامج المساعدة التي تحتاجها الألعاب والبرامج الثقيلة (Visual C++, DirectX, .NET, Java الخ)[cite: 176, 181, 182].</li>
+            <li><strong>Silent Apps Installer:</strong> قائمة جاهزة لتثبيت أشهر البرامج بصمت وبدون تدخل (Chrome, Discord, IDM, WinRAR, Steam وغيرها)[cite: 176, 179].</li>
+            <li><strong>Search & Install Custom App:</strong> البحث في قاعدة بيانات مايكروسوفت لتثبيت أي تطبيق آخر برقم الـ ID الخاص به[cite: 178, 195, 198].</li>
+        </ul>
+    </div>
+
+    <div id="users" class="tab-content">
+        <h2>إدارة حسابات المستخدمين</h2>
+        <ul>
+            <li><strong>Add / Delete / Rename User:</strong> إضافة حساب محلي جديد، حذف حساب بالكامل، أو تغيير اسم مستخدم موجود[cite: 23, 200, 203, 206].</li>
+            <li><strong>Change Existing User Password:</strong> تعيين كلمة مرور جديدة لأي حساب محلي أو إزالتها كلياً[cite: 23, 209].</li>
+            <li><strong>Grant / Revoke Administrator Privileges:</strong> ترقية حساب عادي ليصبح مدير (Admin)، أو سحب الصلاحيات منه[cite: 23, 212, 215].</li>
+            <li><strong>Hide / Show Account:</strong> إخفاء حساب معين بحيث لا يظهر في شاشة تسجيل الدخول العادية، أو إظهاره مجدداً[cite: 23, 218, 221].</li>
+            <li><strong>Freeze / Unfreeze Account:</strong> تعطيل الدخول إلى الحساب مؤقتاً (تجميد)، أو إعادة تفعيله[cite: 23, 224, 225].</li>
+            <li><strong>Toggle Built-in Administrator:</strong> تفعيل أو تعطيل حساب المدير المخفي (الأساسي) المدمج في ويندوز[cite: 23, 227, 228].</li>
+            <li><strong>View Detailed User Info:</strong> عرض تقرير شامل وصلاحيات حساب مستخدم معين[cite: 23, 230, 231].</li>
+        </ul>
+    </div>
+
+</div>
+
+<script>
+    function openTab(evt, tabId) {
+        var i, tabcontent, tabbtns;
+        
+        // Hide all elements with class="tab-content"
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        
+        // Remove the class "active" from all elements with class="tab-btn"
+        tabbtns = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tabbtns.length; i++) {
+            tabbtns[i].classList.remove("active");
+        }
+        
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tabId).style.display = "block";
+        setTimeout(() => {
+            document.getElementById(tabId).classList.add("active");
+        }, 10);
+        evt.currentTarget.classList.add("active");
+    }
+</script>
+
+</body>
+</html>
