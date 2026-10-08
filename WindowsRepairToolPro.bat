@@ -484,7 +484,7 @@ if errorlevel 1 (
     echo %RED%[X] DISM CheckHealth failed.%RESET%
     echo %YELLOW%Check DISM.log for more information.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_optimize
 )
 
@@ -503,7 +503,7 @@ if errorlevel 1 (
     echo %RED%[X] DISM ScanHealth failed.%RESET%
     echo %YELLOW%Check DISM.log for more information.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_optimize
 )
 
@@ -526,7 +526,7 @@ if /I "%IMAGE_HEALTH%"=="Healthy" (
     echo %GREEN%[OK] No component store corruption was detected.%RESET%
     echo %WHITE%RestoreHealth is not required.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_optimize
 )
 
@@ -545,7 +545,7 @@ if /I "%IMAGE_HEALTH%"=="Repairable" (
         echo %YELLOW%Windows could not complete the repair.%RESET%
         echo %WHITE%Check C:\Windows\Logs\DISM\dism.log for details.%RESET%
         echo.
-        pause
+        call :safe_pause
         goto menu_optimize
     )
 
@@ -570,7 +570,7 @@ if /I "%IMAGE_HEALTH%"=="Repairable" (
         echo %WHITE%Check C:\Windows\Logs\DISM\dism.log for details.%RESET%
     )
     echo.
-    pause
+    call :safe_pause
     goto menu_optimize
 )
 
@@ -585,14 +585,14 @@ if /I "%IMAGE_HEALTH%"=="NonRepairable" (
     echo %WHITE%RestoreHealth will NOT be started automatically.%RESET%
     echo %WHITE%You may need a Windows repair install or another repair source.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_optimize
 )
 
 echo %YELLOW%[!] WinRTP could not determine the Windows image health state.%RESET%
 echo %WHITE%No automatic repair was started for safety.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_optimize
 
 :comp_cleanup
@@ -605,7 +605,7 @@ echo.
 DISM /Online /Cleanup-Image /StartComponentCleanup
 echo.
 echo %GREEN%[OK] Cleanup Completed Successfully.%RESET%
-pause
+call :safe_pause
 goto menu_optimize
 
 :clean_updates
@@ -624,7 +624,7 @@ if exist "C:\Windows.old" (
 
 echo %GREEN%[OK] Updates Cleanup Completed Successfully.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_optimize
 
 :clean_dumps
@@ -638,7 +638,7 @@ del /f /q /s "%systemroot%\Minidump\*"
 del /f /q /s "%systemroot%\MEMORY.DMP" 
 del /f /q "%systemroot%\Logs\CBS\*.cab"
 echo %GREEN%[OK] Crash Dumps and System Logs cleaned!%RESET%
-pause
+call :safe_pause
 goto menu_optimize
 
 :sfc
@@ -679,7 +679,7 @@ echo.
 echo %GREEN%[OK] No integrity violations were detected.%RESET%
 echo %WHITE%SFC /Scannow is not required.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_optimize
 
 
@@ -704,7 +704,7 @@ echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%Review the Windows Resource Protection result shown above.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_optimize
 
 :clean
@@ -750,7 +750,7 @@ echo.
 echo %WHITE%Space freed:%RESET%     %GREEN%%FREED_GB% GB%RESET%
 echo %WHITE%Remaining free space on %systemdrive%%RESET%  %CYAN%%REMAINING_GB% GB%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_optimize
 
 :internet
@@ -766,7 +766,7 @@ ipconfig /renew
 netsh winsock reset
 netsh int ip reset
 echo %GREEN%[OK] Internet and DNS Optimized Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_optimize
 
 :clean_events
@@ -778,7 +778,7 @@ echo %WHITE%Emptying Windows activity logs to free up space...%RESET%
 echo.
 for /F "tokens=*" %%1 in ('wevtutil.exe el') DO wevtutil.exe cl "%%1"
 echo %GREEN%[OK] All Event Logs Cleared Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_optimize
 
 :clean_delivery
@@ -790,7 +790,7 @@ echo %WHITE%Deleting shared update files to save disk space...%RESET%
 echo.
 del /q /f /s "C:\Windows\SoftwareDistribution\DeliveryOptimization\*"
 echo %GREEN%[OK] Delivery Optimization Cache Cleaned Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_optimize
 
 :clear_gpu_cache
@@ -819,7 +819,7 @@ echo.
 echo %GREEN%[OK] GPU Cache Cleared Successfully!%RESET%
 echo %WHITE%(Note: Some files in use by the system were automatically skipped)%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_optimize
 
 :rammap_optimizer
@@ -844,7 +844,7 @@ if not exist "%RAMMAP_EXE%" (
         echo %GREEN%[OK] RAMMap downloaded successfully!%RESET%
     ) else (
         echo %RED%[X] Download failed. Check internet connection.%RESET%
-        pause
+        call :safe_pause
         goto menu_optimize
     )
     echo.
@@ -872,7 +872,7 @@ if "%ram_choice%"=="1" (
     echo %YELLOW%Emptying Standby List...%RESET%
     "C:\WinRTP\rammap64.exe" -accepteula -Et
     echo %GREEN%[OK] Standby List Emptied Successfully!%RESET%
-    pause
+    call :safe_pause
     goto rammap_menu
 )
 
@@ -881,7 +881,7 @@ if "%ram_choice%"=="2" (
     echo %YELLOW%Emptying Working Sets...%RESET%
     "C:\WinRTP\rammap64.exe" -accepteula -Ew
     echo %GREEN%[OK] Working Sets Emptied Successfully!%RESET%
-    pause
+    call :safe_pause
     goto rammap_menu
 )
 
@@ -891,7 +891,7 @@ if "%ram_choice%"=="3" (
     "C:\WinRTP\rammap64.exe" -accepteula -Ew
     "C:\WinRTP\rammap64.exe" -accepteula -Et
     echo %GREEN%[OK] Full cleanup completed!%RESET%
-    pause
+    call :safe_pause
     goto rammap_menu
 )
 
@@ -909,7 +909,7 @@ if "%ram_choice%"=="4" (
     
     echo %GREEN%[OK] Auto-RAM Cleanup Enabled Successfully!%RESET%
     echo %WHITE%Your RAM will now be optimized automatically every hour in the background.%RESET%
-    pause
+    call :safe_pause
     goto rammap_menu
 )
 
@@ -921,7 +921,7 @@ if "%ram_choice%"=="5" (
     if exist "C:\WinRTP\AutoRAMClean.bat" del /f /q "C:\WinRTP\AutoRAMClean.bat" >nul 2>&1
     
     echo %GREEN%[OK] Auto-RAM Cleanup Disabled Successfully!%RESET%
-    pause
+    call :safe_pause
     goto rammap_menu
 )
 
@@ -1072,7 +1072,7 @@ echo %CYAN%====================================================%RESET%
 echo %GREEN%     Smart Quick Repair ^& Cleanup Completed!%RESET%
 echo %CYAN%====================================================%RESET%
 echo %GREEN%Review the results above for details of each step.%RESET%
-pause
+call :safe_pause
 goto menu_optimize
 
 :chkdsk
@@ -1100,7 +1100,7 @@ echo %YELLOW%Scheduling CHKDSK for drive %chk_drv%: on next restart...%RESET%
 echo y | chkdsk %chk_drv%: /f /r
 echo.
 echo %GREEN%[OK] The check is scheduled for the next restart.%RESET%
-pause
+call :safe_pause
 goto menu_disk
 
 :cancelchk
@@ -1139,7 +1139,7 @@ chkntfs /x %chk_drv%: >nul 2>&1
 
 echo %GREEN%[OK] The scheduling process has been cancelled successfully.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_disk
 
 :defrag
@@ -1162,7 +1162,7 @@ echo %YELLOW%Optimizing Drive %defrag_drv%: ... Please wait.%RESET%
 defrag %defrag_drv%: /O /U /V
 echo.
 echo %GREEN%[OK] Disk Optimization Completed Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_disk
 
 :smart_check
@@ -1179,7 +1179,7 @@ echo.
 echo %WHITE%If the status says %GREEN%Healthy%WHITE%, your disk is in good condition.%RESET%
 echo %WHITE%If it says %RED%Warning%WHITE% or %RED%Unhealthy%WHITE%, backup your data immediately!%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_disk
 
 :disk_info
@@ -1194,7 +1194,7 @@ echo %CYAN%----------------------------------------------------%RESET%
 powershell -NoProfile -Command "Get-Volume | Where-Object { $_.DriveLetter } | Select-Object DriveLetter, FileSystemLabel, @{Name='Capacity(GB)';Expression={[math]::Round($_.Size/1GB, 2)}}, @{Name='FreeSpace(GB)';Expression={[math]::Round($_.SizeRemaining/1GB, 2)}} | Sort-Object DriveLetter | Format-Table -AutoSize"
 
 echo.
-pause
+call :safe_pause
 goto menu_disk
 
 
@@ -1227,7 +1227,7 @@ cipher /w:%wipe_drv%:
 
 echo.
 echo %GREEN%[OK] Free space on Drive %wipe_drv%: wiped successfully!%RESET%
-pause
+call :safe_pause
 goto menu_disk
 
 :disk_speed
@@ -1254,7 +1254,7 @@ winsat disk -drive %speed_drv%
 
 echo %CYAN%----------------------------------------------------%RESET%
 echo %GREEN%[OK] Speed test completed successfully!%RESET%
-pause
+call :safe_pause
 goto menu_disk
 
 
@@ -1283,7 +1283,7 @@ attrib -h -r -s /s /d %usb_drv%:\*.* >nul 2>&1
 
 echo.
 echo %GREEN%[OK] All files on Drive %usb_drv%: are now visible and rescued!%RESET%
-pause
+call :safe_pause
 goto menu_disk
 
 :write_protect_fix
@@ -1316,7 +1316,7 @@ del "%temp%\wp_fix.txt" >nul 2>&1
 echo.
 echo %GREEN%[OK] Write Protection removed successfully from Drive %wp_drv%:%RESET%
 echo %WHITE%Note: If the issue persists, the USB drive might be physically damaged.%RESET%
-pause
+call :safe_pause
 goto menu_disk
 
 :winget_update
@@ -1334,7 +1334,7 @@ if %errorlevel% neq 0 (
     echo.
     echo %GREEN%[OK] All your programs are up to date!%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_advanced
 )
 echo.
@@ -1347,7 +1347,7 @@ echo.
 set /p w_choice=%YELLOW%Enter choice: %RESET%
 if "%w_choice%"=="1" (
     winget upgrade --all --include-unknown --source winget
-    pause
+    call :safe_pause
     goto winget_update
 )
 if "%w_choice%"=="2" goto winget_update_specific
@@ -1357,7 +1357,7 @@ goto winget_update
 :winget_update_specific
 set /p app_ref=%YELLOW%Enter App ID or Name: %RESET%
 winget upgrade --id "%app_ref%" --include-unknown --source winget || winget upgrade --name "%app_ref%" --include-unknown --source winget
-pause
+call :safe_pause
 goto winget_update
 
 :ultimate_perf
@@ -1371,7 +1371,7 @@ for /f "delims=" %%i in ('powershell -NoProfile -Command "(powercfg -duplicatesc
 
 if "%GUID%"=="" (
     echo %RED%[X] Failed to create the power scheme.%RESET%
-    pause
+    call :safe_pause
     goto menu_advanced
 )
 
@@ -1382,7 +1382,7 @@ echo %GUID%>> "C:\WinRTP\UltimateGUIDs.txt"
 echo %GREEN%[OK] Ultimate Performance Mode Enabled Successfully!%RESET%
 echo %WHITE%Active GUID: %GUID%%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :restore_balanced
@@ -1405,7 +1405,7 @@ if exist "C:\WinRTP\UltimateGUIDs.txt" (
 echo.
 echo %GREEN%[OK] Balanced Mode Restored and Custom Profiles Cleaned!%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :shutdown
@@ -1419,14 +1419,14 @@ set /a ss=%st%*60
 shutdown /s /t %ss%
 echo.
 echo %GREEN%[OK] PC will shutdown in %st% minutes.%RESET%
-pause
+call :safe_pause
 goto menu_advanced
 
 :cancelshutdown
 cls
 shutdown /a >nul 2>&1
 echo %GREEN%[OK] Scheduled shutdown canceled.%RESET%
-pause
+call :safe_pause
 goto menu_advanced
 
 :bios
@@ -1443,7 +1443,7 @@ if %errorlevel% neq 0 (
     echo %YELLOW%You will need to restart manually and press (DEL) or (F2).%RESET%
 )
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :safemode
@@ -1456,7 +1456,7 @@ echo %RED%[!] IMPORTANT WARNING:%RESET%
 echo %WHITE%To return to Normal Mode later, you will need to open CMD in Safe Mode and type:%RESET%
 echo %YELLOW%bcdedit /deletevalue {current} safeboot%RESET%
 echo.
-pause
+call :safe_pause
 bcdedit /set {current} safeboot minimal >nul 2>&1
 shutdown /r /t 5
 goto menu_advanced
@@ -1469,7 +1469,7 @@ echo %CYAN%====================================================%RESET%
 echo.
 echo %WHITE%Windows will boot normally after the restart.%RESET%
 echo.
-pause
+call :safe_pause
 
 bcdedit /deletevalue {current} safeboot >nul 2>&1
 shutdown /r /t 5
@@ -1490,7 +1490,7 @@ powershell -Command "Get-AppxPackage *solitaire* | Remove-AppxPackage" >nul 2>&1
 powershell -Command "Get-AppxPackage *skypeapp* | Remove-AppxPackage" >nul 2>&1
 echo %GREEN%[OK] Windows Debloat Completed Successfully.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :wifi_pwd
@@ -1501,7 +1501,7 @@ echo %CYAN%====================================================%RESET%
 echo.
 powershell -Command "netsh wlan show profiles | Select-String 'All User Profile' | ForEach-Object { $profile = $_.ToString().Split(':')[1].Trim(); $pass = (netsh wlan show profile name=\"$profile\" key=clear | Select-String 'Key Content' | ForEach-Object { $_.ToString().Split(':')[1].Trim() }); [PSCustomObject]@{ 'Wi-Fi Name' = $profile; 'Password' = $pass } } | Format-Table -AutoSize"
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :disable_updates
@@ -1529,7 +1529,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoUpd
 
 echo %GREEN%[OK] Windows Update fully disabled.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :enable_updates
@@ -1556,7 +1556,7 @@ UsoClient StartInteractiveScan
 
 echo %GREEN%[OK] Windows Update services have been restored to default.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :clean_gamers_cache
@@ -1575,7 +1575,7 @@ del /q /f /s "%localappdata%\D3DSCache\*" >nul 2>&1
 
 echo %GREEN%[OK] Gaming Cache Cleaned Successfully!%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :extract_oem_key
@@ -1588,7 +1588,7 @@ echo %WHITE%Extracting original Windows product key from motherboard...%RESET%
 echo %CYAN%----------------------------------------------------%RESET%
 powershell -NoProfile -Command "$key = (Get-WmiObject -Query 'select * from SoftwareLicensingService').OA3xOriginalProductKey; if ($key) { Write-Host '    [OK] OEM Key Found: ' -NoNewline -ForegroundColor Green; Write-Host $key -ForegroundColor Yellow; $path = [Environment]::GetFolderPath('Desktop') + '\Windows_OEM_Key.txt'; $key | Out-File -FilePath $path; Write-Host '    [OK] A copy has been saved to your Desktop (Windows_OEM_Key.txt)' -ForegroundColor Cyan } else { Write-Host '    [!] No OEM Key found in BIOS/UEFI. (You might be using a Retail key or Digital License)' -ForegroundColor Red }"
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :context_menu_mgr
@@ -1615,7 +1615,7 @@ if "%ctx_ch%"=="1" (
     reg add "HKCR\Directory\shell\runas" /v "NoWorkingDirectory" /t REG_SZ /d "" /f >nul 2>&1
     reg add "HKCR\Directory\shell\runas\command" /ve /t REG_SZ /d "cmd.exe /c takeown /f \"%%1\" /r /d y && icacls \"%%1\" /grant administrators:F /t /c /l /q & pause" /f >nul 2>&1
     echo %GREEN%[OK] Added Successfully! Right-click any file/folder to see it.%RESET%
-    pause
+    call :safe_pause
     goto context_menu_mgr
 )
 if "%ctx_ch%"=="2" (
@@ -1624,7 +1624,7 @@ if "%ctx_ch%"=="2" (
     reg delete "HKCR\*\shell\runas" /f >nul 2>&1
     reg delete "HKCR\Directory\shell\runas" /f >nul 2>&1
     echo %GREEN%[OK] Removed Successfully!%RESET%
-    pause
+    call :safe_pause
     goto context_menu_mgr
 )
 goto context_menu_mgr
@@ -1639,7 +1639,7 @@ echo %CYAN%----------------------------------------------------%RESET%
 echo.
 powershell -NoProfile -Command "$events = Get-EventLog -LogName System -Source BugCheck -Newest 5 -ErrorAction SilentlyContinue; if ($events) { Write-Host 'Recent crashes found:' -ForegroundColor Red; foreach ($e in $events) { Write-Host ('Date: ' + $e.TimeGenerated) -ForegroundColor Cyan; Write-Host ('Info: ' + $e.Message) -ForegroundColor Yellow; Write-Host '----------------------------------------------------' } } else { Write-Host '    [OK] Great News! No recent Blue Screen crashes found in the Event Log.' -ForegroundColor Green }"
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :full_system_backup
@@ -1691,7 +1691,7 @@ echo %WHITE%2. Go to: Troubleshoot -^> Advanced options -^> System Image Recover
 echo %WHITE%3. Select the backup you just created and let Windows restore it.%RESET%
 echo %CYAN%====================================================%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_advanced
 
 :menu_firewall_manager
@@ -1722,7 +1722,7 @@ for /f "usebackq delims=" %%I in (`powershell -NoProfile -Command "%psCommand%"`
 
 if "%app_path%"=="" (
     echo %RED%[X] No file selected. Going back to menu...%RESET%
-    pause
+    call :safe_pause
     goto menu_firewall_manager
 )
 
@@ -1733,7 +1733,7 @@ netsh advfirewall firewall add rule name="WinRTP_Block_%app_name%" dir=out actio
 netsh advfirewall firewall add rule name="WinRTP_Block_%app_name%" dir=in action=block program="%app_path%" >nul 2>&1
 
 echo %GREEN%[OK] Success! Internet access is permanently blocked for: %app_name%%RESET%
-pause
+call :safe_pause
 goto menu_firewall_manager
 
 :fw_unblock
@@ -1746,7 +1746,7 @@ for /f "usebackq delims=" %%I in (`powershell -NoProfile -Command "%psCommand%"`
 
 if "%app_path%"=="" (
     echo %RED%[X] No file selected. Going back to menu...%RESET%
-    pause
+    call :safe_pause
     goto menu_firewall_manager
 )
 
@@ -1756,7 +1756,7 @@ echo %YELLOW%Unblocking "%app_name%" in Windows Firewall...%RESET%
 netsh advfirewall firewall delete rule name="WinRTP_Block_%app_name%" >nul 2>&1
 
 echo %GREEN%[OK] Success! Internet access is restored for: %app_name%%RESET%
-pause
+call :safe_pause
 goto menu_firewall_manager
 
 :winupdate
@@ -1782,7 +1782,7 @@ UsoClient StartInteractiveScan
 
 echo.
 echo %GREEN%[OK] Windows Update Deep Reset Completed Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_repair
 
 :store_apps
@@ -1799,7 +1799,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppXPackage -AllUser
 
 echo.
 echo %GREEN%[OK] Microsoft Store and Default Apps Repaired!%RESET%
-pause
+call :safe_pause
 goto menu_repair
 
 :icons_thumbs
@@ -1818,7 +1818,7 @@ start explorer.exe
 
 echo.
 echo %GREEN%[OK] Icons and Thumbnails Cache Rebuilt Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_repair
 
 :taskbar_search
@@ -1840,7 +1840,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage Microsof
 start explorer.exe
 echo.
 echo %GREEN%[OK] Taskbar, Search, and Explorer Reset Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_repair
 
 :fix_audio
@@ -1860,7 +1860,7 @@ echo %GREEN%[OK] Audio Services Restarted.%RESET%
 echo.
 echo %WHITE%Starting Windows Audio Troubleshooter just in case...%RESET%
 msdt.exe -id AudioPlaybackDiagnostic
-pause
+call :safe_pause
 goto menu_repair
 
 :fix_bluetooth
@@ -1877,7 +1877,7 @@ net start bthserv >nul 2>&1
 echo %GREEN%[OK] Bluetooth Services Restarted Successfully!%RESET%
 echo %WHITE%If your device is still not working, try unpairing and pairing it again.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_repair
 
 :fix_printer
@@ -1894,7 +1894,7 @@ net start spooler >nul 2>&1
 
 echo %GREEN%[OK] Print Queue Cleared and Services Restarted!%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_repair
 
 :restart_services
@@ -1916,7 +1916,7 @@ net start Winmgmt >nul 2>&1
 
 echo %GREEN%[OK] Core Windows Services Restarted Successfully!%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_repair
 
 :services_diagnostic
@@ -1943,7 +1943,7 @@ echo.
 echo %YELLOW%Note:%RESET% %WHITE%Some Manual services normally stay stopped until Windows needs them.%RESET%
 echo.
 
-pause
+call :safe_pause
 goto menu_repair
 
 :quickscan
@@ -1956,7 +1956,7 @@ echo.
 "%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 1
 echo.
 echo %GREEN%[OK] Quick Scan Completed!%RESET%
-pause
+call :safe_pause
 goto menu_security
 
 :fullscan
@@ -1969,7 +1969,7 @@ echo.
 "%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 2
 echo.
 echo %GREEN%[OK] Full Scan Completed!%RESET%
-pause
+call :safe_pause
 goto menu_security
 
 :offlinescan
@@ -1982,7 +1982,7 @@ echo %WHITE%malware before Windows loads.%RESET%
 echo.
 echo %YELLOW%Make sure you have saved all your open files and work!%RESET%
 echo.
-pause
+call :safe_pause
 powershell -Command "Start-MpWDOScan"
 goto menu_security
 
@@ -1995,7 +1995,7 @@ echo %WHITE%Fixes the glitch where Defender keeps warning about old threats.%RES
 echo.
 del /q /f /s "C:\ProgramData\Microsoft\Windows Defender\Scans\History\Service\*" >nul 2>&1
 echo %GREEN%[OK] Defender Protection History Cleared!%RESET%
-pause
+call :safe_pause
 goto menu_security
 
 :fix_defender
@@ -2023,7 +2023,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-AppxPackage Microsof
 
 echo.
 echo %GREEN%[OK] Windows Defender Services and Engine Repaired Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_security
 
 :firewall_reset
@@ -2035,7 +2035,7 @@ echo %WHITE%Restoring default firewall rules and permissions...%RESET%
 echo.
 netsh advfirewall reset >nul 2>&1
 echo %GREEN%[OK] Windows Firewall Reset to Defaults Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_security
 
 :reset_hosts
@@ -2051,7 +2051,7 @@ echo # This is a default HOSTS file. >> %windir%\System32\drivers\etc\hosts
 echo 127.0.0.1 localhost >> %windir%\System32\drivers\etc\hosts
 echo ::1 localhost >> %windir%\System32\drivers\etc\hosts
 echo %GREEN%[OK] Hosts File Reset to Default Successfully!%RESET%
-pause
+call :safe_pause
 goto menu_security
 
 :disable_telemetry
@@ -2065,7 +2065,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTeleme
 sc config DiagTrack start= disabled >nul 2>&1
 sc stop DiagTrack >nul 2>&1
 echo %GREEN%[OK] Telemetry and Tracking disabled successfully.%RESET%
-pause
+call :safe_pause
 goto menu_security
 
 :enable_telemetry
@@ -2079,7 +2079,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTeleme
 sc config DiagTrack start= auto >nul 2>&1
 net start DiagTrack >nul 2>&1
 echo %GREEN%[OK] Telemetry and Tracking services restored to default.%RESET%
-pause
+call :safe_pause
 goto menu_security
 
 :driver_updater
@@ -2099,7 +2099,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module PSWindowsU
 
 if %errorlevel% equ 1 (
     echo.
-    pause
+    call :safe_pause
     goto menu_drivers
 )
 
@@ -2121,7 +2121,7 @@ if /i "%drv_sel%"=="A" (
     powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module PSWindowsUpdate -ErrorAction SilentlyContinue; $updates = Get-WindowsUpdate; [array]$drivers = $updates | Where-Object { $_.Categories -match 'Driver' -or $_.Title -match 'Driver' }; if ($drivers.Count -gt 0) { $drivers | Install-WindowsUpdate -AcceptAll -AutoReboot:$false }"
     echo.
     echo %GREEN%[OK] All drivers updated successfully!%RESET%
-    pause
+    call :safe_pause
     goto menu_drivers
 )
 
@@ -2131,7 +2131,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "Import-Module PSWindowsU
 echo.
 echo %GREEN%[OK] Selected driver installation attempt completed.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_drivers
 
 :backup_drivers
@@ -2173,7 +2173,7 @@ if %errorlevel% equ 0 (
     echo %YELLOW%Hint: Ensure you entered a valid drive and have enough free space.%RESET%
 )
 echo.
-pause
+call :safe_pause
 goto menu_drivers
 
 
@@ -2203,7 +2203,7 @@ if not exist "%BACKUP_PATH%" (
     echo %RED%[X] Error: Backup folder not found at %BACKUP_PATH%%RESET%
     echo %YELLOW%Please make sure you entered the correct drive letter.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_drivers
 )
 
@@ -2217,7 +2217,7 @@ echo.
 echo %GREEN%[OK] Drivers Restoration Process Completed!%RESET%
 echo %WHITE%If some drivers require a restart, your PC might prompt you.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_drivers
 
 :drivers_uninstaller_wizard
@@ -2259,7 +2259,7 @@ if %errorlevel% equ 0 (
     echo.
     echo %RED%[X] Failed to delete driver. Make sure you typed the correct oemXX.inf name.%RESET%
 )
-pause
+call :safe_pause
 goto menu_drivers
 
 :create_restore_point
@@ -2283,7 +2283,7 @@ if %errorlevel% equ 0 (
 )
 
 echo.
-pause
+call :safe_pause
 goto menu
 
 :change_dns
@@ -2318,7 +2318,7 @@ powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[OK] Cloudflare DNS Applied Successfully!%RESET%
-pause
+call :safe_pause
 goto change_dns
 
 :set_google
@@ -2328,7 +2328,7 @@ powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[OK] Google DNS Applied Successfully!%RESET%
-pause
+call :safe_pause
 goto change_dns
 
 :set_quad9
@@ -2338,7 +2338,7 @@ powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[OK] Quad9 Secure DNS Applied Successfully!%RESET%
-pause
+call :safe_pause
 goto change_dns
 
 :set_adguard
@@ -2348,7 +2348,7 @@ powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[OK] AdGuard DNS Applied! Ads will be blocked.%RESET%
-pause
+call :safe_pause
 goto change_dns
 
 :set_default
@@ -2358,7 +2358,7 @@ powershell -NoProfile -Command "Get-NetAdapter | Where-Object {$_.Status -eq 'Up
 ipconfig /flushdns >nul 2>&1
 echo.
 echo %GREEN%[OK] DNS Restored to Default Successfully!%RESET%
-pause
+call :safe_pause
 goto change_dns
 
 :menu_apps
@@ -2453,7 +2453,7 @@ if exist "%backup_path%" (
     echo %RED%[X] Backup failed. Please check the path and your internet connection.%RESET%
 )
 echo.
-pause
+call :safe_pause
 goto menu_apps
 
 :restore_apps_list
@@ -2485,7 +2485,7 @@ if not exist "%restore_path%" (
     echo %RED%[X] No backup file found at:%RESET%
     echo %WHITE%%restore_path%%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_apps
 )
 
@@ -2498,7 +2498,7 @@ winget import -i "%restore_path%" --accept-source-agreements --accept-package-ag
 echo.
 echo %GREEN%[OK] Restore process completed!%RESET%
 echo %WHITE%Please check above for any apps that failed to install.%RESET%
-pause
+call :safe_pause
 goto menu_apps
 
 :install_core_runtimes
@@ -2524,7 +2524,7 @@ if %fail_count% equ 0 (
     echo %YELLOW%[!] Finished, but some packages failed to install. Failed count: %fail_count%%RESET%
     echo %WHITE%Check your internet connection and try again.%RESET%
 )
-pause
+call :safe_pause
 goto menu_apps
 
 :install_silent
@@ -2539,7 +2539,7 @@ if %errorlevel% equ 0 (
     echo.
     echo %RED%[X] Failed to install or already installed.%RESET%
 )
-pause
+call :safe_pause
 goto menu_apps
 
 :install_all_apps
@@ -2558,7 +2558,7 @@ if %fail_count% equ 0 (
     echo %YELLOW%[!] Finished, but some apps failed to install. Failed count: %fail_count%%RESET%
     echo %WHITE%Check your internet connection and try again.%RESET%
 )
-pause
+call :safe_pause
 goto menu_apps
 
 
@@ -2600,7 +2600,7 @@ if %errorlevel% equ 0 (
     echo.
     echo %RED%[X] Failed to uninstall. Please make sure you copied the Name/ID correctly.%RESET%
 )
-pause
+call :safe_pause
 goto menu_apps
 
 
@@ -2633,7 +2633,7 @@ if "%up_choice%"=="1" (
     winget upgrade --all --silent --accept-source-agreements --accept-package-agreements --source winget
     echo.
     echo %GREEN%[OK] Bulk Update Process Completed!%RESET%
-    pause
+    call :safe_pause
     goto menu_apps
 )
 
@@ -2659,7 +2659,7 @@ if %errorlevel% equ 0 (
     echo.
     echo %RED%[X] Failed to update. Please check if the ID is correct.%RESET%
 )
-pause
+call :safe_pause
 goto apps_updater_wizard
 
 :search_install_app
@@ -2682,7 +2682,7 @@ winget search "%custom_app%" --source winget
 if %errorlevel% neq 0 (
     echo.
     echo %RED%[X] No applications found with the name "%custom_app%".%RESET%
-    pause
+    call :safe_pause
     goto menu_apps
 )
 
@@ -2710,7 +2710,7 @@ if %errorlevel% equ 0 (
     echo.
     echo %RED%[X] Failed to install. Please make sure you copied the ID correctly.%RESET%
 )
-pause
+call :safe_pause
 goto menu_apps
 
 :open_taskmgr
@@ -2857,7 +2857,7 @@ if %errorlevel% equ 0 (
     echo %RED%[X] Failed to create user. It might already exist or the name is invalid.%RESET%
 )
 echo.
-pause
+call :safe_pause
 goto menu_users
 
 
@@ -2887,7 +2887,7 @@ if %errorlevel% equ 0 (
     echo %WHITE%Note: You cannot delete the account you are currently logged into.%RESET%
 )
 echo.
-pause
+call :safe_pause
 goto menu_users
 
 
@@ -2923,7 +2923,7 @@ if %errorlevel% equ 0 (
     echo %RED%[X] Failed to rename user. Make sure the current username is correct.%RESET%
 )
 echo.
-pause
+call :safe_pause
 goto menu_users
 
 
@@ -2952,7 +2952,7 @@ if %errorlevel% equ 0 (
     echo %RED%[X] Failed. Make sure you typed the username correctly.%RESET%
 )
 echo.
-pause
+call :safe_pause
 goto menu_users
 
 
@@ -2983,7 +2983,7 @@ if %errorlevel% equ 0 (
     echo %RED%[X] Failed. User might already be an admin, or the name is incorrect.%RESET%
 )
 echo.
-pause
+call :safe_pause
 goto menu_users
 
 
@@ -3015,7 +3015,7 @@ if %errorlevel% equ 0 (
     echo %WHITE%Note: You cannot demote the built-in Administrator account.%RESET%
 )
 echo.
-pause
+call :safe_pause
 goto menu_users
 
 
@@ -3040,7 +3040,7 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccou
 echo %GREEN%[OK] User '%hide_usr%' is now hidden from the login screen!%RESET%
 echo %WHITE%Note: To login to this account, you will need to type its name manually.%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_users
 
 
@@ -3064,7 +3064,7 @@ reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAc
 
 echo %GREEN%[OK] User '%unhide_usr%' is now visible on the login screen again!%RESET%
 echo.
-pause
+call :safe_pause
 goto menu_users
 
 
@@ -3095,7 +3095,7 @@ if "%status_ch%"=="1" (
     echo.
     echo %GREEN%[OK] Account '%status_usr%' is now FROZEN and Disabled.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_users
 )
 if "%status_ch%"=="2" (
@@ -3103,7 +3103,7 @@ if "%status_ch%"=="2" (
     echo.
     echo %GREEN%[OK] Account '%status_usr%' is now ACTIVE and Enabled.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_users
 )
 goto menu_users
@@ -3121,7 +3121,7 @@ for /f "delims=" %%G in ('powershell -NoProfile -Command "(Get-LocalUser | Where
 
 if "%BuiltInAdmin%"=="" (
     echo %RED%[X] Error: Could not locate the Built-in Administrator account.%RESET%
-    pause
+    call :safe_pause
     goto menu_users
 )
 
@@ -3139,7 +3139,7 @@ if "%admin_ch%"=="1" (
     echo.
     echo %GREEN%[OK] Built-in Administrator is now ENABLED!%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_users
 )
 if "%admin_ch%"=="2" (
@@ -3147,7 +3147,7 @@ if "%admin_ch%"=="2" (
     echo.
     echo %GREEN%[OK] Built-in Administrator is now DISABLED!%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_users
 )
 goto menu_users
@@ -3175,7 +3175,7 @@ echo.
 net user "%info_usr%"
 echo.
 echo %CYAN%====================================================%RESET%
-pause
+call :safe_pause
 goto menu_users
 
 :tweak_menu_delay
@@ -3183,7 +3183,7 @@ echo.
 echo %YELLOW%Reducing Menu Show Delay to 10ms...%RESET%
 reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d 10 /f >nul 2>&1
 echo %GREEN%[OK] UI is now snappier!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_win11_menu
@@ -3193,7 +3193,7 @@ reg add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\Inpr
 taskkill /f /im explorer.exe >nul 2>&1
 start explorer.exe
 echo %GREEN%[OK] Classic Menu Restored!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_lock_screen
@@ -3201,7 +3201,7 @@ echo.
 echo %YELLOW%Disabling Windows Lock Screen...%RESET%
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreen /t REG_DWORD /d 1 /f >nul 2>&1
 echo %GREEN%[OK] Lock screen disabled. Windows will now boot directly to the password prompt.%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_visuals
@@ -3209,7 +3209,7 @@ echo.
 echo %YELLOW%Disabling Heavy Visual Effects (Best Performance Mode)...%RESET%
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f >nul 2>&1
 echo %GREEN%[OK] Visual effects optimized for maximum performance!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_network
@@ -3218,7 +3218,7 @@ echo %YELLOW%Disabling Network Throttling ^& Gaming Responsiveness...%RESET%
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v NetworkThrottlingIndex /t REG_DWORD /d 4294967295 /f >nul 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v SystemResponsiveness /t REG_DWORD /d 0 /f >nul 2>&1
 echo %GREEN%[OK] Network restrictions lifted. Ping optimized!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_bing
@@ -3229,7 +3229,7 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEna
 taskkill /f /im explorer.exe >nul 2>&1
 start explorer.exe
 echo %GREEN%[OK] Local search is now blazing fast without internet results!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_sysmain
@@ -3238,7 +3238,7 @@ echo %YELLOW%Disabling SysMain (Superfetch) Service...%RESET%
 sc config "SysMain" start=disabled >nul 2>&1
 net stop "SysMain" >nul 2>&1
 echo %GREEN%[OK] SysMain Disabled. 100%% Disk Usage issues should be resolved.%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_gamedvr
@@ -3247,7 +3247,7 @@ echo %YELLOW%Disabling Game DVR ^& Background Recording...%RESET%
 reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d 0 /f >nul 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v AllowGameDVR /t REG_DWORD /d 0 /f >nul 2>&1
 echo %GREEN%[OK] Game DVR Disabled. Stuttering in games should be reduced!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_mouse
@@ -3257,7 +3257,7 @@ reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_SZ /d 0 /f >nul 2>&1
 reg add "HKCU\Control Panel\Mouse" /v MouseThreshold1 /t REG_SZ /d 0 /f >nul 2>&1
 reg add "HKCU\Control Panel\Mouse" /v MouseThreshold2 /t REG_SZ /d 0 /f >nul 2>&1
 echo %GREEN%[OK] Mouse Acceleration Disabled. You now have 100%% Raw Aim Input!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_hibernation
@@ -3265,7 +3265,7 @@ echo.
 echo %YELLOW%Disabling Hibernation...%RESET%
 powercfg -h off >nul 2>&1
 echo %GREEN%[OK] Hibernation Disabled. Gigabytes of disk space freed up!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_vbs
@@ -3274,7 +3274,7 @@ echo %YELLOW%Disabling Virtualization-Based Security (VBS) ^& Memory Integrity..
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v Enabled /t REG_DWORD /d 0 /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f >nul 2>&1
 echo %GREEN%[OK] VBS Disabled! Expect higher FPS in Windows 11.%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_power
@@ -3288,7 +3288,7 @@ if not "%GUID%"=="" (
     echo %GUID%>> "C:\WinRTP\UltimateGUIDs.txt"
 )
 echo %GREEN%[OK] Ultimate Performance Mode Enabled!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_stickykeys
@@ -3298,7 +3298,7 @@ reg add "HKCU\Control Panel\Accessibility\StickyKeys" /v Flags /t REG_SZ /d 506 
 reg add "HKCU\Control Panel\Accessibility\Keyboard Response" /v Flags /t REG_SZ /d 122 /f >nul 2>&1
 reg add "HKCU\Control Panel\Accessibility\ToggleKeys" /v Flags /t REG_SZ /d 58 /f >nul 2>&1
 echo %GREEN%[OK] Sticky Keys Disabled. Mash your Shift key safely!%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_p2p
@@ -3307,7 +3307,7 @@ echo %YELLOW%Disabling P2P Windows Updates (Delivery Optimization)...%RESET%
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" /v DODownloadMode /t REG_DWORD /d 0 /f >nul 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v DODownloadMode /t REG_DWORD /d 0 /f >nul 2>&1
 echo %GREEN%[OK] P2P Updates Disabled! Windows will no longer upload updates from your PC.%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_all
@@ -3344,7 +3344,7 @@ if not "%GUID%"=="" (
 
 echo %GREEN%[OK] ALL Recommended Tweaks Applied Successfully!%RESET%
 echo %WHITE%(Note: Please restart your PC for all changes to take full effect).%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 :tweak_restore
@@ -3406,7 +3406,7 @@ start explorer.exe
 echo.
 echo %GREEN%[OK] All Windows Defaults Restored Successfully!%RESET%
 echo %WHITE%(Note: Please restart your PC to ensure all services return to normal).%RESET%
-pause
+call :safe_pause
 goto menu_tweaks
 
 
@@ -3446,7 +3446,7 @@ if not "%WO_IPK_RESULT%"=="0" (
     echo %YELLOW%The key may be invalid or not compatible with this Windows edition.%RESET%
     echo.
     set "WO_WINKEY="
-    pause
+    call :safe_pause
     goto menu_windows_office
 )
 
@@ -3478,7 +3478,7 @@ set "WO_IPK_RESULT="
 set "WO_ATO_RESULT="
 
 echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 
@@ -3490,7 +3490,7 @@ echo %WHITE%The existing Windows key/license was not changed.%RESET%
 set "WO_WINKEY="
 
 echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 :wo_win_convert
@@ -3597,7 +3597,7 @@ set "WO_BEFORE_SKU="
 set "WO_BEFORE_NAME="
 
 echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 :wo_custom_edition_key
@@ -3635,7 +3635,7 @@ if not "%WO_CUSTOM_CHECK%"=="0" (
     echo.
     set "WO_CUSTOM_KEY="
     set "WO_CUSTOM_CHECK="
-    pause
+    call :safe_pause
     goto wo_custom_edition_key
 )
 
@@ -3696,7 +3696,7 @@ set "WO_BEFORE_SKU="
 set "WO_BEFORE_NAME="
 
 echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 :wo_invalid_target
@@ -3709,7 +3709,7 @@ set "WO_TARGET_NAME="
 set "WO_TARGET_CHOICE="
 
 echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 
@@ -3723,7 +3723,7 @@ set "WO_TARGET_NAME="
 set "WO_TARGET_CHOICE="
 
 echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 :wo_add_target
@@ -3817,7 +3817,7 @@ if not defined WO_OFFICE_PRODUCT_IDS (
     echo.
     echo %YELLOW%This feature currently supports Click-to-Run Office installations only.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_windows_office
 )
 
@@ -3855,7 +3855,7 @@ if "%WO_OFFICE_MATCH_COUNT%"=="0" (
     echo.
     echo %RED%[0]%RESET% Back
     echo.
-    pause
+    call :safe_pause
     goto menu_windows_office
 )
 
@@ -3929,7 +3929,7 @@ if not defined WO_OFFICE_ARCH (
     echo.
     echo %RED%[X] Could not detect the installed Office architecture.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto wo_office_convert
 )
 
@@ -3949,7 +3949,7 @@ if not defined WO_OFFICE_ROOT (
     echo.
     echo %RED%[X] Could not locate the installed Office applications.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto wo_office_convert
 )
 
@@ -4054,7 +4054,7 @@ if errorlevel 1 (
 	
 	call :wo_cleanup_office_temp
 	
-    pause
+    call :safe_pause
     goto wo_office_convert
 )
 
@@ -4071,7 +4071,7 @@ if errorlevel 1 (
 
     call :wo_cleanup_office_temp
 
-    pause
+    call :safe_pause
     goto wo_office_convert
 )
 
@@ -4088,7 +4088,7 @@ if not defined WO_ODT_PACKAGE (
 
     call :wo_cleanup_office_temp
 
-    pause
+    call :safe_pause
     goto wo_office_convert
 )
 
@@ -4108,7 +4108,7 @@ if not exist "%WO_ODT_SETUP%" (
 
     call :wo_cleanup_office_temp
 
-    pause
+    call :safe_pause
     goto wo_office_convert
 )
 
@@ -4141,7 +4141,7 @@ echo.
 
 call :wo_cleanup_office_temp
 
-pause
+call :safe_pause
 goto wo_office_convert
 
 :wo_office_uninstall
@@ -4166,7 +4166,7 @@ if not defined WO_UNINSTALL_PRODUCT_IDS (
 if not defined WO_UNINSTALL_PRODUCT_IDS (
     echo %YELLOW%[!] No supported Click-to-Run Office installation was detected.%RESET%
     echo.
-    pause
+    call :safe_pause
     goto menu_windows_office
 )
 
@@ -4233,7 +4233,7 @@ if errorlevel 1 (
 
     call :wo_cleanup_office_temp
 
-    pause
+    call :safe_pause
     goto menu_windows_office
 )
 
@@ -4249,7 +4249,7 @@ if errorlevel 1 (
 
     call :wo_cleanup_office_temp
 
-    pause
+    call :safe_pause
     goto menu_windows_office
 )
 
@@ -4264,7 +4264,7 @@ if not defined WO_UNINSTALL_ODT_PACKAGE (
 
     call :wo_cleanup_office_temp
 
-    pause
+    call :safe_pause
     goto menu_windows_office
 )
 
@@ -4284,7 +4284,7 @@ if not exist "%WO_UNINSTALL_ODT_SETUP%" (
 
     call :wo_cleanup_office_temp
 
-    pause
+    call :safe_pause
     goto menu_windows_office
 )
 
@@ -4320,7 +4320,7 @@ if not "%WO_UNINSTALL_RESULT%"=="0" (
 
 call :wo_cleanup_office_temp
 
-pause
+call :safe_pause
 goto menu_windows_office
 
 :wo_cleanup_office_temp
@@ -4500,7 +4500,7 @@ echo.
 
 choice /c YN /n /m "Activate Office now? (Y=Activate / N=Cancel): "
 
-if errorlevel 2 goto wo_office_cancel_activation
+if errorlevel 2 goto wo_office_activation_declined
 
 echo.
 echo %YELLOW%Activating Microsoft Office...%RESET%
@@ -4519,27 +4519,20 @@ cscript //nologo "%WO_OSPP%" /dstatus
 set "WO_OFFICEKEY="
 
 echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 
-:wo_office_cancel_activation
-echo.
-
-choice /c YN /n /m "Confirm cancel and remove the just-entered Office key? (Y/N): "
-
-if errorlevel 2 goto wo_office_cancel_declined
-
+:wo_office_activation_declined
 set "WO_LAST5=%WO_OFFICEKEY:~-5%"
 
 echo.
-echo %YELLOW%Removing Office key ending in %WO_LAST5%...%RESET%
+echo %YELLOW%Activation cancelled.%RESET%
+echo %WHITE%Removing the just-entered key ending in %WO_LAST5% to restore the previous state...%RESET%
 echo.
 
 cscript //nologo "%WO_OSPP%" /unpkey:%WO_LAST5%
 
-echo.
-echo %GREEN%The just-entered Office key was removed locally.%RESET%
 echo.
 echo %WHITE%Current Office License Status:%RESET%
 echo.
@@ -4550,22 +4543,7 @@ set "WO_OFFICEKEY="
 set "WO_LAST5="
 
 echo.
-pause
-goto menu_windows_office
-
-
-:wo_office_cancel_declined
-echo.
-echo %YELLOW%Removal declined.%RESET%
-echo %WHITE%The key remains installed; activation was not attempted.%RESET%
-echo.
-
-cscript //nologo "%WO_OSPP%" /dstatus
-
-set "WO_OFFICEKEY="
-
-echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 :wo_win_remove_key
@@ -4605,7 +4583,7 @@ echo.
 call :wo_show_windows_summary
 
 echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 :wo_office_remove_key
@@ -4657,7 +4635,7 @@ echo.
 cscript //nologo "%WO_OSPP%" /dstatus
 
 echo.
-pause
+call :safe_pause
 goto menu_windows_office
 
 :wo_no_ospp
@@ -4668,7 +4646,7 @@ echo %WHITE%The OSPP route is for supported volume-licensed Office versions.%RES
 echo %YELLOW%Microsoft 365 Apps/subscription activation is managed in the Office app.%RESET%
 echo.
 
-pause
+call :safe_pause
 goto menu_windows_office
 
 :wo_find_ospp
@@ -4734,6 +4712,15 @@ if errorlevel 1 (
 
 exit /b
 
+:safe_pause
+echo.
+echo %CYAN%----------------------------------------------------%RESET%
+echo %YELLOW%Press any key to continue...%RESET%
+
+powershell -NoProfile -Command "Start-Sleep -Milliseconds 100; try{$Host.UI.RawUI.FlushInputBuffer()}catch{}; [void]$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')" >nul 2>&1
+
+exit /b
+
 :about
 cls
 
@@ -4755,7 +4742,7 @@ timeout /t 2 >nul
 start "" "https://www.youtube.com/@heshamtaha1"
 start "" "https://facebook.com/HeshamTahaOfficial"
 
-pause
+call :safe_pause
 goto menu
 
 :: --- CALL FUNCTIONS ---
@@ -4786,7 +4773,7 @@ where winget >nul 2>&1
 if %errorlevel% neq 0 (
     echo %RED%[X] Failed to install Winget automatically.%RESET%
     echo %WHITE%Please install "App Installer" manually from the Microsoft Store, then try again.%RESET%
-    pause
+    call :safe_pause
     goto menu
 ) else (
     echo %GREEN%[OK] Winget installed successfully!%RESET%
